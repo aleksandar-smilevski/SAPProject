@@ -18,6 +18,7 @@ namespace SAP.Controllers
     {
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
+        private ApplicationDbContext userDB = new ApplicationDbContext();
 
         public AccountController()
         {
@@ -77,7 +78,13 @@ namespace SAP.Controllers
             // This doesn't count login failures towards account lockout
             // To enable password failures to trigger account lockout, change to shouldLockout: true
             var result = await SignInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, shouldLockout: false);
-            var user = _userManager.FindByEmail(model.Email);
+            var user = userDB.Users.Where(x => x.Email == model.Email).FirstOrDefault();
+
+            if (!user.EmailConfirmed)
+            {
+                ModelState.AddModelError("", "Invalid login attempt.");
+                return View(model);
+            }
 
             switch (result)
             {
