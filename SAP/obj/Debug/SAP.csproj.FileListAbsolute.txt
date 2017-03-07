@@ -70,6 +70,8 @@ C:\Users\Aleksandar\Documents\Visual Studio 2015\Projects\SAP\SAP\bin\Microsoft.
 C:\Users\Aleksandar\Documents\Visual Studio 2015\Projects\SAP\SAP\bin\Microsoft.Owin.Security.Google.xml
 C:\Users\Aleksandar\Documents\Visual Studio 2015\Projects\SAP\SAP\bin\Microsoft.Owin.Security.Twitter.xml
 C:\Users\Aleksandar\Documents\Visual Studio 2015\Projects\SAP\SAP\bin\Microsoft.Owin.Security.MicrosoftAccount.xml
-C:\Users\Aleksandar\Documents\Visual Studio 2015\Projects\SAP\SAP\obj\Debug\SAP.csprojResolveAssemblyReference.cache
 C:\Users\Aleksandar\Documents\Visual Studio 2015\Projects\SAP\SAP\obj\Debug\SAP.dll
 C:\Users\Aleksandar\Documents\Visual Studio 2015\Projects\SAP\SAP\obj\Debug\SAP.pdb
+C:\Users\Aleksandar\Documents\Visual Studio 2015\Projects\SAP\SAP\obj\Debug\SAP.Migrations.InitialCreate.resources
+C:\Users\Aleksandar\Documents\Visual Studio 2015\Projects\SAP\SAP\obj\Debug\SAP.csproj.GenerateResource.Cache
+C:\Users\Aleksandar\Documents\Visual Studio 2015\Projects\SAP\SAP\obj\Debug\SAP.Migrations.Age.resources
