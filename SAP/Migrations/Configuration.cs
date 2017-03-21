@@ -4,6 +4,9 @@ namespace SAP.Migrations
     using System.Data.Entity;
     using System.Data.Entity.Migrations;
     using System.Linq;
+    using Microsoft.AspNet.Identity;
+    using Microsoft.AspNet.Identity.EntityFramework;
+    using SAP.Models;
 
     internal sealed class Configuration : DbMigrationsConfiguration<SAP.Models.ApplicationDbContext>
     {
@@ -15,18 +18,47 @@ namespace SAP.Migrations
 
         protected override void Seed(SAP.Models.ApplicationDbContext context)
         {
-            //  This method will be called after migrating to the latest version.
+            /*
+             Seed функцијава ја полни базата со податоци и се повикува при update-database.
+             Бидејќи го користам ApplicationDbContext имам пристап само до оние модели (класи, табели) искреирани од .NET Identity
+             */
 
-            //  You can use the DbSet<T>.AddOrUpdate() helper extension method 
-            //  to avoid creating duplicate seed data. E.g.
+            //Овде проверувам дали има Role 'Admin' запишан во база, доколку нема го креирам
+            //пс. Id вредноста е број запишан како стринг, претходно генерирање GUID и личеше грдо, вака поедноставно
+            if (!context.Roles.Any(x => x.Name == "Admin"))
+            {
+                context.Roles.Add(new IdentityRole { Id = "1", Name = "Admin" });
+            }
+
+            //Овде проверувам дали има Role 'Interviewer' запишан во база, доколку нема го креирам
+            if (!context.Roles.Any(x => x.Name == "Interviewer"))
+            {
+                context.Roles.Add(new IdentityRole { Id = "2", Name = "Interviewer" });
+            }
+            
             //
-            //    context.People.AddOrUpdate(
-            //      p => p.FullName,
-            //      new Person { FullName = "Andrew Peters" },
-            //      new Person { FullName = "Brice Lambson" },
-            //      new Person { FullName = "Rowan Miller" }
-            //    );
-            //
+            //Овде креирам User кој ќе има админ улога
+            //Овој account ќе ни биде за тестирање има и лесен login
+            // Email: admin@sap.com ; Pass:Admin123!
+            //if (!context.Users.Any(x => x.Email == "admin@sap.com"))
+            //{
+            //    var hasher = new PasswordHasher();
+
+            //    var user = new ApplicationUser
+            //    {
+            //        UserName = "Admin",
+            //        PasswordHash = hasher.HashPassword("Admin123!"),
+            //        Email = "admin@sap.com",
+            //        EmailConfirmed = true,
+            //        SecurityStamp = Guid.NewGuid().ToString()
+            //    };
+
+            //    user.Roles.Add(new IdentityUserRole { RoleId = "1", UserId = user.Id });
+
+            //    context.Users.Add(user);
+            }
+
+            base.Seed(context);
         }
     }
 }

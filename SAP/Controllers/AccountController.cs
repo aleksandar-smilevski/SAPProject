@@ -79,7 +79,7 @@ namespace SAP.Controllers
             // To enable password failures to trigger account lockout, change to shouldLockout: true
             var result = await SignInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, shouldLockout: false);
             var user = userDB.Users.Where(x => x.Email == model.Email).FirstOrDefault();
-
+            var isSuccess = false;
             if (!user.EmailConfirmed)
             {
                 ModelState.AddModelError("", "Invalid login attempt.");
@@ -88,8 +88,7 @@ namespace SAP.Controllers
 
             switch (result)
             {
-                case SignInStatus.Success:
-                    return RedirectToLocal(returnUrl);
+                case SignInStatus.Success: isSuccess = true; break;
                 case SignInStatus.LockedOut:
                     return View("Lockout");
                 case SignInStatus.RequiresVerification:
@@ -99,6 +98,16 @@ namespace SAP.Controllers
                     ModelState.AddModelError("", "Invalid login attempt.");
                     return View(model);
             }
+
+            if (model.Email == "sap.mail.info@gmail.com")
+            {
+                return RedirectToAction("Index", "Admin");
+            }
+            else
+            {
+                return RedirectToAction("Index", "User");
+            }
+
         }
 
         //
