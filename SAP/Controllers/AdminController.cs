@@ -7,6 +7,8 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using SAP.Models;
+using Microsoft.AspNet.Identity.EntityFramework;
+using Microsoft.AspNet.Identity;
 
 namespace SAP.Controllers
 {
@@ -47,16 +49,18 @@ namespace SAP.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,FirstName,Age,Email,EmailConfirmed,PasswordHash,SecurityStamp,PhoneNumber,PhoneNumberConfirmed,TwoFactorEnabled,LockoutEndDateUtc,LockoutEnabled,AccessFailedCount,UserName")] ApplicationUser applicationUser)
+        public ActionResult Create(ApplicationUser model)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                db.Users.Add(applicationUser);
-                db.SaveChanges();
-                return RedirectToAction("Index");
+                return View(model);
             }
-
-            return View(applicationUser);
+            var hasher = new PasswordHasher();
+            var password = GetPassword();
+            var hashedpass = hasher.HashPassword(password);
+            model.PasswordHash = hashedpass;
+            //TO DO
+            return View(model);
         }
 
         // GET: Admin/Edit/5
@@ -123,6 +127,37 @@ namespace SAP.Controllers
                 db.Dispose();
             }
             base.Dispose(disposing);
+        }
+
+        public static string GetPassword()
+        {
+            Random random = new Random();
+            const string numbers = "0123456789";
+            const string lowerLetters = "abcdefghijklmnopqrstuvwxyz";
+            const string upperLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            const string specialLetters = ",.!*&$@#";
+            int length = random.Next(1, 3);
+            string numberString = new string(Enumerable.Repeat(numbers, length).Select(s => s[random.Next(s.Length)]).ToArray());
+            length = random.Next(3, 4);
+            string lowerString = new string(Enumerable.Repeat(lowerLetters, length).Select(s => s[random.Next(s.Length)]).ToArray());
+            length = random.Next(3, 4);
+            string upperString = new string(Enumerable.Repeat(upperLetters, length).Select(s => s[random.Next(s.Length)]).ToArray());
+            length = random.Next(1, 2);
+            string specialString = new string(Enumerable.Repeat(specialLetters, length).Select(s => s[random.Next(s.Length)]).ToArray());
+            string finalString = numberString + lowerString + upperString + specialString;
+            char[] array = finalString.ToCharArray();
+            Random rng = new Random();
+            int n = array.Length;
+            while (n > 1)
+            {
+                n--;
+                int k = rng.Next(n + 1);
+                var value = array[k];
+                array[k] = array[n];
+                array[n] = value;
+            }
+            return new string(array);
+
         }
     }
 }
