@@ -56,7 +56,7 @@ namespace SAP.Migrations
             //    user.Roles.Add(new IdentityUserRole { RoleId = "1", UserId = user.Id });
 
             //    context.Users.Add(user);
-            }
+            //}
 
             base.Seed(context);
         }
