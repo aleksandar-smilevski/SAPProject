@@ -10,6 +10,7 @@ using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using SAP.Models;
 using System.Net.Mail;
+using System.Diagnostics;
 
 namespace SAP.Controllers
 {
@@ -59,7 +60,19 @@ namespace SAP.Controllers
         [AllowAnonymous]
         public ActionResult Login(string returnUrl)
         {
+
             ViewBag.ReturnUrl = returnUrl;
+            if (User.Identity.IsAuthenticated)
+            {
+                if (User.IsInRole("Admin"))
+                {
+                    return RedirectToAction("Index", "Admin");
+                }
+                else
+                {
+                    return RedirectToAction("Index", "User");
+                }
+            }
             return View();
         }
 
@@ -75,24 +88,12 @@ namespace SAP.Controllers
                 return View(model);
             }
 
-            if (User.Identity.IsAuthenticated)
-            {
-                if (User.IsInRole("Admin"))
-                {
-                    return RedirectToAction("Index", "Admin");
-                }
-                else
-                {
-                    return RedirectToAction("Index", "User");
-                }
-            }
-
             // This doesn't count login failures towards account lockout
             // To enable password failures to trigger account lockout, change to shouldLockout: true
             var result = await SignInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, shouldLockout: false);
             var user = userDB.Users.Where(x => x.Email == model.Email).FirstOrDefault();
             var isSuccess = false;
-            if (!user.EmailConfirmed)
+            if (user == null || !user.EmailConfirmed)
             {
                 ModelState.AddModelError("", "Invalid login attempt.");
                 return View(model);
@@ -110,8 +111,9 @@ namespace SAP.Controllers
                     ModelState.AddModelError("", "Invalid login attempt.");
                     return View(model);
             }
-
-            if (model.Email == "sap.mail.info@gmail.com")
+            var role = (from r in userDB.Roles where r.Name.Contains("Admin") select r).FirstOrDefault();
+            var users = userDB.Users.Where(x => x.Roles.Select(y => y.RoleId).Contains(role.Id)).ToList();
+            if (users.Find(x => x.Id == user.Id) != null)
             {
                 return RedirectToAction("Index", "Admin");
             }
@@ -119,6 +121,8 @@ namespace SAP.Controllers
             {
                 return RedirectToAction("Index", "User");
             }
+            return View(model);
+            
 
         }
 
@@ -439,7 +443,7 @@ namespace SAP.Controllers
         public ActionResult LogOff()
         {
             AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Login", "Account");
         }
 
         //
@@ -496,7 +500,7 @@ namespace SAP.Controllers
             {
                 return Redirect(returnUrl);
             }
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Login", "Account");
         }
 
         internal class ChallengeResult : HttpUnauthorizedResult

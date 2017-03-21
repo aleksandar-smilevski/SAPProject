@@ -10,6 +10,7 @@ using SAP.Models;
 
 namespace SAP.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class AdminController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
