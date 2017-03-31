@@ -1,10 +1,84 @@
-﻿@{
-    ViewBag.Title = "Confirm Email";
+﻿@model SAP.Models.ConfirmEmailAndAccount
+@{
+    ViewBag.Title = "Confirm Email and Account";
 }
 
 <h2>@ViewBag.Title.</h2>
-<div>
-    <p>
-        Thank you for confirming your email. Please @Html.ActionLink("Click here to Log in", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" })
-    </p>
-</div>
+
+@using (Html.BeginForm("ConfirmEmail", "Account",new { }, FormMethod.Post, new { @class = "form-horizontal", role = "form", name="ConfirmEmailForm"}))
+{
+    @Html.AntiForgeryToken()
+    <h4>Confirm Email and Account</h4>
+    <hr />
+    @Html.ValidationSummary("", new { @class = "text-danger"})
+    <div class="form-group">
+        @Html.LabelFor(m => m.Password, new { @class = "col-md-2 control-label"})
+        <div class="col-md-10">
+            @Html.PasswordFor(m => m.Password, new { @class = "form-control" , id = "main_password" })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.ConfirmPassword, new { @class = "col-md-2 control-label"})
+        <div class="col-md-10">
+            @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control", id = "password_again" })
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" class="btn btn-default" value="Register" />
+        </div>
+    </div>
+}
+
+@Scripts.Render("~/bundles/jquery")
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+
+<script>
+$(document).ready(function () {
+     //var submitted = false;
+
+    jQuery.validator.addMethod("letter", function (value, element) {
+        return this.optional(element) || /[A-z]/.test(value);
+       }, "Must have at least one letter"
+    );
+
+    jQuery.validator.addMethod("capital", function (value, element) {
+        return this.optional(element) || /[A-Z]/.test(value);
+    }, "Must have at least one capital letter"
+    );
+
+    jQuery.validator.addMethod("number", function (value, element) {
+        return this.optional(element) || /\d/.test(value);
+    }, "Must have at least one number"
+    );
+
+    jQuery.validator.addMethod("special", function (value, element) {
+        return this.optional(element) || /[-!$%^&*()_+|~=`{}\[\]:";'<>?,.\/]/.test(value);
+    }, "Must have at least one special character"
+    );
+
+    $("form[name=ConfirmEmailForm]").validate({
+        rules: {
+            Password: {
+                required: true,
+                minlength: 6,
+                letter: true,
+                capital: true,
+                special: true,
+                number: true
+            },
+            ConfirmPassword: {
+                equalTo: "#main_password"
+            }
+        },
+        messages: {
+            ConfirmPassword: {
+                equalTo: "Passwords do not match"
+            }
+        },
+        errorClass:"text-danger"
+    });
+  });
+</script>

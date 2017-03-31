@@ -5,11 +5,15 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Helpers;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using SAP.Models;
 using System.Net.Mail;
+using Microsoft.AspNet.Identity.EntityFramework;
+using Microsoft.AspNet.Identity.Owin;
+using Microsoft.Owin.Host.SystemWeb;
 using System.Diagnostics;
 
 namespace SAP.Controllers
@@ -20,6 +24,7 @@ namespace SAP.Controllers
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
         private ApplicationDbContext userDB = new ApplicationDbContext();
+        private SAPEntities db = new SAPEntities();
 
         public AccountController()
         {
@@ -68,9 +73,13 @@ namespace SAP.Controllers
                 {
                     return RedirectToAction("Index", "Admin");
                 }
-                else
+                else if(User.IsInRole("Interviewer"))
                 {
                     return RedirectToAction("Index", "User");
+                }
+                else
+                {
+                    return RedirectToAction("Index", "Manage");
                 }
             }
             return View();
@@ -90,7 +99,7 @@ namespace SAP.Controllers
 
             // This doesn't count login failures towards account lockout
             // To enable password failures to trigger account lockout, change to shouldLockout: true
-            var result = await SignInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, shouldLockout: false);
+            //var result = await SignInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, shouldLockout: false);
             var user = userDB.Users.Where(x => x.Email == model.Email).FirstOrDefault();
             var isSuccess = false;
             if (user == null || !user.EmailConfirmed)
@@ -98,19 +107,13 @@ namespace SAP.Controllers
                 ModelState.AddModelError("", "Invalid login attempt.");
                 return View(model);
             }
-
-            switch (result)
+            isSuccess = Crypto.VerifyHashedPassword(user.PasswordHash, model.Password);
+            if (!isSuccess)
             {
-                case SignInStatus.Success: isSuccess = true; break;
-                case SignInStatus.LockedOut:
-                    return View("Lockout");
-                case SignInStatus.RequiresVerification:
-                    return RedirectToAction("SendCode", new { ReturnUrl = returnUrl, RememberMe = model.RememberMe });
-                case SignInStatus.Failure:
-                default:
-                    ModelState.AddModelError("", "Invalid login attempt.");
-                    return View(model);
+                ModelState.AddModelError("", "Invalid email or password");
+                return View(model);
             }
+            await SignInManager.SignInAsync(user, model.RememberMe, false);
             var role = (from r in userDB.Roles where r.Name.Contains("Admin") select r).FirstOrDefault();
             var users = userDB.Users.Where(x => x.Roles.Select(y => y.RoleId).Contains(role.Id)).ToList();
             if (users.Find(x => x.Id == user.Id) != null)
@@ -121,9 +124,13 @@ namespace SAP.Controllers
             {
                 return RedirectToAction("Index", "User");
             }
-            return View(model);
-            
 
+        }
+       
+        [AllowAnonymous]
+        public ActionResult AccessDenied()
+        {
+            return View();
         }
 
         //
@@ -222,17 +229,83 @@ namespace SAP.Controllers
             }
         }
 
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> SendConfirmationLink(string userId)
+        {
+            var user = userDB.Users.Where(x => x.Id == userId).FirstOrDefault();
+            if(user == null)
+            {
+                return View();
+            }
+            if (ModelState.IsValid)
+            {
+                    //await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false)
+                    // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=320771
+                    // Send an email with this link
+                    string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
+                    var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
+                    await SendEmail(user.Email, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
+                    //await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
+
+                    return View("ConfirmationEmailSent");
+                }
+            //AddErrors(result);
+            return View();
+        }
+
+            // If we got this far, something failed, redisplay form
+            
+       
+
+
         //
         // GET: /Account/ConfirmEmail
         [AllowAnonymous]
-        public async Task<ActionResult> ConfirmEmail(string userId, string code)
+        public ActionResult ConfirmEmail(string userId, Guid token)
         {
-            if (userId == null || code == null)
+            if (userId == null || token == null)
             {
                 return View("Error");
             }
-            var result = await UserManager.ConfirmEmailAsync(userId, code);
-            return View(result.Succeeded ? "ConfirmEmail" : "Error");
+            var user = userDB.Users.Where(x => x.Id == userId).FirstOrDefault();
+            if(user == null || user.EmailConfirmed == true)
+            {
+                return View("Error");
+            }
+            ConfirmEmailAndAccount model = new ConfirmEmailAndAccount
+            {
+                UserName = user.UserName,
+                Email = user.Email,
+                Password = ""
+            };
+            return View(model);
+        }
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public ActionResult ConfirmEmail(ConfirmEmailAndAccount model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+            ApplicationUser cUser = UserManager.FindByEmail(model.Email);
+            if(cUser.EmailConfirmed == true)
+            {
+                return View("Error");
+            }
+            String hashedNewPassword = Crypto.HashPassword(model.Password);
+            cUser.PasswordHash = hashedNewPassword;
+            cUser.EmailConfirmed = true;
+            var result = UserManager.Update(cUser);
+            if (result.Succeeded)
+            {
+                return RedirectToAction("Login");
+            }
+            AddErrors(result);
+            return View();
         }
 
         //
@@ -252,8 +325,8 @@ namespace SAP.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = await UserManager.FindByNameAsync(model.Email);
-                if (user == null || !(await UserManager.IsEmailConfirmedAsync(user.Id)))
+                var user = UserManager.FindByEmail(model.Email);
+                if (user == null || !UserManager.IsEmailConfirmed(user.Id))
                 {
                     // Don't reveal that the user does not exist or is not confirmed
                     return View("ForgotPasswordConfirmation");
@@ -299,13 +372,15 @@ namespace SAP.Controllers
             {
                 return View(model);
             }
-            var user = await UserManager.FindByNameAsync(model.Email);
-            if (user == null)
+            var user = await UserManager.FindByEmailAsync(model.Email);
+            if (user == null || !(await UserManager.IsEmailConfirmedAsync(user.Id)))
             {
                 // Don't reveal that the user does not exist
                 return RedirectToAction("ResetPasswordConfirmation", "Account");
             }
-            var result = await UserManager.ResetPasswordAsync(user.Id, model.Code, model.Password);
+            String hashedNewPassword = Crypto.HashPassword(model.Password);
+            user.PasswordHash = hashedNewPassword;
+            var result = UserManager.Update(user);
             if (result.Succeeded)
             {
                 return RedirectToAction("ResetPasswordConfirmation", "Account");
@@ -438,7 +513,7 @@ namespace SAP.Controllers
 
         //
         // POST: /Account/LogOff
-        [HttpPost]
+        //[HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult LogOff()
         {

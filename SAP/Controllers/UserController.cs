@@ -7,9 +7,11 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using SAP.Models;
+using SAP.Attributes;
 
 namespace SAP.Controllers
 {
+    [AccessDeniedAuthorize(Roles ="Interviewer")]
     public class UserController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
@@ -17,7 +19,9 @@ namespace SAP.Controllers
         // GET: User
         public ActionResult Index()
         {
-            return View(db.Users.ToList());
+            ViewBag.MessageTitle = "Sorry no surveys :(";
+            ViewBag.Message = "We are still working on implementing surveys. Come back soon to check :)";
+            return View();
         }
 
         // GET: User/Details/5

@@ -6,16 +6,35 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Helpers;
 using SAP.Models;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity;
+using System.Net.Mail;
+using Microsoft.AspNet.Identity.Owin;
+using Microsoft.Owin.Security;
+using SAP.Attributes;
 
 namespace SAP.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    [AccessDeniedAuthorize(Roles = "Admin")]
     public class AdminController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
+        private SAPEntities context = new SAPEntities();
+        private ApplicationUserManager _userManager;
+
+        public ApplicationUserManager UserManager
+        {
+            get
+            {
+                return _userManager ?? HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            }
+            private set
+            {
+                _userManager = value;
+            }
+        }
 
         // GET: Admin
         public ActionResult Index()
@@ -55,12 +74,51 @@ namespace SAP.Controllers
             {
                 return View(model);
             }
-            var hasher = new PasswordHasher();
+            var existingUser = db.Users.Where(x => x.Email == model.Email).FirstOrDefault();
+            if(existingUser != null)
+            {
+                ModelState.AddModelError("", "This user already exists");
+                return View(model);
+            }
+            var id = Guid.Parse(model.Id);
+            if (context.UserTokens.Where(x => x.UserID == id).FirstOrDefault() != null){
+                ModelState.AddModelError("", "This user already exists");
+                return View(model);
+            }
+
+            //var hasher = new PasswordHasher();
             var password = GetPassword();
-            var hashedpass = hasher.HashPassword(password);
+            var hashedpass = Crypto.HashPassword(password);
             model.PasswordHash = hashedpass;
-            //TO DO
-            return View(model);
+            model.SecurityStamp = Guid.NewGuid().ToString();
+            var token = Guid.NewGuid().ToString();
+            db.Users.Add(model);
+            db.SaveChanges();
+            var entry = new UserTokens
+            {
+                UserID = Guid.Parse(model.Id),
+                Token = Guid.Parse(token)
+            };
+            context.UserTokens.Add(entry);
+            context.SaveChanges();
+            var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = model.Id, token = token }, protocol: Request.Url.Scheme);
+            SendEmail(model.Email, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
+
+            return RedirectToAction("Index");
+        }
+
+        public void SendEmail(string toEmailAddress, string emailSubject, string emailMessage)
+        {
+            var message = new MailMessage();
+            message.To.Add(toEmailAddress);
+            message.IsBodyHtml = true;
+            message.Subject = emailSubject;
+            message.Body = emailMessage;
+
+            using (var smtpClient = new SmtpClient())
+            {
+                smtpClient.Send(message);
+            }
         }
 
         // GET: Admin/Edit/5
@@ -83,7 +141,7 @@ namespace SAP.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,FirstName,Age,Email,EmailConfirmed,PasswordHash,SecurityStamp,PhoneNumber,PhoneNumberConfirmed,TwoFactorEnabled,LockoutEndDateUtc,LockoutEnabled,AccessFailedCount,UserName")] ApplicationUser applicationUser)
+        public ActionResult Edit(ApplicationUser applicationUser)
         {
             if (ModelState.IsValid)
             {
