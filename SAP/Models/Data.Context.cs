@@ -31,5 +31,10 @@ namespace SAP.Models
         public virtual DbSet<AspNetUserLogins> AspNetUserLogins { get; set; }
         public virtual DbSet<AspNetUsers> AspNetUsers { get; set; }
         public virtual DbSet<UserTokens> UserTokens { get; set; }
+        public virtual DbSet<Category> Category { get; set; }
+        public virtual DbSet<Survey> Survey { get; set; }
+        public virtual DbSet<SurveyType> SurveyType { get; set; }
+        public virtual DbSet<OfflineSurvey> OfflineSurvey { get; set; }
+        public virtual DbSet<OnlineSurvey> OnlineSurvey { get; set; }
     }
 }

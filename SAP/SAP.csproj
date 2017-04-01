@@ -183,6 +183,9 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
+    <Compile Include="Controllers\OfflineSurveysController.cs" />
+    <Compile Include="Controllers\OnlineSurveysController.cs" />
+    <Compile Include="Controllers\SurveysController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -209,6 +212,9 @@
     <Compile Include="Models\AspNetUsers.cs">
       <DependentUpon>Data.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\Category.cs">
+      <DependentUpon>Data.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\C__MigrationHistory.cs">
       <DependentUpon>Data.tt</DependentUpon>
     </Compile>
@@ -229,6 +235,18 @@
     </Compile>
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
+    <Compile Include="Models\OfflineSurvey.cs">
+      <DependentUpon>Data.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\OnlineSurvey.cs">
+      <DependentUpon>Data.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Survey.cs">
+      <DependentUpon>Data.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\SurveyType.cs">
+      <DependentUpon>Data.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\UserTokens.cs">
       <DependentUpon>Data.tt</DependentUpon>
     </Compile>
@@ -325,6 +343,21 @@
     <Content Include="Views\User\Index.cshtml" />
     <Content Include="Views\Shared\_FooterPartial.cshtml" />
     <Content Include="Views\Account\AccessDenied.cshtml" />
+    <Content Include="Views\Surveys\Create.cshtml" />
+    <Content Include="Views\Surveys\Delete.cshtml" />
+    <Content Include="Views\Surveys\Details.cshtml" />
+    <Content Include="Views\Surveys\Edit.cshtml" />
+    <Content Include="Views\Surveys\Index.cshtml" />
+    <Content Include="Views\OfflineSurveys\Create.cshtml" />
+    <Content Include="Views\OfflineSurveys\Delete.cshtml" />
+    <Content Include="Views\OfflineSurveys\Details.cshtml" />
+    <Content Include="Views\OfflineSurveys\Edit.cshtml" />
+    <Content Include="Views\OfflineSurveys\Index.cshtml" />
+    <Content Include="Views\OnlineSurveys\Create.cshtml" />
+    <Content Include="Views\OnlineSurveys\Delete.cshtml" />
+    <Content Include="Views\OnlineSurveys\Details.cshtml" />
+    <Content Include="Views\OnlineSurveys\Edit.cshtml" />
+    <Content Include="Views\OnlineSurveys\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

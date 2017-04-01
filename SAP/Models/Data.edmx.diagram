@@ -14,7 +14,16 @@
         <AssociationConnector Association="SAPContext.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" ManuallyRouted="false" />
         <AssociationConnector Association="SAPContext.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" ManuallyRouted="false" />
         <AssociationConnector Association="SAPContext.AspNetUserRoles" ManuallyRouted="false" />
-      </Diagram>
+        <EntityTypeShape EntityType="SAPContext.Category" Width="1.5" PointX="7.375" PointY="8.625" />
+        <EntityTypeShape EntityType="SAPContext.Survey" Width="1.5" PointX="9.625" PointY="2" />
+        <EntityTypeShape EntityType="SAPContext.SurveyType" Width="1.5" PointX="7.375" PointY="2.625" />
+        <AssociationConnector Association="SAPContext.fk_category" />
+        <AssociationConnector Association="SAPContext.fk_type" />
+        <EntityTypeShape EntityType="SAPContext.OfflineSurvey" Width="1.5" PointX="11.875" PointY="1.5" />
+        <EntityTypeShape EntityType="SAPContext.OnlineSurvey" Width="1.5" PointX="11.875" PointY="3.875" />
+        <AssociationConnector Association="SAPContext.FK__OfflineSu__Id_su__0C85DE4D" />
+        <AssociationConnector Association="SAPContext.FK__OnlineSur__Id_su__0F624AF8" />
+        </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
 </edmx:Edmx>

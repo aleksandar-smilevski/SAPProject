@@ -121,6 +121,7 @@
                                     <li>
                                         <a href="javascript:document.getElementById('logoutForm').submit()"><i class="fa fa-fw fa-power-off"></i> Log Out</a>
                                     </li>
+                                    
                                 </ul>
                         }
                         else
@@ -139,7 +140,15 @@
                     </li>
                     <li class="divider"></li>
                     <li>
-                        <a href="@Url.Action("Index","User")"><i class="fa fa-fw  fa-file-text"></i> Surveys</a>
+                        <a href="@Url.Action("Index","Surveys")"><i class="fa fa-fw  fa-file-text"></i> Surveys</a>
+                        <ul>
+                            <li>
+                                @Html.ActionLink("Offline Surveys", "Index", "Surveys", new { attr = 1 }, null)
+                            </li>
+                            <li>
+                                @Html.ActionLink("Online Surveys", "Index", "Surveys", new { attr = 2 }, null)
+                            </li>
+                        </ul>
                     </li>
                     <li class="divider"></li>
                     <li class="footer">
