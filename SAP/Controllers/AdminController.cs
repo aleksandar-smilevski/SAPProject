@@ -54,12 +54,15 @@ namespace SAP.Controllers
             {
                 return HttpNotFound();
             }
+            ViewBag.Role = UserManager.GetRoles(applicationUser.Id).FirstOrDefault();
             return View(applicationUser);
         }
 
         // GET: Admin/Create
         public ActionResult Create()
         {
+            var list = db.Roles.OrderBy(r => r.Name).ToList().Select(rr => new SelectListItem { Value = rr.Name.ToString(), Text = rr.Name }).ToList();
+            ViewBag.Roles = list;
             return View();
         }
 
@@ -68,7 +71,7 @@ namespace SAP.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(ApplicationUser model)
+        public ActionResult Create(CreateUserViewModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -80,28 +83,38 @@ namespace SAP.Controllers
                 ModelState.AddModelError("", "This user already exists");
                 return View(model);
             }
-            var id = Guid.Parse(model.Id);
+            var user = new ApplicationUser
+            {
+               UserName = model.UserName,
+               Email = model.Email
+            };
+            var id = Guid.Parse(user.Id);
             if (context.UserTokens.Where(x => x.UserID == id).FirstOrDefault() != null){
                 ModelState.AddModelError("", "This user already exists");
                 return View(model);
             }
-
-            //var hasher = new PasswordHasher();
+            
             var password = GetPassword();
             var hashedpass = Crypto.HashPassword(password);
-            model.PasswordHash = hashedpass;
-            model.SecurityStamp = Guid.NewGuid().ToString();
+            user.PasswordHash = hashedpass;
+            user.SecurityStamp = Guid.NewGuid().ToString();
             var token = Guid.NewGuid().ToString();
-            db.Users.Add(model);
+            db.Users.Add(user);
             db.SaveChanges();
+
+            if (!UserManager.IsInRole(user.Id, model.UserRole))
+            {
+                UserManager.AddToRole(user.Id, model.UserRole);
+            }
+
             var entry = new UserTokens
             {
-                UserID = Guid.Parse(model.Id),
+                UserID = Guid.Parse(user.Id),
                 Token = Guid.Parse(token)
             };
             context.UserTokens.Add(entry);
             context.SaveChanges();
-            var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = model.Id, token = token }, protocol: Request.Url.Scheme);
+            var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, token = token }, protocol: Request.Url.Scheme);
             SendEmail(model.Email, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
 
             return RedirectToAction("Index");

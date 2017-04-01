@@ -135,9 +135,30 @@
             <div class="collapse navbar-collapse navbar-ex1-collapse">
  
                 <ul class="nav navbar-nav side-nav">
-                    <li>
-                        <a href="@Url.Action("Index","Admin")"><i class="fa fa-fw fa-user"></i> Users</a>
-                    </li>
+                    @if (Request.IsAuthenticated)
+                    {
+                        if (User.IsInRole("Admin"))
+                        {
+                            <li>
+                                <a href="@Url.Action("Index","Admin")"><i class="fa fa-fw fa-user"></i> Users</a>
+                            </li>
+                            <li>
+                                <a href="@Url.Action("Index","Surveys")"><i class="fa fa-fw  fa-file-text"></i> Surveys</a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li>
+                                <a href="@Url.Action("Index","Surveys")"><i class="fa fa-fw  fa-file-text"></i> Surveys</a>
+                            </li>
+                        }
+                    }
+                    else
+                    {
+                        <li>
+                            <a href="@Url.Action("Login","Account")"><i class="fa fa-fw  fa-sign-in"></i> Log in</a>
+                        </li>
+                    }
                     <li class="divider"></li>
                     <li>
                         <a href="@Url.Action("Index","Surveys")"><i class="fa fa-fw  fa-file-text"></i> Surveys</a>

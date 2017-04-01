@@ -105,6 +105,19 @@ namespace SAP.Models
 
         public string Code { get; set; }
     }
+    public class CreateUserViewModel
+    {
+        [Required]
+        [DataType(DataType.EmailAddress)]
+        public string Email { get; set; }
+        [Required]
+        public string UserName { get; set; }
+        [Required]
+        [Display(Name ="User Role")]
+        public string UserRole { get; set; }
+    }
+
+    
 
     public class ForgotPasswordViewModel
     {

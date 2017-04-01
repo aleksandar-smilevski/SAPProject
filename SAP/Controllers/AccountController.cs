@@ -277,8 +277,7 @@ namespace SAP.Controllers
             ConfirmEmailAndAccount model = new ConfirmEmailAndAccount
             {
                 UserName = user.UserName,
-                Email = user.Email,
-                Password = ""
+                Email = user.Email
             };
             return View(model);
         }

@@ -10,6 +10,8 @@
     @Html.AntiForgeryToken()
     <h4>Confirm Email and Account</h4>
     <hr />
+    @Html.HiddenFor(x=>x.Email);
+    @Html.HiddenFor(x => x.UserName);
     @Html.ValidationSummary("", new { @class = "text-danger"})
     <div class="form-group">
         @Html.LabelFor(m => m.Password, new { @class = "col-md-2 control-label"})
