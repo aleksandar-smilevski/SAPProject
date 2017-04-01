@@ -13,6 +13,18 @@ namespace SAP.Models
         public bool TwoFactor { get; set; }
         public bool BrowserRemembered { get; set; }
     }
+    public class ProfileViewModel
+    {
+        public string FirstName { get; set; }
+        [Range(0,100,ErrorMessage ="Invalid Age")]
+        public int Age { get; set; }
+        [Required]
+        public string UserName { get; set; }
+        public string Email { get; set; }
+        [RegularExpression(@"^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$", ErrorMessage = "Invalid phone number")]
+        public string PhoneNumber { get; set; }
+
+    }
 
     public class ManageLoginsViewModel
     {
