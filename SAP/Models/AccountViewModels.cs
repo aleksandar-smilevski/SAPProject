@@ -104,6 +104,7 @@ namespace SAP.Models
         public string ConfirmPassword { get; set; }
 
         public string Code { get; set; }
+        public string Id { get; set; }
     }
     public class CreateUserViewModel
     {

@@ -176,44 +176,44 @@ namespace SAP.Controllers
             }
         }
 
-        //
-        // GET: /Account/Register
-        [AllowAnonymous]
-        public ActionResult Register()
-        {
-            return View();
-        }
+        ////
+        //// GET: /Account/Register
+        //[AllowAnonymous]
+        //public ActionResult Register()
+        //{
+        //    return View();
+        //}
 
-        //
-        // POST: /Account/Register
-        [HttpPost]
-        [AllowAnonymous]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Register(RegisterViewModel model)
-        {
-            if (ModelState.IsValid)
-            {
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
-                var result = await UserManager.CreateAsync(user, model.Password);
-                if (result.Succeeded)
-                {
-                    //await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
+        ////
+        //// POST: /Account/Register
+        //[HttpPost]
+        //[AllowAnonymous]
+        //[ValidateAntiForgeryToken]
+        //public async Task<ActionResult> Register(RegisterViewModel model)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+        //        var result = await UserManager.CreateAsync(user, model.Password);
+        //        if (result.Succeeded)
+        //        {
+        //            //await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
 
-                    // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=320771
-                    // Send an email with this link
-                    string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
-                    var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
-                    await SendEmail(user.Email, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
-                    //await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
+        //            // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=320771
+        //            // Send an email with this link
+        //            string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
+        //            var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
+        //            await SendEmail(user.Email, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
+        //            //await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
 
-                    return View("ConfirmationEmailSent");
-                }
-                AddErrors(result);
-            }
+        //            return View("ConfirmationEmailSent");
+        //        }
+        //        AddErrors(result);
+        //    }
 
-            // If we got this far, something failed, redisplay form
-            return View(model);
-        }
+        //    // If we got this far, something failed, redisplay form
+        //    return View(model);
+        //}
 
         public async Task SendEmail(string toEmailAddress, string emailSubject, string emailMessage)
         {
@@ -254,12 +254,6 @@ namespace SAP.Controllers
             //AddErrors(result);
             return View();
         }
-
-            // If we got this far, something failed, redisplay form
-            
-       
-
-
         //
         // GET: /Account/ConfirmEmail
         [AllowAnonymous]
@@ -355,9 +349,23 @@ namespace SAP.Controllers
         //
         // GET: /Account/ResetPassword
         [AllowAnonymous]
-        public ActionResult ResetPassword(string code)
+        public ActionResult ResetPassword(string userId,string code)
         {
-            return code == null ? View("Error") : View();
+            if(userId==null || code == null)
+            {
+                return View("Error");
+            }
+            var user = UserManager.FindById(userId);
+            if(user == null)
+            {
+                return View("Error");
+            }
+            var model = new ResetPasswordViewModel
+            {
+                Id = user.Id,
+                Code = code
+            };
+            return View(model);
         }
 
         //
@@ -371,7 +379,11 @@ namespace SAP.Controllers
             {
                 return View(model);
             }
-            var user = await UserManager.FindByEmailAsync(model.Email);
+            var user = await UserManager.FindByIdAsync(model.Id);
+            if(user.Email != model.Email)
+            {
+                return View("Error");
+            }
             if (user == null || !(await UserManager.IsEmailConfirmedAsync(user.Id)))
             {
                 // Don't reveal that the user does not exist

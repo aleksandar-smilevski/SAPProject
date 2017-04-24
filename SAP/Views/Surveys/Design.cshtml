@@ -1,0 +1,119 @@
+﻿@model SAP.Models.Survey
+
+@{
+    ViewBag.Title = "Design";
+}
+<div class="container" ng-app="SapApp" ng-controller="FormController" ng-hide="false" ng-init="loadSurvey()">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default design-panel">
+                <div class="panel-heading">
+                    <h2 class="text-center" ng-click="loadQuestions()">Design - {{ form.title }}</h2>
+                    <ul class="nav nav-pills nav-justified">
+                        <li ng-class="{active: isSet(1) }"><a class="pills-anchor" href="#" ng-click="setTab(1)">Designer</a></li>
+                        <li ng-class="{active: isSet(2) }"><a class="pills-anchor" href="#" ng-click="setTab(2)">Preview</a></li>
+                    </ul>
+                </div>
+                <div ng-show="isSet(1)" class="panel-body">
+                    <button class="btn btn-default" ng-click="addQuestion()"><i class="fa fa-plus" style="padding:4px"></i>Add Question</button>
+                    <div class="well-lg well" ng-hide="!isAdding">
+                        <form name="questionForm" ng-submit="confirmQuestion()" novalidate>
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <div class="form-group" ng-class="{'has-error': questionForm.questionTitle.$invalid && questionForm.questionTitle.$touched}">
+                                        <label>Question</label>
+                                        <input type="text" name="questionTitle" class="form-control form-width" placeholder="Question" ng-model="newQuestion.title" ng-required="true">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Question required?</label>
+                                        <input type="checkbox" ng-model="newQuestion.required" ng-checked="newQuestion.required" placeholder="Required">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Question type</label>
+                                        <select class="form-control form-width" ng-model="newQuestion.type" ng-required="true">
+                                            <option value="text">
+                                                Textfield
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group ">
+                                        <label>Descripton</label>
+                                        <textarea class="form-control form-width" ng-model="newQuestion.description" placeholder="Write a description of the question"></textarea>
+                                    </div>
+                                    <div class="form-group" ng-switch="newQuestion.type">
+                                        <div ng-switch-when="radio">
+                                            <div class="form-inline">
+                                                <div class="form-group">
+                                                    <input type="text" class="form-control" style="width:100%" ng-model="value" />
+                                                </div>
+                                                <button type="button" class="btn btn-default" ng-click="addValue(value)">Add values</button>
+                                            </div>
+                                            <label>Radios</label>
+                                            <ul class="list-group">    
+                                                <li class="list-group-item" ng-repeat="value in newQuestion.radios">
+                                                    {{value}}
+                                                    <i class="fa fa-times pull-right"></i>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <button type="submit" class="btn btn-default" ng-disabled="questionForm.$invalid">Submit</button>
+                                    <button type="button" class="btn btn-default" ng-click="cancelQuestion()">Cancel</button>
+                                </div>
+                                
+                            </div>
+                        </form>
+                    </div>
+                    <div class="alert alert-warning" ng-if="!form.questions.length">No questions added</div>
+                    <ul class="list-group">
+                        <li class="list-group-item" ng-repeat="question in form.questions">
+                            <div class="row toggle" id="dropdown-detail-1" >
+                                <div class="col-xs-10">
+                                    <strong>{{ ($index + 1) + ". " + question.title}}</strong>
+                                </div>
+                                <div class="col-xs-2">
+                                    <i class="fa fa-pencil pull-left clickable" ng-click="editQuestion(question.Id)"></i>
+                                    <i class="fa fa-trash-o pull-left clickable" ng-click="deleteQuestion(question.Id)"></i>
+                                    <i class="fa fa-chevron-down pull-right clickable" ng-click="showPanel($index+1)"></i>
+                                </div>
+                            </div>
+                            <div id="detail-1" ng-show="isShowing($index+1)">
+                                <hr></hr>
+                                <dl class="dl-horizontal">
+                                    <dt>Formtype</dt>
+                                    <dd>{{ question.type }}</dd>
+                                    <dt>Required?</dt>
+                                    <dd>{{ question.required}}</dd>
+                                    <dt>Description</dt>
+                                    <dd>{{ question.description}}</dd>
+                                </dl>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div ng-show="isSet(2)" class="panel-body">
+                    <div class="w3-card-4">
+                        <div class="w3-container w3-green">
+                            <h2 class="text-center">{{ survey.survey.Name }}</h2>
+                        </div>
+
+                        <form class="w3-container">
+                            <div ng-repeat="question in form.questions" ng-init="question.type">
+                                <h4>{{ ($index+1) +". "+ question.title }}<span ng-if="question.required" style="color:red; display:inline">*</span></h4>
+                                <p> {{ question.description }}</p>
+                                <input class="w3-input form-width" type="{{ question.type }}" ng-required="question.required">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <p class="text-center">@Html.ActionLink("Done", "Index", new { attr = Model.Survey_type }, new { target = "_self", @class = "btn btn-primary" })</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/Scripts/angular.min.js"></script>
+    <script src="~/app/app.js"></script>
+    <script src="~/Scripts/angular-animate.min.js"></script>
+    }

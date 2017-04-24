@@ -14,9 +14,16 @@ namespace SAP.Models
     
     public partial class OnlineSurvey
     {
-        public int Id { get; set; }
-        public Nullable<int> Id_survey { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public OnlineSurvey()
+        {
+            this.OnlineQuestion = new HashSet<OnlineQuestion>();
+        }
     
+        public int Id { get; set; }
+    
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<OnlineQuestion> OnlineQuestion { get; set; }
         public virtual Survey Survey { get; set; }
     }
 }

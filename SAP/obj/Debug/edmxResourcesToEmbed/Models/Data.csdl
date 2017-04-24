@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Schema Namespace="SAPContext" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+<Schema Namespace="SAPModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
   <EntityType Name="C__MigrationHistory">
     <Key>
       <PropertyRef Name="MigrationId" />
@@ -61,6 +61,69 @@
     <NavigationProperty Name="AspNetUserLogins" Relationship="Self.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" FromRole="AspNetUsers" ToRole="AspNetUserLogins" />
     <NavigationProperty Name="AspNetRoles" Relationship="Self.AspNetUserRoles" FromRole="AspNetUsers" ToRole="AspNetRoles" />
   </EntityType>
+  <EntityType Name="Category">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Category1" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="Survey" Relationship="Self.fk_category" FromRole="Category" ToRole="Survey" />
+  </EntityType>
+  <EntityType Name="OfflineQuestion">
+    <Key>
+      <PropertyRef Name="id_question" />
+    </Key>
+    <Property Name="id_question" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="question_text" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="question_desc" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="is_required" Type="Boolean" Nullable="false" />
+    <Property Name="question_type" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="id_offline_survey" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="OfflineSurvey" Relationship="SAPModel.FK_OfflineQuestion_OfflineSurvey" FromRole="OfflineQuestion" ToRole="OfflineSurvey" />
+  </EntityType>
+  <EntityType Name="OnlineQuestion">
+    <Key>
+      <PropertyRef Name="id_question" />
+    </Key>
+    <Property Name="id_question" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="question_text" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="question_desc" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="is_required" Type="Boolean" Nullable="false" />
+    <Property Name="question_type" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="id_online_survey" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="OnlineSurvey" Relationship="Self.FK_OnlineQuestion_OnlineSurvey" FromRole="OnlineQuestion" ToRole="OnlineSurvey" />
+  </EntityType>
+  <EntityType Name="OnlineSurvey">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="OnlineQuestion" Relationship="Self.FK_OnlineQuestion_OnlineSurvey" FromRole="OnlineSurvey" ToRole="OnlineQuestion" />
+    <NavigationProperty Name="Survey" Relationship="Self.FK_OnlineSurvey_Survey" FromRole="OnlineSurvey" ToRole="Survey" />
+  </EntityType>
+  <EntityType Name="Survey">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="Category" Type="Int32" Nullable="false" />
+    <Property Name="Survey_type" Type="Int32" Nullable="false" />
+    <Property Name="Date" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="Is_active" Type="Boolean" Nullable="false" />
+    <NavigationProperty Name="Category1" Relationship="Self.fk_category" FromRole="Survey" ToRole="Category" />
+    <NavigationProperty Name="OnlineSurvey" Relationship="Self.FK_OnlineSurvey_Survey" FromRole="Survey" ToRole="OnlineSurvey" />
+    <NavigationProperty Name="SurveyType" Relationship="Self.fk_type" FromRole="Survey" ToRole="SurveyType" />
+    <NavigationProperty Name="OfflineSurvey" Relationship="SAPModel.FK_OfflineSurvey_Survey" FromRole="Survey" ToRole="OfflineSurvey" />
+  </EntityType>
+  <EntityType Name="SurveyType">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Survey_type" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+    <NavigationProperty Name="Survey" Relationship="Self.fk_type" FromRole="SurveyType" ToRole="Survey" />
+  </EntityType>
   <EntityType Name="UserTokens">
     <Key>
       <PropertyRef Name="UserID" />
@@ -97,6 +160,54 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
+  <Association Name="fk_category">
+    <End Role="Category" Type="Self.Category" Multiplicity="1" />
+    <End Role="Survey" Type="Self.Survey" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Category">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Survey">
+        <PropertyRef Name="Category" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_OnlineQuestion_OnlineSurvey">
+    <End Role="OnlineSurvey" Type="Self.OnlineSurvey" Multiplicity="1" />
+    <End Role="OnlineQuestion" Type="Self.OnlineQuestion" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="OnlineSurvey">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="OnlineQuestion">
+        <PropertyRef Name="id_online_survey" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_OnlineSurvey_Survey">
+    <End Role="Survey" Type="Self.Survey" Multiplicity="1" />
+    <End Role="OnlineSurvey" Type="Self.OnlineSurvey" Multiplicity="0..1" />
+    <ReferentialConstraint>
+      <Principal Role="Survey">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="OnlineSurvey">
+        <PropertyRef Name="Id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_type">
+    <End Role="SurveyType" Type="Self.SurveyType" Multiplicity="1" />
+    <End Role="Survey" Type="Self.Survey" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="SurveyType">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Survey">
+        <PropertyRef Name="Survey_type" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
   <Association Name="AspNetUserRoles">
     <End Role="AspNetRoles" Type="Self.AspNetRoles" Multiplicity="*" />
     <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="*" />
@@ -107,6 +218,12 @@
     <EntitySet Name="AspNetUserClaims" EntityType="Self.AspNetUserClaims" />
     <EntitySet Name="AspNetUserLogins" EntityType="Self.AspNetUserLogins" />
     <EntitySet Name="AspNetUsers" EntityType="Self.AspNetUsers" />
+    <EntitySet Name="Category" EntityType="Self.Category" />
+    <EntitySet Name="OfflineQuestion" EntityType="Self.OfflineQuestion" />
+    <EntitySet Name="OnlineQuestion" EntityType="Self.OnlineQuestion" />
+    <EntitySet Name="OnlineSurvey" EntityType="Self.OnlineSurvey" />
+    <EntitySet Name="Survey" EntityType="Self.Survey" />
+    <EntitySet Name="SurveyType" EntityType="Self.SurveyType" />
     <EntitySet Name="UserTokens" EntityType="Self.UserTokens" />
     <AssociationSet Name="FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" Association="Self.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId">
       <End Role="AspNetUsers" EntitySet="AspNetUsers" />
@@ -116,124 +233,65 @@
       <End Role="AspNetUsers" EntitySet="AspNetUsers" />
       <End Role="AspNetUserLogins" EntitySet="AspNetUserLogins" />
     </AssociationSet>
+    <AssociationSet Name="fk_category" Association="Self.fk_category">
+      <End Role="Category" EntitySet="Category" />
+      <End Role="Survey" EntitySet="Survey" />
+    </AssociationSet>
+    <AssociationSet Name="FK_OnlineQuestion_OnlineSurvey" Association="Self.FK_OnlineQuestion_OnlineSurvey">
+      <End Role="OnlineSurvey" EntitySet="OnlineSurvey" />
+      <End Role="OnlineQuestion" EntitySet="OnlineQuestion" />
+    </AssociationSet>
+    <AssociationSet Name="FK_OnlineSurvey_Survey" Association="Self.FK_OnlineSurvey_Survey">
+      <End Role="Survey" EntitySet="Survey" />
+      <End Role="OnlineSurvey" EntitySet="OnlineSurvey" />
+    </AssociationSet>
+    <AssociationSet Name="fk_type" Association="Self.fk_type">
+      <End Role="SurveyType" EntitySet="SurveyType" />
+      <End Role="Survey" EntitySet="Survey" />
+    </AssociationSet>
     <AssociationSet Name="AspNetUserRoles" Association="Self.AspNetUserRoles">
       <End Role="AspNetRoles" EntitySet="AspNetRoles" />
       <End Role="AspNetUsers" EntitySet="AspNetUsers" />
     </AssociationSet>
-    <EntitySet Name="Category" EntityType="SAPContext.Category" />
-    <EntitySet Name="Survey" EntityType="SAPContext.Survey" />
-    <EntitySet Name="SurveyType" EntityType="SAPContext.SurveyType" />
-    <AssociationSet Name="fk_category" Association="SAPContext.fk_category">
-      <End Role="Category" EntitySet="Category" />
-      <End Role="Survey" EntitySet="Survey" />
+    <EntitySet Name="OfflineSurvey" EntityType="SAPModel.OfflineSurvey" />
+    <AssociationSet Name="FK_OfflineQuestion_OfflineSurvey" Association="SAPModel.FK_OfflineQuestion_OfflineSurvey">
+      <End Role="OfflineSurvey" EntitySet="OfflineSurvey" />
+      <End Role="OfflineQuestion" EntitySet="OfflineQuestion" />
     </AssociationSet>
-    <AssociationSet Name="fk_type" Association="SAPContext.fk_type">
-      <End Role="SurveyType" EntitySet="SurveyType" />
-      <End Role="Survey" EntitySet="Survey" />
-    </AssociationSet>
-    <EntitySet Name="OfflineSurvey" EntityType="SAPContext.OfflineSurvey" />
-    <EntitySet Name="OnlineSurvey" EntityType="SAPContext.OnlineSurvey" />
-    <AssociationSet Name="FK__OfflineSu__Id_su__0C85DE4D" Association="SAPContext.FK__OfflineSu__Id_su__0C85DE4D">
+    <AssociationSet Name="FK_OfflineSurvey_Survey" Association="SAPModel.FK_OfflineSurvey_Survey">
       <End Role="Survey" EntitySet="Survey" />
       <End Role="OfflineSurvey" EntitySet="OfflineSurvey" />
     </AssociationSet>
-    <AssociationSet Name="FK__OnlineSur__Id_su__0F624AF8" Association="SAPContext.FK__OnlineSur__Id_su__0F624AF8">
-      <End Role="Survey" EntitySet="Survey" />
-      <End Role="OnlineSurvey" EntitySet="OnlineSurvey" />
-    </AssociationSet>
   </EntityContainer>
-  <EntityType Name="Category">
-    <Key>
-      <PropertyRef Name="Id" />
-    </Key>
-    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-    <Property Name="Category1" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-    <NavigationProperty Name="Survey" Relationship="SAPContext.fk_category" FromRole="Category" ToRole="Survey" />
-  </EntityType>
-  <EntityType Name="Survey">
-    <Key>
-      <PropertyRef Name="Id" />
-    </Key>
-    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-    <Property Name="Name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
-    <Property Name="Category" Type="Int32" Nullable="false" />
-    <Property Name="Survey_type" Type="Int32" Nullable="false" />
-    <Property Name="Date" Type="DateTime" Nullable="false" Precision="3" />
-    <NavigationProperty Name="Category1" Relationship="SAPContext.fk_category" FromRole="Survey" ToRole="Category" />
-    <NavigationProperty Name="SurveyType" Relationship="SAPContext.fk_type" FromRole="Survey" ToRole="SurveyType" />
-    <Property Name="Is_active" Type="Boolean" Nullable="false" />
-    <NavigationProperty Name="OfflineSurvey" Relationship="SAPContext.FK__OfflineSu__Id_su__0C85DE4D" FromRole="Survey" ToRole="OfflineSurvey" />
-    <NavigationProperty Name="OnlineSurvey" Relationship="SAPContext.FK__OnlineSur__Id_su__0F624AF8" FromRole="Survey" ToRole="OnlineSurvey" />
-  </EntityType>
-  <EntityType Name="SurveyType">
-    <Key>
-      <PropertyRef Name="Id" />
-    </Key>
-    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-    <Property Name="Survey_type" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
-    <NavigationProperty Name="Survey" Relationship="SAPContext.fk_type" FromRole="SurveyType" ToRole="Survey" />
-  </EntityType>
-  <Association Name="fk_category">
-    <End Type="SAPContext.Category" Role="Category" Multiplicity="1" />
-    <End Type="SAPContext.Survey" Role="Survey" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="Category">
-        <PropertyRef Name="Id" />
-      </Principal>
-      <Dependent Role="Survey">
-        <PropertyRef Name="Category" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
-  <Association Name="fk_type">
-    <End Type="SAPContext.SurveyType" Role="SurveyType" Multiplicity="1" />
-    <End Type="SAPContext.Survey" Role="Survey" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="SurveyType">
-        <PropertyRef Name="Id" />
-      </Principal>
-      <Dependent Role="Survey">
-        <PropertyRef Name="Survey_type" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
   <EntityType Name="OfflineSurvey">
     <Key>
       <PropertyRef Name="Id" />
     </Key>
     <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-    <Property Name="Id_survey" Type="Int32" />
-    <NavigationProperty Name="Survey" Relationship="SAPContext.FK__OfflineSu__Id_su__0C85DE4D" FromRole="OfflineSurvey" ToRole="Survey" />
+    <NavigationProperty Name="OfflineQuestion" Relationship="SAPModel.FK_OfflineQuestion_OfflineSurvey" FromRole="OfflineSurvey" ToRole="OfflineQuestion" />
+    <NavigationProperty Name="Survey" Relationship="SAPModel.FK_OfflineSurvey_Survey" FromRole="OfflineSurvey" ToRole="Survey" />
   </EntityType>
-  <EntityType Name="OnlineSurvey">
-    <Key>
-      <PropertyRef Name="Id" />
-    </Key>
-    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-    <Property Name="Id_survey" Type="Int32" />
-    <NavigationProperty Name="Survey" Relationship="SAPContext.FK__OnlineSur__Id_su__0F624AF8" FromRole="OnlineSurvey" ToRole="Survey" />
-  </EntityType>
-  <Association Name="FK__OfflineSu__Id_su__0C85DE4D">
-    <End Type="SAPContext.Survey" Role="Survey" Multiplicity="0..1" />
-    <End Type="SAPContext.OfflineSurvey" Role="OfflineSurvey" Multiplicity="*" />
+  <Association Name="FK_OfflineQuestion_OfflineSurvey">
+    <End Type="SAPModel.OfflineSurvey" Role="OfflineSurvey" Multiplicity="1" />
+    <End Type="SAPModel.OfflineQuestion" Role="OfflineQuestion" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="OfflineSurvey">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="OfflineQuestion">
+        <PropertyRef Name="id_offline_survey" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_OfflineSurvey_Survey">
+    <End Type="SAPModel.Survey" Role="Survey" Multiplicity="1" />
+    <End Type="SAPModel.OfflineSurvey" Role="OfflineSurvey" Multiplicity="0..1" />
     <ReferentialConstraint>
       <Principal Role="Survey">
         <PropertyRef Name="Id" />
       </Principal>
       <Dependent Role="OfflineSurvey">
-        <PropertyRef Name="Id_survey" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
-  <Association Name="FK__OnlineSur__Id_su__0F624AF8">
-    <End Type="SAPContext.Survey" Role="Survey" Multiplicity="0..1" />
-    <End Type="SAPContext.OnlineSurvey" Role="OnlineSurvey" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="Survey">
         <PropertyRef Name="Id" />
-      </Principal>
-      <Dependent Role="OnlineSurvey">
-        <PropertyRef Name="Id_survey" />
       </Dependent>
     </ReferentialConstraint>
   </Association>
