@@ -10,14 +10,18 @@ using SAP.Models;
 using Newtonsoft.Json.Linq;
 using System.Diagnostics;
 using SAP.DTO;
+using Microsoft.AspNet.Identity;
+
 
 namespace SAP.Controllers
 {
+    
     public class SurveysController : Controller
     {
         private SAPEntities db = new SAPEntities();
-
+        private ApplicationDbContext db1 = new ApplicationDbContext();
         // GET: Surveys
+        [SAP.Attributes.AccessDeniedAuthorize(Roles = "Admin")]
         public ActionResult Index(int attr = 0)
         {
             if(attr == 0)
@@ -28,6 +32,7 @@ namespace SAP.Controllers
         }
 
         // GET: Surveys/Details/5
+        [SAP.Attributes.AccessDeniedAuthorize(Roles = "Admin, Interviewer")]
         public ActionResult Details(int? id)
         {
             if (id == null)
@@ -54,28 +59,7 @@ namespace SAP.Controllers
             {
                 return HttpNotFound();
             }
-            //switch(survey.Survey_type)
-            //{
-            //    case 1: return View("OfflineDesign", survey);
-            //    case 2: return View("OnlineDesign", survey);
-            //    default: return HttpNotFound();
-            //}
             return View(survey);
-        }
-
-        [HttpPost]
-        public ActionResult Design(SurveyDTO survey)
-        {
-            //dynamic json = JValue.Parse(data);
-
-            //string title = json.title;
-            //JArray questions = (JArray)json.questions;
-            //foreach(dynamic q in questions)
-            //{
-            //    string qtitle = q.title;
-            //    Debug.WriteLine(qtitle);
-            //}
-            return null;
         }
 
         [SAP.Attributes.AccessDeniedAuthorize(Roles = "Admin")]
@@ -121,6 +105,7 @@ namespace SAP.Controllers
         }
 
         // GET: Surveys/Edit/5
+        [SAP.Attributes.AccessDeniedAuthorize(Roles = "Admin")]
         public ActionResult Edit(int? id)
         {
             if (id == null)
@@ -142,6 +127,7 @@ namespace SAP.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [SAP.Attributes.AccessDeniedAuthorize(Roles = "Admin")]
         public ActionResult Edit(Survey survey)
         {
             if (ModelState.IsValid)
@@ -156,6 +142,7 @@ namespace SAP.Controllers
         }
 
         // GET: Surveys/Delete/5
+        [SAP.Attributes.AccessDeniedAuthorize(Roles = "Admin")]
         public ActionResult Delete(int? id)
         {
             if (id == null)
@@ -169,10 +156,40 @@ namespace SAP.Controllers
             }
             return View(survey);
         }
+        [SAP.Attributes.AccessDeniedAuthorize(Roles = "Admin")]
+        public ActionResult AddInterviewers(int? id)
+        {
+            Survey survey = db.Survey.Find(id);
+            if(survey == null)
+            {
+                return HttpNotFound();
+            }
+            List<AspNetUsers> allInterviewers = db.AspNetUsers.Where(x => x.AspNetRoles.Any(y => y.Name == "Interviewer")).ToList();
+            List<AspNetUsers> interviewersInSurvey = db.AddToSurvey.Where(x => x.Id_survey == survey.Id).Select(x => x.AspNetUsers).ToList();
+            List<InterviewerInSurvey> interviewers = new List<InterviewerInSurvey>();
+            foreach (var i in allInterviewers)
+            {
+                if(interviewersInSurvey.Where(x => x.Id == i.Id).Any())
+                {
+                    interviewers.Add(new InterviewerInSurvey { isInSurvey = true, User = i });
+                }
+                else
+                {
+                    interviewers.Add(new InterviewerInSurvey { isInSurvey = false, User = i });
+                }
+            }
+            var model = new InterviewersToSurveys(survey, interviewers);
+            if (Request.IsAjaxRequest())
+            {
+                return PartialView("_AddInterviewersPartial", model);
+            }
+            return View(model);
+        }
 
         // POST: Surveys/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [SAP.Attributes.AccessDeniedAuthorize(Roles = "Admin")]
         public ActionResult DeleteConfirmed(int id)
         {
 
@@ -204,14 +221,29 @@ namespace SAP.Controllers
             db.SaveChanges();
             return RedirectToAction("Index");
         }
-
-        protected override void Dispose(bool disposing)
+        [SAP.Attributes.AccessDeniedAuthorize(Roles = "Admin")]
+        public ActionResult SwitchState(string id, int survey_id, bool canEdit)
         {
-            if (disposing)
+            if (canEdit)
             {
-                db.Dispose();
+                AddToSurvey entry = db.AddToSurvey.Where(x => x.Id_survey == survey_id && x.Id_interviewer == id).FirstOrDefault();
+                if(entry == null)
+                {
+                    return View();
+                }
+                db.AddToSurvey.Remove(entry);
             }
-            base.Dispose(disposing);
+            else
+            {
+                var entry = new AddToSurvey
+                {
+                    Id_interviewer = id,
+                    Id_survey = survey_id
+                };
+                db.AddToSurvey.Add(entry);
+            }
+            db.SaveChanges();
+            return RedirectToAction("AddInterviewers", new { id = survey_id });
         }
     }
 }

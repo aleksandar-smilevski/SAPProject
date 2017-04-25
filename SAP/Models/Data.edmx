@@ -15,6 +15,14 @@
           <Property Name="Model" Type="varbinary(max)" Nullable="false" />
           <Property Name="ProductVersion" Type="nvarchar" MaxLength="32" Nullable="false" />
         </EntityType>
+        <EntityType Name="AddToSurvey">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Id_interviewer" Type="nvarchar" MaxLength="128" />
+          <Property Name="Id_survey" Type="int" />
+        </EntityType>
         <EntityType Name="AspNetRoles">
           <Key>
             <PropertyRef Name="Id" />
@@ -135,6 +143,30 @@
           <Property Name="UserID" Type="uniqueidentifier" Nullable="false" />
           <Property Name="Token" Type="uniqueidentifier" Nullable="false" />
         </EntityType>
+        <Association Name="FK__AddToSurv__Id_in__0880433F">
+          <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="0..1" />
+          <End Role="AddToSurvey" Type="Self.AddToSurvey" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUsers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="AddToSurvey">
+              <PropertyRef Name="Id_interviewer" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__AddToSurv__Id_su__09746778">
+          <End Role="Survey" Type="Self.Survey" Multiplicity="0..1" />
+          <End Role="AddToSurvey" Type="Self.AddToSurvey" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Survey">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="AddToSurvey">
+              <PropertyRef Name="Id_survey" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="fk_category">
           <End Role="Category" Type="Self.Category" Multiplicity="1" />
           <End Role="Survey" Type="Self.Survey" Multiplicity="*" />
@@ -265,6 +297,7 @@
         </Association>
         <EntityContainer Name="SAPModelStoreContainer">
           <EntitySet Name="__MigrationHistory" EntityType="Self.__MigrationHistory" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="AddToSurvey" EntityType="Self.AddToSurvey" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AspNetRoles" EntityType="Self.AspNetRoles" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AspNetUserClaims" EntityType="Self.AspNetUserClaims" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AspNetUserLogins" EntityType="Self.AspNetUserLogins" Schema="dbo" store:Type="Tables" />
@@ -278,6 +311,14 @@
           <EntitySet Name="Survey" EntityType="Self.Survey" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SurveyType" EntityType="Self.SurveyType" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserTokens" EntityType="Self.UserTokens" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK__AddToSurv__Id_in__0880433F" Association="Self.FK__AddToSurv__Id_in__0880433F">
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+            <End Role="AddToSurvey" EntitySet="AddToSurvey" />
+          </AssociationSet>
+          <AssociationSet Name="FK__AddToSurv__Id_su__09746778" Association="Self.FK__AddToSurv__Id_su__09746778">
+            <End Role="Survey" EntitySet="Survey" />
+            <End Role="AddToSurvey" EntitySet="AddToSurvey" />
+          </AssociationSet>
           <AssociationSet Name="fk_category" Association="Self.fk_category">
             <End Role="Category" EntitySet="Category" />
             <End Role="Survey" EntitySet="Survey" />
@@ -383,6 +424,7 @@
           <NavigationProperty Name="AspNetUserClaims" Relationship="Self.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" FromRole="AspNetUsers" ToRole="AspNetUserClaims" />
           <NavigationProperty Name="AspNetUserLogins" Relationship="Self.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" FromRole="AspNetUsers" ToRole="AspNetUserLogins" />
           <NavigationProperty Name="AspNetRoles" Relationship="Self.AspNetUserRoles" FromRole="AspNetUsers" ToRole="AspNetRoles" />
+          <NavigationProperty Name="AddToSurvey" Relationship="SAPModel.FK__AddToSurv__Id_in__0880433F" FromRole="AspNetUsers" ToRole="AddToSurvey" />
         </EntityType>
         <EntityType Name="Category">
           <Key>
@@ -438,6 +480,7 @@
           <NavigationProperty Name="OnlineSurvey" Relationship="Self.FK_OnlineSurvey_Survey" FromRole="Survey" ToRole="OnlineSurvey" />
           <NavigationProperty Name="SurveyType" Relationship="Self.fk_type" FromRole="Survey" ToRole="SurveyType" />
           <NavigationProperty Name="OfflineSurvey" Relationship="SAPModel.FK_OfflineSurvey_Survey" FromRole="Survey" ToRole="OfflineSurvey" />
+          <NavigationProperty Name="AddToSurvey" Relationship="SAPModel.FK__AddToSurv__Id_su__09746778" FromRole="Survey" ToRole="AddToSurvey" />
         </EntityType>
         <EntityType Name="SurveyType">
           <Key>
@@ -585,6 +628,15 @@
             <End Role="Survey" EntitySet="Survey" />
             <End Role="OfflineSurvey" EntitySet="OfflineSurvey" />
           </AssociationSet>
+          <EntitySet Name="AddToSurvey" EntityType="SAPModel.AddToSurvey" />
+          <AssociationSet Name="FK__AddToSurv__Id_in__0880433F" Association="SAPModel.FK__AddToSurv__Id_in__0880433F">
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+            <End Role="AddToSurvey" EntitySet="AddToSurvey" />
+          </AssociationSet>
+          <AssociationSet Name="FK__AddToSurv__Id_su__09746778" Association="SAPModel.FK__AddToSurv__Id_su__09746778">
+            <End Role="Survey" EntitySet="Survey" />
+            <End Role="AddToSurvey" EntitySet="AddToSurvey" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="OfflineSurvey">
           <Key>
@@ -615,6 +667,40 @@
             </Principal>
             <Dependent Role="OfflineSurvey">
               <PropertyRef Name="Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="AddToSurvey">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Id_interviewer" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="Id_survey" Type="Int32" />
+          <NavigationProperty Name="AspNetUsers" Relationship="SAPModel.FK__AddToSurv__Id_in__0880433F" FromRole="AddToSurvey" ToRole="AspNetUsers" />
+          <NavigationProperty Name="Survey" Relationship="SAPModel.FK__AddToSurv__Id_su__09746778" FromRole="AddToSurvey" ToRole="Survey" />
+        </EntityType>
+        <Association Name="FK__AddToSurv__Id_in__0880433F">
+          <End Type="SAPModel.AspNetUsers" Role="AspNetUsers" Multiplicity="0..1" />
+          <End Type="SAPModel.AddToSurvey" Role="AddToSurvey" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUsers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="AddToSurvey">
+              <PropertyRef Name="Id_interviewer" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__AddToSurv__Id_su__09746778">
+          <End Type="SAPModel.Survey" Role="Survey" Multiplicity="0..1" />
+          <End Type="SAPModel.AddToSurvey" Role="AddToSurvey" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Survey">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="AddToSurvey">
+              <PropertyRef Name="Id_survey" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -759,6 +845,15 @@
           <EntitySetMapping Name="OfflineSurvey">
             <EntityTypeMapping TypeName="SAPModel.OfflineSurvey">
               <MappingFragment StoreEntitySet="OfflineSurvey">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AddToSurvey">
+            <EntityTypeMapping TypeName="SAPModel.AddToSurvey">
+              <MappingFragment StoreEntitySet="AddToSurvey">
+                <ScalarProperty Name="Id_survey" ColumnName="Id_survey" />
+                <ScalarProperty Name="Id_interviewer" ColumnName="Id_interviewer" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>

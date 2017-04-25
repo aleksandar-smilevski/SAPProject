@@ -14,6 +14,12 @@ namespace SAP.Models
     
     public partial class Survey
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public Survey()
+        {
+            this.AddToSurvey = new HashSet<AddToSurvey>();
+        }
+    
         public int Id { get; set; }
         public string Name { get; set; }
         public int Category { get; set; }
@@ -25,5 +31,7 @@ namespace SAP.Models
         public virtual OnlineSurvey OnlineSurvey { get; set; }
         public virtual SurveyType SurveyType { get; set; }
         public virtual OfflineSurvey OfflineSurvey { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<AddToSurvey> AddToSurvey { get; set; }
     }
 }

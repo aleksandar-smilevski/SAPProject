@@ -1,0 +1,16 @@
+﻿@model SAP.Models.InterviewersToSurveys
+@{
+    ViewBag.Title = "AddInterviewers";
+}
+
+<h2> You are adding interviewers to @Html.DisplayFor(modelItem => Model.survey.Name)</h2>
+
+<div id="interviewers">
+    @{
+        Html.RenderPartial("_AddInterviewersPartial", Model);
+    }
+</div>
+
+@section Scripts {  
+<script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+}

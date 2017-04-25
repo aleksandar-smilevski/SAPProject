@@ -140,5 +140,14 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
+    <EntitySetMapping Name="AddToSurvey">
+      <EntityTypeMapping TypeName="SAPModel.AddToSurvey">
+        <MappingFragment StoreEntitySet="AddToSurvey">
+          <ScalarProperty Name="Id_survey" ColumnName="Id_survey" />
+          <ScalarProperty Name="Id_interviewer" ColumnName="Id_interviewer" />
+          <ScalarProperty Name="Id" ColumnName="Id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
   </EntityContainerMapping>
 </Mapping>

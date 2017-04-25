@@ -146,12 +146,24 @@
                             <li>
                                 <a href="@Url.Action("Index","Surveys")"><i class="fa fa-fw  fa-file-text"></i> Surveys</a>
                             </li>
+                            <li>
+                                <a href="@Url.Action("Index", "Surveys", new { attr = 1 }, null)">Offline Surveys</a>
+                            </li>
+                            <li>
+                                <a href="@Url.Action("Index", "Surveys", new { attr = 2 }, null)">Online Surveys</a>
+                            </li>
                         }
                         else
                         {
                             <li>
-                                <a href="@Url.Action("Index","Surveys")"><i class="fa fa-fw  fa-file-text"></i> Surveys</a>
+                                <a href="@Url.Action("Index","User")"><i class="fa fa-fw  fa-file-text"></i>My Surveys</a>
                             </li>
+                            @*<li>
+                                <a href="@Url.Action("Index", "Surveys", new { attr = 1 }, null)">Offline Surveys</a>
+                            </li>
+                            <li>
+                                <a href="@Url.Action("Index", "Surveys", new { attr = 2 }, null)">Online Surveys</a>
+                            </li>*@
                         }
                     }
                     else
@@ -162,14 +174,7 @@
                     }
                     <li>
                         @*<a href="@Url.Action("Index","Surveys")"><i class="fa fa-fw  fa-file-text"></i> Surveys</a>*@
-                        <ul>
-                            <li>
-                                @Html.ActionLink("Offline Surveys", "Index", "Surveys", new { attr = 1 }, null)
-                            </li>
-                            <li>
-                                @Html.ActionLink("Online Surveys", "Index", "Surveys", new { attr = 2 }, null)
-                            </li>
-                        </ul>
+                        
                     </li>
                     <li class="footer">
                         <p>@DateTime.Now.Year - SAP</p>

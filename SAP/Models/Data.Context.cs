@@ -38,5 +38,6 @@ namespace SAP.Models
         public virtual DbSet<SurveyType> SurveyType { get; set; }
         public virtual DbSet<UserTokens> UserTokens { get; set; }
         public virtual DbSet<OfflineSurvey> OfflineSurvey { get; set; }
+        public virtual DbSet<AddToSurvey> AddToSurvey { get; set; }
     }
 }

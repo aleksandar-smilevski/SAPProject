@@ -27,6 +27,9 @@
         <EntityTypeShape EntityType="SAPModel.OfflineSurvey" Width="1.5" PointX="5.25" PointY="2.75" />
         <AssociationConnector Association="SAPModel.FK_OfflineQuestion_OfflineSurvey" />
         <AssociationConnector Association="SAPModel.FK_OfflineSurvey_Survey" />
+        <EntityTypeShape EntityType="SAPModel.AddToSurvey" Width="1.5" PointX="8.25" PointY="11.25" />
+        <AssociationConnector Association="SAPModel.FK__AddToSurv__Id_in__0880433F" />
+        <AssociationConnector Association="SAPModel.FK__AddToSurv__Id_su__09746778" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

@@ -1,15 +1,79 @@
-﻿@{
+﻿@model List<SAP.Models.Survey>
+@{
     ViewBag.Title = "Index";
 }
-<hr />
-<div class="container-fluid">
-    <div class="alert alert-info">
-        <h4>
-            @ViewBag.MessageTitle
-        </h4>
-        <p>
-            <strong>@ViewBag.Message</strong>
-        </p>
-    </div>
-</div>
-<hr />
+
+@{
+
+    if (!Model.Any())
+    {
+        <hr />
+        <div class="container-fluid">
+            <div class="alert alert-info">
+                <h4>
+                    @ViewBag.MessageTitle
+                </h4>
+                <p>
+                    <strong>@ViewBag.Message</strong>
+                </p>
+            </div>
+        </div>
+        <hr />
+    }
+    else
+    {
+        <hr />
+        <div class="container-fluid">
+            <h4>Your surveys</h4>
+        </div>
+        <hr />
+        <table class="table">
+            <tr>
+                <th>
+                    Name
+                </th>
+                <th>
+                    Date
+                </th>
+                <th>
+                    Category
+                </th>
+                <th>
+                    Type
+                </th>
+                <th>
+                    Active
+                </th>
+                <th>
+
+                </th>
+            </tr>
+
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Date)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Category1.Category1)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.SurveyType.Survey_type)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Is_active)
+                    </td>
+                    <td>
+                        <a href="@Url.Action("Details","Surveys", new { id = item.Id })">Details</a>
+                    </td>
+
+                </tr>
+            }
+
+        </table>
+    }
+}
