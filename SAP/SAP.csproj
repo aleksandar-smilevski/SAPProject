@@ -237,6 +237,7 @@
       <DependentUpon>Data.edmx</DependentUpon>
     </Compile>
     <Compile Include="Models\IdentityModels.cs" />
+    <Compile Include="Models\InterviewersToSurveys.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\OfflineQuestion.cs">
       <DependentUpon>Data.tt</DependentUpon>
@@ -373,6 +374,7 @@
     <Content Include="Views\Surveys\Edit.cshtml" />
     <Content Include="Views\Surveys\Index.cshtml" />
     <Content Include="Views\Surveys\Design.cshtml" />
+    <Content Include="Views\Surveys\AddInterviewers.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

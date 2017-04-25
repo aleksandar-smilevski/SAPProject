@@ -16,7 +16,8 @@ namespace SAP.Controllers
     public class SurveysController : Controller
     {
         private SAPEntities db = new SAPEntities();
-
+        private ApplicationDbContext db1 = new ApplicationDbContext();
+        InterviewersToSurveys mod;
         // GET: Surveys
         public ActionResult Index(int attr = 0)
         {
@@ -169,6 +170,12 @@ namespace SAP.Controllers
                 return HttpNotFound();
             }
             return View(survey);
+        }
+        public ActionResult AddInterviewers(int? id)
+        {
+            Survey survey = db.Survey.Find(id);
+            mod= new InterviewersToSurveys(survey, db.AspNetUsers.ToList());
+            return View(mod);
         }
 
         // POST: Surveys/Delete/5
