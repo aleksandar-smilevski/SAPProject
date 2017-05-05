@@ -14,6 +14,8 @@ using System.Net.Mail;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using SAP.Attributes;
+using Webdiyer.WebControls.Mvc;
+using SAP.Service;
 
 namespace SAP.Controllers
 {
@@ -23,6 +25,8 @@ namespace SAP.Controllers
         private ApplicationDbContext db = new ApplicationDbContext();
         private SAPEntities context = new SAPEntities();
         private ApplicationUserManager _userManager;
+        
+        //private IEmailService mailService = new EmailService();
 
         public ApplicationUserManager UserManager
         {
@@ -37,17 +41,19 @@ namespace SAP.Controllers
         }
 
         // GET: Admin
-        public ActionResult Index(String search)
+        public ActionResult Index(String search, int id = 1)
         {
-            if (search != null)
+            var users = db.Users.AsQueryable();
+            if (!String.IsNullOrWhiteSpace(search))
             {
-                var users = db.Users.Where(x => x.FirstName.Contains(search) || x.Email.Contains(search) || x.UserName.Contains(search)).ToList();
-                return View(users);
+                users = users.Where(x => x.FirstName.Contains(search) || x.Email.Contains(search) || x.UserName.Contains(search));
             }
-            else {
-                return (View(db.Users.ToList()));
+            var model = users.OrderBy(x => x.FirstName).ToPagedList(id,1);
+            if (Request.IsAjaxRequest())
+            {
+                return PartialView("_IndexPartial", model);
             }
-          
+            return View(model);
         }
 
         // GET: Admin/Details/5
@@ -123,23 +129,9 @@ namespace SAP.Controllers
             context.UserTokens.Add(entry);
             context.SaveChanges();
             var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, token = token }, protocol: Request.Url.Scheme);
-            SendEmail(model.Email, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
+            //mailService.SendEmail(model.Email, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
 
             return RedirectToAction("Index");
-        }
-
-        public void SendEmail(string toEmailAddress, string emailSubject, string emailMessage)
-        {
-            var message = new MailMessage();
-            message.To.Add(toEmailAddress);
-            message.IsBodyHtml = true;
-            message.Subject = emailSubject;
-            message.Body = emailMessage;
-
-            using (var smtpClient = new SmtpClient())
-            {
-                smtpClient.Send(message);
-            }
         }
 
         // GET: Admin/Edit/5

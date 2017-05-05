@@ -18,12 +18,15 @@ namespace SAP.Models
         public OnlineSurvey()
         {
             this.OnlineQuestion = new HashSet<OnlineQuestion>();
+            this.SendsSurvey = new HashSet<SendsSurvey>();
         }
     
         public int Id { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<OnlineQuestion> OnlineQuestion { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<SendsSurvey> SendsSurvey { get; set; }
         public virtual Survey Survey { get; set; }
     }
 }

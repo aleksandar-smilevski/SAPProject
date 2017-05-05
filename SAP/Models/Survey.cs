@@ -27,11 +27,11 @@ namespace SAP.Models
         public System.DateTime Date { get; set; }
         public bool Is_active { get; set; }
     
-        public virtual Category Category1 { get; set; }
-        public virtual OnlineSurvey OnlineSurvey { get; set; }
-        public virtual SurveyType SurveyType { get; set; }
-        public virtual OfflineSurvey OfflineSurvey { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<AddToSurvey> AddToSurvey { get; set; }
+        public virtual Category Category1 { get; set; }
+        public virtual OfflineSurvey OfflineSurvey { get; set; }
+        public virtual OnlineSurvey OnlineSurvey { get; set; }
+        public virtual SurveyType SurveyType { get; set; }
     }
 }
