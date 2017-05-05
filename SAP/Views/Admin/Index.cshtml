@@ -3,47 +3,57 @@
 @{
     ViewBag.Title = "Admin Page";
 }
+<div ng-app="SapApp" ng-controller="PaginationController">
+    <h4 class="page-header">
 
-            <h4 class="page-header">
-                
-                Users
-                <a href="@Url.Action("Create","Admin")"><i class="glyphicon glyphicon-plus"></i></a>
-            </h4>
-            
-            <table class="table table-responsive">
-                <tr>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Email)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.EmailConfirmed)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.UserName)
-                    </th>
-                    <th></th>
-                </tr>
+        Users
+        <a href="@Url.Action("Create","Admin")"><i class="glyphicon glyphicon-plus"></i></a>
+    </h4>
+    <form action="@Url.Action("Index","Admin")" method="get" class="form-group">
+        <input type="text" class="form-control" placeholder="Filter by name " name="search" value="" />
+        <br />
+        <button type="submit" class="btn btn-primary" value="Search">Search</button>
+    </form>
 
-                @foreach (var item in Model)
-                {
-                    <tr>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Email)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.EmailConfirmed)
-                        </td>
+    <table class="table table-responsive">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Email)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.EmailConfirmed)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UserName)
+            </th>
+            <th></th>
+        </tr>
 
-                        <td>
-                            @Html.DisplayFor(modelItem => item.UserName)
-                        </td>
-                        <td>
-                            @*@Html.ActionLink("Edit", "Edit", new { id = item.Id }) |*@
-                            @Html.ActionLink("Details", "Details", new { id = item.Id })
-                            @Html.ActionLink("Delete", "Delete", new { id = item.Id })
-                        </td>
-                    </tr>
-                }
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Email)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.EmailConfirmed)
+                </td>
 
-            </table>
-       
+                <td>
+                    @Html.DisplayFor(modelItem => item.UserName)
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
+                    @Html.ActionLink("Details", "Details", new { id = item.Id }) |
+                    @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+                </td>
+            </tr>
+        }
+
+    </table>
+    <pagination count="custom.itemsCount" take="custom.take" activate="custom.activatePage"></pagination>
+</div>
+@section Scripts{
+<script src="~/Scripts/angular.min.js"></script>    
+<script src="~/app/app.js"></script>
+<script src="~/Scripts/directive.pagination.min.js"></script>}

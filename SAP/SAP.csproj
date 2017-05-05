@@ -243,6 +243,7 @@
     <Compile Include="Models\InterviewerInSurvey.cs" />
     <Compile Include="Models\InterviewersToSurveys.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
+    <Compile Include="Models\Metadata.cs" />
     <Compile Include="Models\OfflineQuestion.cs">
       <DependentUpon>Data.tt</DependentUpon>
     </Compile>
@@ -255,6 +256,7 @@
     <Compile Include="Models\OnlineSurvey.cs">
       <DependentUpon>Data.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\PartialClasses.cs" />
     <Compile Include="Models\Survey.cs">
       <DependentUpon>Data.tt</DependentUpon>
     </Compile>
@@ -314,6 +316,7 @@
     <Content Include="Scripts\angular.min.js.map" />
     <Content Include="Scripts\angular-animate.min.js.map" />
     <Content Include="Scripts\angular-route.min.js.map" />
+    <Content Include="Scripts\directive.pagination.min.js" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />

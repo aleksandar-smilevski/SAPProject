@@ -32,7 +32,7 @@ namespace SAP.Controllers
         }
 
         // GET: Surveys/Details/5
-        [SAP.Attributes.AccessDeniedAuthorize(Roles = "Admin, Interviewer")]
+        [Authorize]
         public ActionResult Details(int? id)
         {
             if (id == null)
@@ -215,6 +215,11 @@ namespace SAP.Controllers
                     db.OnlineQuestion.Remove(q);
                 }
                 db.OnlineSurvey.Remove(db.OnlineSurvey.Where(x => x.Id == id).FirstOrDefault());
+            }
+            var addToSurvey = db.AddToSurvey.Where(x => x.Id_survey == id).ToList();
+            foreach(var a in addToSurvey)
+            {
+                db.AddToSurvey.Remove(a);
             }
 
             db.Survey.Remove(survey);
