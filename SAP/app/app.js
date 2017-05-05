@@ -124,3 +124,20 @@ app.controller('FormController', function ($scope, $http, $location) {
         };
     }
 });
+app.controller('CategoryController', function ($scope, $http, $location) {
+
+    $scope.showModal = false;
+
+    $scope.openModelCategory = function () {
+        $scope.showModal =true;
+    };
+    $scope.okModelCategory = function () {
+        $scope.showModal = false;
+    };
+
+    $scope.cancelModelCategory = function () {
+        $scope.showModal = false;
+    };
+
+    
+});
