@@ -12,6 +12,7 @@ app.controller('FormController', function ($scope, $http, $location) {
     $scope.form = {};
     $scope.form.questions = [];
     $scope.survey = {};
+    $scope.errorMessage = null;
 
     $scope.addQuestion = function () {
         $scope.isAdding = !$scope.isAdding;
@@ -23,10 +24,15 @@ app.controller('FormController', function ($scope, $http, $location) {
         if (id != undefined) {
             $http.get("/api/Surveys/" + id)
             .then(function (response) {
-                $scope.survey.survey = response.data;
-                $scope.form.questions = $scope.survey.survey.Questions;
-                $scope.form.title = $scope.survey.survey.Name;
-                console.log($scope.form.questions);
+                if (response.status == 400) {
+                    $scope.errorMessage = data;
+                } else {
+                    $scope.survey.survey = response.data;
+                    $scope.form.questions = $scope.survey.survey.Questions;
+                    $scope.form.title = $scope.survey.survey.Name;
+                }
+            }, function (response, data) {
+                $scope.errorMessage = data;
             });
         }
     };
@@ -36,12 +42,17 @@ app.controller('FormController', function ($scope, $http, $location) {
         if (del) {
             if (id != undefined) {
                 $http.delete("/api/Questions/" + $scope.survey.survey.Survey_type + "/" + id)
-                    .then(function () {
-                        $scope.loadSurvey();
+                    .then(function (response) {
+                        if (response.status == 400) {
+                            $scope.errorMessage = data;
+                        } else {
+                            $scope.loadSurvey();
+                        }
+                    }, function (response) {
+                        $scope.errorMessage = response;
                     });
             }
         }
-        
     }
 
     $scope.confirmQuestion = function () {
@@ -49,8 +60,14 @@ app.controller('FormController', function ($scope, $http, $location) {
         console.log($scope.newQuestion);
         $http.post("/api/Questions/" + $scope.survey.survey.Survey_type, JSON.stringify($scope.newQuestion))
             .then(function (response) {
-                $scope.loadSurvey();
-        })
+                if (response.status == 400) {
+                    $scope.errorMessage = data;
+                } else {
+                    $scope.loadSurvey();
+                }
+            }, function (response) {
+                $scope.errorMessage = response;
+            });
         setEmptyObject();
     };
 
@@ -70,11 +87,17 @@ app.controller('FormController', function ($scope, $http, $location) {
     $scope.editQuestion = function (id) {
         console.log(id);
         $scope.isAdding = !$scope.isAdding;
-        if(id != undefined){
+        if (id != undefined) {
             console.log($scope.form.questions);
             $http.get("/api/Questions/" + $scope.survey.survey.Survey_type + "/" + id)
                 .then(function (response) {
-                    $scope.newQuestion = response.data;
+                    if (response.status == 400) {
+                        $scope.errorMessage = response;
+                    } else {
+                        $scope.newQuestion = response.data;
+                    }
+                }, function (response) {
+                    $scope.errorMessage = response;
                 });
             //$scope.newQuestion = $scope.form.questions.find()
         }
@@ -124,20 +147,42 @@ app.controller('FormController', function ($scope, $http, $location) {
         };
     }
 });
-app.controller('CategoryController', function ($scope, $http, $location) {
 
-    $scope.showModal = false;
-
-    $scope.openModelCategory = function () {
-        $scope.showModal =true;
+app.controller('FillOutController', function ($scope, $http, $location, $window) {
+    $scope.message = "Hello Bitches!"
+    $scope.form = {};
+    $scope.answers = [];
+    $scope.survey_id = 0;
+    $scope.loadQuestions = function () {
+        var id = $location.search().survey_id;
+        console.log(id);
+        if (id != undefined) {
+            $http.get("/api/Surveys/1/" + id)
+            .then(function (response) {
+                if (response.status == 400) {
+                    $scope.errorMessage = data;
+                } else {
+                    var data = response.data;
+                    //console.log(data);
+                    $scope.survey_id = data.Id;
+                    $scope.form.questions = data.Questions;
+                }
+            }, function (response, data) {
+                $scope.errorMessage = data;
+            });
+        }
     };
-    $scope.okModelCategory = function () {
-        $scope.showModal = false;
-    };
 
-    $scope.cancelModelCategory = function () {
-        $scope.showModal = false;
-    };
-
-    
+    $scope.submit = function () {
+        var answers = [];
+        for (var i = 0; i < $scope.form.questions.length; i++) {
+            answers.push({ QuestionId: $scope.form.questions[i].Id, Answer: $scope.form.questions[i].answer });
+        }
+        var data = { survey_id: $scope.survey_id, answers: answers };
+        $http.post("/Surveys/FillOut", JSON.stringify(data))
+        .then(function () {
+            $window.location.href = "/Surveys/Index";
+        })
+    }
 });
+

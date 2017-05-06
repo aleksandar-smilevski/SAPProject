@@ -14,6 +14,12 @@ namespace SAP.Models
     
     public partial class OfflineQuestion
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public OfflineQuestion()
+        {
+            this.OfflineAnswer = new HashSet<OfflineAnswer>();
+        }
+    
         public int id_question { get; set; }
         public string question_text { get; set; }
         public string question_desc { get; set; }
@@ -21,6 +27,8 @@ namespace SAP.Models
         public string question_type { get; set; }
         public int id_offline_survey { get; set; }
     
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<OfflineAnswer> OfflineAnswer { get; set; }
         public virtual OfflineSurvey OfflineSurvey { get; set; }
     }
 }

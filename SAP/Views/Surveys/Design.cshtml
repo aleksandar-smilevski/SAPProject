@@ -15,6 +15,10 @@
                     </ul>
                 </div>
                 <div ng-show="isSet(1)" class="panel-body">
+                    <div class="alert alert-danger alert-dismissable" ng-show="errorMessage">
+                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                        <strong>Error!</strong><p ng-repeat="message in errorMessage.data.ModelState">{{message}}</p>
+                    </div>
                     <button class="btn btn-default" ng-click="addQuestion()"><i class="fa fa-plus" style="padding:4px"></i>Add Question</button>
                     <div class="well-lg well" ng-hide="!isAdding">
                         <form name="questionForm" ng-submit="confirmQuestion()" novalidate>

@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
-  <EntityContainerMapping StorageEntityContainer="SAPModelStoreContainer" CdmEntityContainer="SAPEntities">
+  <EntityContainerMapping StorageEntityContainer="SAPModelStoreContainer" CdmEntityContainer="SAPEntities2">
     <EntitySetMapping Name="C__MigrationHistory">
       <EntityTypeMapping TypeName="SAPModel.C__MigrationHistory">
         <MappingFragment StoreEntitySet="__MigrationHistory">
@@ -8,6 +8,15 @@
           <ScalarProperty Name="ContextKey" ColumnName="ContextKey" />
           <ScalarProperty Name="Model" ColumnName="Model" />
           <ScalarProperty Name="ProductVersion" ColumnName="ProductVersion" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="AddToSurvey">
+      <EntityTypeMapping TypeName="SAPModel.AddToSurvey">
+        <MappingFragment StoreEntitySet="AddToSurvey">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Id_interviewer" ColumnName="Id_interviewer" />
+          <ScalarProperty Name="Id_survey" ColumnName="Id_survey" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -66,6 +75,16 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
+    <EntitySetMapping Name="OfflineAnswer">
+      <EntityTypeMapping TypeName="SAPModel.OfflineAnswer">
+        <MappingFragment StoreEntitySet="OfflineAnswer">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="answer_text" ColumnName="answer_text" />
+          <ScalarProperty Name="id_question" ColumnName="id_question" />
+          <ScalarProperty Name="id_paper" ColumnName="id_paper" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
     <EntitySetMapping Name="OfflineQuestion">
       <EntityTypeMapping TypeName="SAPModel.OfflineQuestion">
         <MappingFragment StoreEntitySet="OfflineQuestion">
@@ -75,6 +94,22 @@
           <ScalarProperty Name="is_required" ColumnName="is_required" />
           <ScalarProperty Name="question_type" ColumnName="question_type" />
           <ScalarProperty Name="id_offline_survey" ColumnName="id_offline_survey" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="OfflineSurvey">
+      <EntityTypeMapping TypeName="SAPModel.OfflineSurvey">
+        <MappingFragment StoreEntitySet="OfflineSurvey">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="OnlineAnswer">
+      <EntityTypeMapping TypeName="SAPModel.OnlineAnswer">
+        <MappingFragment StoreEntitySet="OnlineAnswer">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="answer_text" ColumnName="answer_text" />
+          <ScalarProperty Name="id_question" ColumnName="id_question" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -94,6 +129,24 @@
       <EntityTypeMapping TypeName="SAPModel.OnlineSurvey">
         <MappingFragment StoreEntitySet="OnlineSurvey">
           <ScalarProperty Name="Id" ColumnName="Id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="PaperSurvey">
+      <EntityTypeMapping TypeName="SAPModel.PaperSurvey">
+        <MappingFragment StoreEntitySet="PaperSurvey">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="id_offlinesurvey" ColumnName="id_offlinesurvey" />
+          <ScalarProperty Name="id_interviewer" ColumnName="id_interviewer" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="SendsSurvey">
+      <EntityTypeMapping TypeName="SAPModel.SendsSurvey">
+        <MappingFragment StoreEntitySet="SendsSurvey">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="id_onlinesurvey" ColumnName="id_onlinesurvey" />
+          <ScalarProperty Name="id_interviewer" ColumnName="id_interviewer" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -133,12 +186,5 @@
         <ScalarProperty Name="Id" ColumnName="UserId" />
       </EndProperty>
     </AssociationSetMapping>
-    <EntitySetMapping Name="OfflineSurvey">
-      <EntityTypeMapping TypeName="SAPModel.OfflineSurvey">
-        <MappingFragment StoreEntitySet="OfflineSurvey">
-          <ScalarProperty Name="Id" ColumnName="Id" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
   </EntityContainerMapping>
 </Mapping>

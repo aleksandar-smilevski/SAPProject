@@ -1,0 +1,27 @@
+﻿@model SAP.Models.FillOutSurveyQuestionsViewModel
+
+@{ 
+    ViewBag.Title = "Fill Out";
+}
+<div ng-app="SapApp" ng-controller="FillOutController" ng-init="loadQuestions()">
+    <div class="w3-card-4">
+        <div class="w3-container w3-green">
+            <h2 class="text-center">@Model.Survey.Name</h2>
+        </div>
+
+        <form class="w3-container" action="@Url.Action("FillOut")" method="post" name="fillForm" novalidate>
+            <div ng-repeat="question in form.questions" ng-init="question.type" style="margin-bottom:10px">
+                <h4>{{ ($index+1) +". "+ question.title }}<span ng-if="question.required" style="color:red; display:inline">*</span></h4>
+                <p> {{ question.description }}</p>
+                <input class="w3-input form-width" type="{{ question.type }}" ng-required="question.required" ng-model="question.answer">
+            </div>
+            <p class="text-center"><input type="button" ng-click="submit()" class="btn btn-primary" ng-disabled="fillForm.$invalid" value="Submit" /></p>
+        </form>
+    </div>
+</div>
+@section Scripts {
+    
+    <script src="~/Scripts/angular.min.js"></script>
+    <script src="~/app/app.js"></script>
+    <script src="~/Scripts/angular-animate.min.js"></script>
+    }

@@ -4,35 +4,13 @@
 }
 
 <h2> You are adding interviewers to @Html.DisplayFor(modelItem => Model.survey.Name)</h2>
-<table class="table table-responsive">
-    <tr>
-        <th>
-            Email
-        </th>
-        <th>
-            Username
-        </th>
-        <th>
-            Add to this survey
-        </th>
-    </tr>
 
-    @foreach (var item in Model.Interviewers)
-    {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Email)
-            </td>
-           
-
-            <td>
-                @Html.DisplayFor(modelItem => item.UserName)
-            </td>
-            <td>
-                <a href="@Url.Action("Add","Admin")"><i class="glyphicon glyphicon-plus"></i></a>
-            </td>
-        </tr>
+<div id="interviewers">
+    @{
+        Html.RenderPartial("_AddInterviewersPartial", Model);
     }
+</div>
 
-
-
+@section Scripts {  
+<script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+}

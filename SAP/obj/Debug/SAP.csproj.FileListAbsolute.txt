@@ -90,6 +90,9 @@ C:\Users\Aleksandar\Desktop\SAP\SAPProject\SAP\obj\Debug\SAP.csproj.GenerateReso
 C:\Users\Aleksandar\Desktop\SAP\SAPProject\SAP\obj\Debug\SAP.dll
 C:\Users\Aleksandar\Desktop\SAP\SAPProject\SAP\obj\Debug\SAP.pdb
 C:\Users\Aleksandar\Desktop\SAP\SAPProject\SAP\obj\Debug\SAP.csprojResolveAssemblyReference.cache
+C:\Users\Marina\Desktop\SAPProject\SAP\obj\Debug\SAP.Migrations.InitialCreate.resources
+C:\Users\Marina\Desktop\SAPProject\SAP\obj\Debug\SAP.Migrations.Age.resources
+C:\Users\Marina\Desktop\SAPProject\SAP\obj\Debug\SAP.csproj.GenerateResource.Cache
 C:\Users\Marina\Desktop\SAPProject\SAP\bin\roslyn\csc.exe
 C:\Users\Marina\Desktop\SAPProject\SAP\bin\roslyn\csc.exe.config
 C:\Users\Marina\Desktop\SAPProject\SAP\bin\roslyn\csc.rsp
@@ -176,9 +179,6 @@ C:\Users\Marina\Desktop\SAPProject\SAP\bin\Microsoft.Owin.Security.OAuth.xml
 C:\Users\Marina\Desktop\SAPProject\SAP\bin\Microsoft.Owin.Security.Google.xml
 C:\Users\Marina\Desktop\SAPProject\SAP\bin\Microsoft.Owin.Security.Twitter.xml
 C:\Users\Marina\Desktop\SAPProject\SAP\bin\Microsoft.Owin.Security.MicrosoftAccount.xml
-C:\Users\Marina\Desktop\SAPProject\SAP\obj\Debug\SAP.csprojResolveAssemblyReference.cache
-C:\Users\Marina\Desktop\SAPProject\SAP\obj\Debug\SAP.Migrations.InitialCreate.resources
-C:\Users\Marina\Desktop\SAPProject\SAP\obj\Debug\SAP.Migrations.Age.resources
-C:\Users\Marina\Desktop\SAPProject\SAP\obj\Debug\SAP.csproj.GenerateResource.Cache
 C:\Users\Marina\Desktop\SAPProject\SAP\obj\Debug\SAP.dll
 C:\Users\Marina\Desktop\SAPProject\SAP\obj\Debug\SAP.pdb
+C:\Users\Marina\Desktop\SAPProject\SAP\obj\Debug\SAP.csprojResolveAssemblyReference.cache

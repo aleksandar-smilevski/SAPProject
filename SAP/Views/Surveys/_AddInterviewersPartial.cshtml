@@ -1,0 +1,39 @@
+﻿@model SAP.Models.InterviewersToSurveys
+<table class="table table-responsive">
+    <tr>
+        <th>
+            Email
+        </th>
+        <th>
+            Username
+        </th>
+        <th>
+            Add/Remove from this survey
+        </th>
+    </tr>
+
+    @foreach (var item in Model.Interviewers)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.User.Email)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.User.UserName)
+            </td>
+
+            <td>
+                @{
+                    if (item.isInSurvey)
+                    {
+                        @Ajax.ActionLink(" ", "SwitchState", new { id = item.User.Id, survey_id = Model.survey.Id ,canEdit = item.isInSurvey }, new AjaxOptions { UpdateTargetId = "interviewers" }, new { @class = "fa fa-times" })
+                    }
+                    else
+                    {
+                        @Ajax.ActionLink(" ", "SwitchState", new { id = item.User.Id, survey_id = Model.survey.Id, canEdit = item.isInSurvey }, new AjaxOptions { UpdateTargetId = "interviewers", HttpMethod="post" }, new { @class="fa fa-plus" })
+                    }
+                }
+            </td>
+        </tr>
+      }
+</table>

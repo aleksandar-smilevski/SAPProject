@@ -43,12 +43,16 @@
         <th>
             Add Interviewers
         </th>
+        <th>
+            Fill Surveys
+        </th>
     </tr>
 
 @foreach (var item in Model) {
     <tr>
         <td>
-            @Html.DisplayFor(modelItem => item.Name)
+           @*@Html.DisplayFor(modelItem => item.Name)*@
+            @Html.ActionLink(item.Name,"RawQuery", new { survey_id = item.Id })
         </td>
         <td>
             @Html.DisplayFor(modelItem => item.Date)
@@ -66,11 +70,25 @@
             @Html.ActionLink("Design", "Design", new { id = item.Id })
         </td>
         <td>
+            @Html.ActionLink("Add Interviewers", "AddInterviewers", new { id = item.Id })
+        </td>
+        <td>
+            @{
+                if (item.Survey_type == 1)
+                {
+                    @Html.ActionLink("Fill Survey", "FillOut", new { survey_id = item.Id })
+                }
+                else
+                {
+                    <span>Get Link</span>
+                }
+            }
+            
+        </td>
+        <td>
             @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
             @Html.ActionLink("Details", "Details", new { id=item.Id }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.Id }) |
-            @Html.ActionLink("Add Interviewers","AddInterviewers", new {id=item.Id})
-
+            @Html.ActionLink("Delete", "Delete", new { id=item.Id }) 
         </td>
         
     </tr>
