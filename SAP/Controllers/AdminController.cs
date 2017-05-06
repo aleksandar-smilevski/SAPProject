@@ -48,7 +48,7 @@ namespace SAP.Controllers
             {
                 users = users.Where(x => x.FirstName.Contains(search) || x.Email.Contains(search) || x.UserName.Contains(search));
             }
-            var model = users.OrderBy(x => x.FirstName).ToPagedList(id,1);
+            var model = users.OrderByDescending(x => x.Id).ToPagedList(id,4);
             if (Request.IsAjaxRequest())
             {
                 return PartialView("_IndexPartial", model);
@@ -78,6 +78,20 @@ namespace SAP.Controllers
             var list = db.Roles.OrderBy(r => r.Name).ToList().Select(rr => new SelectListItem { Value = rr.Name.ToString(), Text = rr.Name }).ToList();
             ViewBag.Roles = list;
             return View();
+        }
+
+        public void SendMail(string toEmailAddress, string emailSubject, string emailMessage)
+        {
+            var message = new MailMessage();
+            message.To.Add(toEmailAddress);
+            message.IsBodyHtml = true;
+            message.Subject = emailSubject;
+            message.Body = emailMessage;
+
+            using (var smtpClient = new SmtpClient())
+            {
+                smtpClient.Send(message);
+            }
         }
 
         // POST: Admin/Create
@@ -129,7 +143,7 @@ namespace SAP.Controllers
             context.UserTokens.Add(entry);
             context.SaveChanges();
             var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, token = token }, protocol: Request.Url.Scheme);
-            //mailService.SendEmail(model.Email, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
+            SendMail(model.Email, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
 
             return RedirectToAction("Index");
         }

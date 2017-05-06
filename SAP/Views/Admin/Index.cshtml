@@ -9,12 +9,16 @@
         Users
         <a href="@Url.Action("Create","Admin")"><i class="glyphicon glyphicon-plus"></i></a>
     </h4>
-    @using (Ajax.BeginForm("Index", new RouteValueDictionary { { "id", "" } }, new AjaxOptions { UpdateTargetId = "items", HttpMethod = "Get", InsertionMode = InsertionMode.Replace }, new RouteValueDictionary { { "id", "searchForm" }, { "class", "form-inline well well-sm" } }))
-    {
-        <span>Employee Name (Like):</span>
-        <input type="text" name="search" placeholder="e.g., Janet,Michael" id="emp" style="width: 180px" class="form-control" />
-        <input type="submit" value="Search" accesskey="S" class="btn btn-default" />
-    }
+    <div class="form-inline well well-sm">
+        @using (Ajax.BeginForm("Index", new RouteValueDictionary { { "id", "" } }, new AjaxOptions { UpdateTargetId = "items", HttpMethod = "Get", InsertionMode = InsertionMode.Replace }, new RouteValueDictionary { { "id", "searchForm" }, { "class", "" } }))
+        {
+            <span>Search:</span>
+            <input type="text" name="search" placeholder="e.g., Janet,Michael" id="emp" style="width: 180px" class="form-control" />
+            <input type="submit" value="Search" accesskey="S" class="btn btn-default" />
+            @Html.ActionLink("Reset", "Index", new { search = "" }, new { @class = "btn btn-default" })
+        }
+        
+    </div>
     <div id="items">
         @{ 
             @Html.Partial("_IndexPartial", Model);
