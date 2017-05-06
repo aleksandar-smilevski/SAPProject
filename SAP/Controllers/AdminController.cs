@@ -51,7 +51,7 @@ namespace SAP.Controllers
         }
         public ActionResult Statistics(string id_clicked) {
 
-            var interviewerName = context.AspNetUsers.Where(x=>x.Id.Equals(id_clicked)).ToList().FirstOrDefault().UserName;
+            var interviewerName = context.AspNetUsers.Where(x => x.Id.Equals(id_clicked)).Select(x => x.Email).FirstOrDefault();
             var query = (from paperSurvey in context.PaperSurvey
                          join aspNetUsers in context.AspNetUsers on paperSurvey.id_interviewer equals aspNetUsers.Id
                          join offSurvey in context.OfflineSurvey on paperSurvey.id_offlinesurvey equals offSurvey.Id
@@ -73,11 +73,11 @@ namespace SAP.Controllers
                 var pom = t.g.ToList().Count();
                 surveys.Add(new InterviewerStatistics()
                 {
-                    surveyName = name,
-                    userName= interviewerName,
+                    surveyName = name,                  
                     count = pom,                
                 });
             }
+            ViewBag.userName = interviewerName;
             return View(surveys);
         }
 
