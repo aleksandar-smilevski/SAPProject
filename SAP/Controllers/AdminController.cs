@@ -14,7 +14,7 @@ using System.Net.Mail;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using SAP.Attributes;
-
+using Webdiyer.WebControls.Mvc;
 namespace SAP.Controllers
 {
     [AccessDeniedAuthorize(Roles = "Admin")]
@@ -37,17 +37,19 @@ namespace SAP.Controllers
         }
 
         // GET: Admin
-        public ActionResult Index(String search)
+        public ActionResult Index(String search, int id = 1)
         {
-            if (search != null)
+            var users = db.Users.AsQueryable();
+            if (!String.IsNullOrWhiteSpace(search))
             {
-                var users = db.Users.Where(x => x.FirstName.Contains(search) || x.Email.Contains(search) || x.UserName.Contains(search)).ToList();
-                return View(users);
+                users = users.Where(x => x.FirstName.Contains(search) || x.Email.Contains(search) || x.UserName.Contains(search));
             }
-            else {
-                return (View(db.Users.ToList()));
+            var model = users.OrderByDescending(x => x.Id).ToPagedList(id, 4);
+            if (Request.IsAjaxRequest())
+            {
+                return PartialView("_IndexPartial", model);
             }
-          
+            return View(model);
         }
         public ActionResult Statistics(string id_clicked) {
 

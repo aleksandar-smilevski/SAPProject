@@ -182,3 +182,7 @@ C:\Users\Marina\Desktop\SAPProject\SAP\bin\Microsoft.Owin.Security.MicrosoftAcco
 C:\Users\Marina\Desktop\SAPProject\SAP\obj\Debug\SAP.dll
 C:\Users\Marina\Desktop\SAPProject\SAP\obj\Debug\SAP.pdb
 C:\Users\Marina\Desktop\SAPProject\SAP\obj\Debug\SAP.csprojResolveAssemblyReference.cache
+C:\Users\Marina\Desktop\SAPProject\SAP\bin\Webdiyer.MvcPager.dll
+C:\Users\Marina\Desktop\SAPProject\SAP\bin\Webdiyer.MvcPager.xml
+C:\Users\Marina\Desktop\SAPProject\SAP\bin\zh-CHS\Webdiyer.MvcPager.resources.dll
+C:\Users\Marina\Desktop\SAPProject\SAP\bin\zh-CHT\Webdiyer.MvcPager.resources.dll

@@ -22,13 +22,86 @@ namespace SAP.Controllers
         private ApplicationDbContext db1 = new ApplicationDbContext();
         // GET: Surveys
         [SAP.Attributes.AccessDeniedAuthorize(Roles = "Admin")]
-        public ActionResult Index(int attr = 0)
+        public ActionResult Index(string search, string sortBy, string Category, int attr = 0)
         {
-            if(attr == 0)
+            ViewBag.NameSortParm = String.IsNullOrEmpty(sortBy) ? "name_desc" : "";
+            ViewBag.DateSortParm = sortBy == "Date" ? "date_desc" : "Date";
+            ViewBag.Category = new SelectList(db.Category, "Id", "Category1");
+            if (attr == 0)
             {
-                return View(db.Survey.Include(s => s.Category1).Include(s => s.SurveyType).ToList());
+                var surveys = db.Survey.Include(s => s.Category1).Include(s => s.SurveyType).AsQueryable();
+                if (!String.IsNullOrEmpty(Category) && !String.IsNullOrEmpty(search))
+                {
+                    surveys = surveys.Where(x => x.Category1.Id.ToString().Equals(Category)).AsQueryable();
+                    surveys = surveys.Where(x => x.Name.ToLower().Contains(search.ToLower())).AsQueryable();
+
+                }
+                else if (!String.IsNullOrEmpty(search) && String.IsNullOrEmpty(Category))
+                    surveys = surveys.Where(x => x.Name.ToLower().Contains(search.ToLower())).AsQueryable();
+
+                else if (!String.IsNullOrEmpty(Category) && String.IsNullOrEmpty(search))
+                {
+                    surveys = surveys.Where(x => x.Category1.Id.ToString().Equals(Category)).AsQueryable();
+                }
+
+                switch (sortBy)
+                {
+                    case "name_desc":
+                        surveys = surveys.OrderByDescending(s => s.Name);
+                        break;
+                    case "Date":
+                        surveys = surveys.OrderBy(s => s.Date);
+                        break;
+                    case "date_desc":
+                        surveys = surveys.OrderByDescending(s => s.Date);
+                        break;
+                    default:
+                        surveys = surveys.OrderBy(s => s.Name);
+                        break;
+                }
+
+
+
+                return View(surveys.ToList());
             }
-            return View(db.Survey.Include(s => s.Category1).Include(s => s.SurveyType).Where(x => x.Survey_type == attr).ToList());
+
+
+            var surveys1 = db.Survey.Include(s => s.Category1).Include(s => s.SurveyType).Where(x => x.Survey_type == attr).AsQueryable();
+
+
+            if (!String.IsNullOrEmpty(Category) && !String.IsNullOrEmpty(search))
+            {
+                surveys1 = surveys1.Where(x => x.Category1.Id.ToString().Equals(Category)).AsQueryable();
+                surveys1 = surveys1.Where(x => x.Name.ToLower().Contains(search.ToLower())).AsQueryable();
+
+            }
+            else if (!String.IsNullOrEmpty(search) && String.IsNullOrEmpty(Category))
+                surveys1 = surveys1.Where(x => x.Name.ToLower().Contains(search.ToLower())).AsQueryable();
+
+            else if (!String.IsNullOrEmpty(Category) && String.IsNullOrEmpty(search))
+            {
+                surveys1 = surveys1.Where(x => x.Category1.Id.ToString().Equals(Category)).AsQueryable();
+            }
+
+            switch (sortBy)
+            {
+                case "name_desc":
+                    surveys1 = surveys1.OrderByDescending(s => s.Name);
+                    break;
+                case "Date":
+                    surveys1 = surveys1.OrderBy(s => s.Date);
+                    break;
+                case "date_desc":
+                    surveys1 = surveys1.OrderByDescending(s => s.Date);
+                    break;
+                default:
+                    surveys1 = surveys1.OrderBy(s => s.Name);
+                    break;
+            }
+
+
+
+            return View(surveys1.ToList());
         }
 
         // GET: Surveys/Details/5

@@ -1,4 +1,11 @@
 ﻿@model IEnumerable<SAP.Models.Survey>
+@{
+
+    var attr = Request.QueryString["attr"] ?? "0";
+    string Category = Request.QueryString["Category"] ?? null;
+    string search = Request.QueryString["search"] ?? null;
+    string sortBy = Request.QueryString["sortBy"] ?? null;
+}
 
 @{
     ViewBag.Title = "Index";
@@ -17,16 +24,39 @@
     }
     
 </h4>
+<form action="/Surveys/Index" method="get">
+    @Html.Hidden("attr", attr)
+    @Html.Hidden("sortBy", sortBy)
+    <div class="row">
+        <div class="input-group col-md-6">
+
+            <span class="input-group-btn">
+
+                <input type="text" name="search" class="form-control" style="width:180px" placeholder="Search by name...">
+                <button class="btn btn-primary" type="submit">Go!</button>
+
+            </span>
+
+            <div class="col-md-7">
+                <label>Choose a category...</label>
+                @Html.DropDownList("Category", null, "", htmlAttributes: new { @class = "form-control" })
+            </div>
+
+        </div>
+    </div>
+</form>
+<hr />
 
 
 
 <table class="table">
     <tr>
+        
         <th>
-            @Html.DisplayNameFor(model => model.Name)
+            <a href="@Url.Action("Index", "Surveys", new { attr = attr, search=search,Category=Category,sortBy = ViewBag.NameSortParm })">Name</a>
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Date)
+            <a href="@Url.Action("Index", "Surveys", new { attr = attr, search=search,Category=Category,sortBy = ViewBag.DateSortParm })">Date</a>
         </th>
         <th>
            Category
@@ -54,6 +84,7 @@
            @*@Html.DisplayFor(modelItem => item.Name)*@
             @Html.ActionLink(item.Name,"RawQuery", new { survey_id = item.Id })
         </td>
+
         <td>
             @Html.DisplayFor(modelItem => item.Date)
         </td>
