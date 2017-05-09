@@ -90,6 +90,7 @@
           <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="answer_text" Type="varchar" MaxLength="50" />
           <Property Name="id_question" Type="int" />
+          <Property Name="id_paper" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="OfflineQuestion">
           <Key>
@@ -387,6 +388,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="fk_paper">
+          <End Role="PaperSurvey" Type="Self.PaperSurvey" Multiplicity="1" />
+          <End Role="OfflineAnswer" Type="Self.OfflineAnswer" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PaperSurvey">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="OfflineAnswer">
+              <PropertyRef Name="id_paper" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="fk_type">
           <End Role="SurveyType" Type="Self.SurveyType" Multiplicity="1" />
           <End Role="Survey" Type="Self.Survey" Multiplicity="*" />
@@ -487,6 +500,10 @@
             <End Role="Survey" EntitySet="Survey" />
             <End Role="OnlineSurvey" EntitySet="OnlineSurvey" />
           </AssociationSet>
+          <AssociationSet Name="fk_paper" Association="Self.fk_paper">
+            <End Role="PaperSurvey" EntitySet="PaperSurvey" />
+            <End Role="OfflineAnswer" EntitySet="OfflineAnswer" />
+          </AssociationSet>
           <AssociationSet Name="fk_type" Association="Self.fk_type">
             <End Role="SurveyType" EntitySet="SurveyType" />
             <End Role="Survey" EntitySet="Survey" />
@@ -586,7 +603,9 @@
           <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="answer_text" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="id_question" Type="Int32" />
+          <Property Name="id_paper" Type="Int32" Nullable="false" />
           <NavigationProperty Name="OfflineQuestion" Relationship="Self.fk_answer" FromRole="OfflineAnswer" ToRole="OfflineQuestion" />
+          <NavigationProperty Name="PaperSurvey" Relationship="Self.fk_paper" FromRole="OfflineAnswer" ToRole="PaperSurvey" />
         </EntityType>
         <EntityType Name="OfflineQuestion">
           <Key>
@@ -649,6 +668,7 @@
           <Property Name="id_offlinesurvey" Type="Int32" Nullable="false" />
           <Property Name="id_interviewer" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
           <NavigationProperty Name="AspNetUsers" Relationship="Self.fk_int4" FromRole="PaperSurvey" ToRole="AspNetUsers" />
+          <NavigationProperty Name="OfflineAnswer" Relationship="Self.fk_paper" FromRole="PaperSurvey" ToRole="OfflineAnswer" />
           <NavigationProperty Name="OfflineSurvey" Relationship="Self.fk_int5" FromRole="PaperSurvey" ToRole="OfflineSurvey" />
         </EntityType>
         <EntityType Name="SendsSurvey">
@@ -793,6 +813,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="fk_paper">
+          <End Role="PaperSurvey" Type="Self.PaperSurvey" Multiplicity="1" />
+          <End Role="OfflineAnswer" Type="Self.OfflineAnswer" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PaperSurvey">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="OfflineAnswer">
+              <PropertyRef Name="id_paper" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_OfflineQuestion_OfflineSurvey">
           <End Role="OfflineSurvey" Type="Self.OfflineSurvey" Multiplicity="1" />
           <End Role="OfflineQuestion" Type="Self.OfflineQuestion" Multiplicity="*" />
@@ -893,7 +925,7 @@
           <End Role="AspNetRoles" Type="Self.AspNetRoles" Multiplicity="*" />
           <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="*" />
         </Association>
-        <EntityContainer Name="SAPEntities" annotation:LazyLoadingEnabled="true">
+        <EntityContainer Name="SAPEntities2" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="C__MigrationHistory" EntityType="Self.C__MigrationHistory" />
           <EntitySet Name="AddToSurvey" EntityType="Self.AddToSurvey" />
           <EntitySet Name="AspNetRoles" EntityType="Self.AspNetRoles" />
@@ -944,6 +976,10 @@
             <End Role="OfflineQuestion" EntitySet="OfflineQuestion" />
             <End Role="OfflineAnswer" EntitySet="OfflineAnswer" />
           </AssociationSet>
+          <AssociationSet Name="fk_paper" Association="Self.fk_paper">
+            <End Role="PaperSurvey" EntitySet="PaperSurvey" />
+            <End Role="OfflineAnswer" EntitySet="OfflineAnswer" />
+          </AssociationSet>
           <AssociationSet Name="FK_OfflineQuestion_OfflineSurvey" Association="Self.FK_OfflineQuestion_OfflineSurvey">
             <End Role="OfflineSurvey" EntitySet="OfflineSurvey" />
             <End Role="OfflineQuestion" EntitySet="OfflineQuestion" />
@@ -986,7 +1022,7 @@
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
-        <EntityContainerMapping StorageEntityContainer="SAPModelStoreContainer" CdmEntityContainer="SAPEntities">
+        <EntityContainerMapping StorageEntityContainer="SAPModelStoreContainer" CdmEntityContainer="SAPEntities2">
           <EntitySetMapping Name="C__MigrationHistory">
             <EntityTypeMapping TypeName="SAPModel.C__MigrationHistory">
               <MappingFragment StoreEntitySet="__MigrationHistory">
@@ -1067,6 +1103,7 @@
                 <ScalarProperty Name="id" ColumnName="id" />
                 <ScalarProperty Name="answer_text" ColumnName="answer_text" />
                 <ScalarProperty Name="id_question" ColumnName="id_question" />
+                <ScalarProperty Name="id_paper" ColumnName="id_paper" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

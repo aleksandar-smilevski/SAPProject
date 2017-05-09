@@ -15,8 +15,6 @@ using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using SAP.Attributes;
 using Webdiyer.WebControls.Mvc;
-using SAP.Service;
-
 namespace SAP.Controllers
 {
     [AccessDeniedAuthorize(Roles = "Admin")]
@@ -25,8 +23,6 @@ namespace SAP.Controllers
         private ApplicationDbContext db = new ApplicationDbContext();
         private SAPEntities context = new SAPEntities();
         private ApplicationUserManager _userManager;
-        
-        //private IEmailService mailService = new EmailService();
 
         public ApplicationUserManager UserManager
         {
@@ -48,12 +44,44 @@ namespace SAP.Controllers
             {
                 users = users.Where(x => x.FirstName.Contains(search) || x.Email.Contains(search) || x.UserName.Contains(search));
             }
-            var model = users.OrderByDescending(x => x.Id).ToPagedList(id,4);
+            var model = users.OrderByDescending(x => x.Id).ToPagedList(id, 4);
             if (Request.IsAjaxRequest())
             {
                 return PartialView("_IndexPartial", model);
             }
             return View(model);
+        }
+        [Route("{id_clicked}")]
+        public ActionResult Statistics(string id_clicked) {
+
+            var interviewerName = context.AspNetUsers.Where(x => x.Id.Equals(id_clicked)).Select(x => x.Email).FirstOrDefault();
+            var query = (from paperSurvey in context.PaperSurvey
+                         join aspNetUsers in context.AspNetUsers on paperSurvey.id_interviewer equals aspNetUsers.Id
+                         join offSurvey in context.OfflineSurvey on paperSurvey.id_offlinesurvey equals offSurvey.Id
+                         join survey in context.Survey on offSurvey.Id equals survey.Id
+                         where aspNetUsers.Id.Equals(id_clicked)
+                         group offSurvey by offSurvey.Id into g
+                         select new
+                         {
+                             g                        
+                         }
+
+                          );
+            var surveys = new List<InterviewerStatistics>();
+            foreach (var t in query) {
+
+                var tmp = t.g.Key;
+                var name = context.Survey.Where(x => x.Id.Equals(tmp)).ToList().FirstOrDefault().Name;
+              
+                var pom = t.g.ToList().Count();
+                surveys.Add(new InterviewerStatistics()
+                {
+                    surveyName = name,                  
+                    count = pom,                
+                });
+            }
+            ViewBag.userName = interviewerName;
+            return View(surveys);
         }
 
         // GET: Admin/Details/5
@@ -78,20 +106,6 @@ namespace SAP.Controllers
             var list = db.Roles.OrderBy(r => r.Name).ToList().Select(rr => new SelectListItem { Value = rr.Name.ToString(), Text = rr.Name }).ToList();
             ViewBag.Roles = list;
             return View();
-        }
-
-        public void SendMail(string toEmailAddress, string emailSubject, string emailMessage)
-        {
-            var message = new MailMessage();
-            message.To.Add(toEmailAddress);
-            message.IsBodyHtml = true;
-            message.Subject = emailSubject;
-            message.Body = emailMessage;
-
-            using (var smtpClient = new SmtpClient())
-            {
-                smtpClient.Send(message);
-            }
         }
 
         // POST: Admin/Create
@@ -143,9 +157,23 @@ namespace SAP.Controllers
             context.UserTokens.Add(entry);
             context.SaveChanges();
             var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, token = token }, protocol: Request.Url.Scheme);
-            SendMail(model.Email, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
+            SendEmail(model.Email, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
 
             return RedirectToAction("Index");
+        }
+
+        public void SendEmail(string toEmailAddress, string emailSubject, string emailMessage)
+        {
+            var message = new MailMessage();
+            message.To.Add(toEmailAddress);
+            message.IsBodyHtml = true;
+            message.Subject = emailSubject;
+            message.Body = emailMessage;
+
+            using (var smtpClient = new SmtpClient())
+            {
+                smtpClient.Send(message);
+            }
         }
 
         // GET: Admin/Edit/5

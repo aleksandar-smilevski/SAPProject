@@ -191,6 +191,8 @@
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\SurveysController.cs" />
     <Compile Include="Controllers\UserController.cs" />
+    <Compile Include="DTO\AnswerDTO.cs" />
+    <Compile Include="DTO\FillsDTO.cs" />
     <Compile Include="DTO\QuestionDTO.cs" />
     <Compile Include="DTO\RadioDTO.cs" />
     <Compile Include="DTO\SurveyDTO.cs" />
@@ -210,6 +212,8 @@
     <Compile Include="Models\AddToSurvey.cs">
       <DependentUpon>Data.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\Answer.cs" />
+    <Compile Include="Models\AnsweredSurvey.cs" />
     <Compile Include="Models\AspNetRoles.cs">
       <DependentUpon>Data.tt</DependentUpon>
     </Compile>
@@ -243,8 +247,10 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Data.edmx</DependentUpon>
     </Compile>
+    <Compile Include="Models\FillOutSurveyQuestionsViewModel.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\InterviewerInSurvey.cs" />
+    <Compile Include="Models\InterviewerStatistics.cs" />
     <Compile Include="Models\InterviewersToSurveys.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\Metadata.cs" />
@@ -270,6 +276,7 @@
       <DependentUpon>Data.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\PartialClasses.cs" />
+    <Compile Include="Models\QueryAnswers.cs" />
     <Compile Include="Models\SendsSurvey.cs">
       <DependentUpon>Data.tt</DependentUpon>
     </Compile>
@@ -283,7 +290,6 @@
       <DependentUpon>Data.tt</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Service\EmailService.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -335,6 +341,7 @@
     <Content Include="Scripts\angular-route.min.js.map" />
     <Content Include="Scripts\directive.pagination.min.js" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
+    <Content Include="Scripts\chooseCategory.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
@@ -402,7 +409,11 @@
     <Content Include="Views\Surveys\Design.cshtml" />
     <Content Include="Views\Surveys\AddInterviewers.cshtml" />
     <Content Include="Views\Surveys\_AddInterviewersPartial.cshtml" />
+    <Content Include="Views\Surveys\FillOut.cshtml" />
+    <Content Include="Views\Surveys\Answers.cshtml" />
+    <Content Include="Views\Admin\Statistics.cshtml" />
     <Content Include="Views\Admin\_IndexPartial.cshtml" />
+    <Content Include="Views\Surveys\_IndexPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

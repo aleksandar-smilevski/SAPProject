@@ -4,25 +4,25 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="4fdeabba4f54407aa9b7d371ae5adb46" Name="Diagram1">
-        <EntityTypeShape EntityType="SAPModel.C__MigrationHistory" Width="1.5" PointX="8.75" PointY="1.375" IsExpanded="true" />
+      <Diagram DiagramId="b831dfde276d4502a61ae1c737634eff" Name="Diagram1">
+        <EntityTypeShape EntityType="SAPModel.C__MigrationHistory" Width="1.5" PointX="10.75" PointY="1.25" IsExpanded="true" />
         <EntityTypeShape EntityType="SAPModel.AddToSurvey" Width="1.5" PointX="5.25" PointY="5.5" IsExpanded="true" />
         <EntityTypeShape EntityType="SAPModel.AspNetRoles" Width="1.5" PointX="0.75" PointY="7.625" IsExpanded="true" />
         <EntityTypeShape EntityType="SAPModel.AspNetUserClaims" Width="1.5" PointX="5.25" PointY="8.875" IsExpanded="true" />
         <EntityTypeShape EntityType="SAPModel.AspNetUserLogins" Width="1.5" PointX="5.25" PointY="11.625" IsExpanded="true" />
         <EntityTypeShape EntityType="SAPModel.AspNetUsers" Width="1.5" PointX="3" PointY="6" IsExpanded="true" />
         <EntityTypeShape EntityType="SAPModel.Category" Width="1.5" PointX="1.5" PointY="3.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="SAPModel.OfflineAnswer" Width="1.5" PointX="10.5" PointY="14.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="SAPModel.OfflineQuestion" Width="1.5" PointX="8.25" PointY="14.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="SAPModel.OfflineAnswer" Width="1.5" PointX="10.5" PointY="7.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="SAPModel.OfflineQuestion" Width="1.5" PointX="8.25" PointY="11.125" IsExpanded="true" />
         <EntityTypeShape EntityType="SAPModel.OfflineSurvey" Width="1.5" PointX="6" PointY="14.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="SAPModel.OnlineAnswer" Width="1.5" PointX="10.5" PointY="11.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="SAPModel.OnlineQuestion" Width="1.5" PointX="8.25" PointY="10.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="SAPModel.OnlineAnswer" Width="1.5" PointX="10.5" PointY="4.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="SAPModel.OnlineQuestion" Width="1.5" PointX="8.25" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="SAPModel.OnlineSurvey" Width="1.5" PointX="6" PointY="1.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="SAPModel.PaperSurvey" Width="1.5" PointX="8.25" PointY="7.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="SAPModel.PaperSurvey" Width="1.5" PointX="8.25" PointY="7.375" IsExpanded="true" />
         <EntityTypeShape EntityType="SAPModel.SendsSurvey" Width="1.5" PointX="8.25" PointY="4.5" IsExpanded="true" />
         <EntityTypeShape EntityType="SAPModel.Survey" Width="1.5" PointX="3.75" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="SAPModel.SurveyType" Width="1.5" PointX="1.5" PointY="12" IsExpanded="true" />
-        <EntityTypeShape EntityType="SAPModel.UserTokens" Width="1.5" PointX="0.75" PointY="1.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="SAPModel.UserTokens" Width="1.5" PointX="0.75" PointY="1.25" IsExpanded="true" />
         <AssociationConnector Association="SAPModel.FK__AddToSurv__Id_in__0880433F" ManuallyRouted="false" />
         <AssociationConnector Association="SAPModel.FK__AddToSurv__Id_su__09746778" ManuallyRouted="false" />
         <AssociationConnector Association="SAPModel.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" ManuallyRouted="false" />
@@ -31,6 +31,7 @@
         <AssociationConnector Association="SAPModel.fk_int4" ManuallyRouted="false" />
         <AssociationConnector Association="SAPModel.fk_category" ManuallyRouted="false" />
         <AssociationConnector Association="SAPModel.fk_answer" ManuallyRouted="false" />
+        <AssociationConnector Association="SAPModel.fk_paper" ManuallyRouted="false" />
         <AssociationConnector Association="SAPModel.FK_OfflineQuestion_OfflineSurvey" ManuallyRouted="false" />
         <AssociationConnector Association="SAPModel.fk_int5" ManuallyRouted="false" />
         <AssociationConnector Association="SAPModel.FK_OfflineSurvey_Survey" ManuallyRouted="false" />

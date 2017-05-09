@@ -1,4 +1,5 @@
-﻿@model IEnumerable<SAP.Models.Survey>
+﻿@model PagedList<SAP.Models.Survey>
+@using Webdiyer.WebControls.Mvc
 @{
 
     var attr = Request.QueryString["attr"] ?? "0";
@@ -6,6 +7,11 @@
     string search = Request.QueryString["search"] ?? null;
     string sortBy = Request.QueryString["sortBy"] ?? null;
 }
+
+@{
+    ViewBag.Title = "Index";
+}
+
 <h4>
     Surveys
     @{
@@ -13,96 +19,31 @@
         {
             if (User.IsInRole("Admin"))
             {
-                <a href="@Url.Action("Create", "Surveys")"><i class="glyphicon glyphicon-plus"></i></a>
-                
+                <a href="@Url.Action("Create","Surveys")"><i class="glyphicon glyphicon-plus"></i></a>
             }
         }
     }
     
 </h4>
-<form action="/Surveys/Index" method="get">
+@using (Html.BeginForm("Index", ViewContext.RouteData.GetRequiredString("Controller"), new RouteValueDictionary { { "id", "" } }, FormMethod.Get))
+{
     @Html.Hidden("attr", attr)
     @Html.Hidden("sortBy", sortBy)
-    <div class="row">
-        <div class="input-group col-md-6">
-     
-                <span class="input-group-btn">
-                    
-                        <input type="text" name="search" class="form-control" style="width:180px" placeholder="Search by name...">
-                        <button class="btn btn-primary" type="submit">Go!</button>
-                   
-                </span>
-         
-                <div class="col-md-7">
-                    <label>Choose a category...</label>
-                    @Html.DropDownList("Category", null, "", htmlAttributes: new { @class = "form-control" })
-                </div>
+    <div class="form-inline well well-sm">
+        <label>Search...</label>
+        <input type="text" name="search" class="form-control" style="width:180px" placeholder="Search by name...">
 
-            </div>
+        <label>Choose a category...</label>
+        @Html.DropDownList("Category", null, "", htmlAttributes: new { @class = "form-control" })
+        <button class="btn btn-primary" type="submit">Go!</button>
+        @Html.ActionLink("Reset", "Index", new { attr = attr, search = "", Category = "", sortBy = "" }, new { @class = "btn btn-default" })
     </div>
-</form>
-<hr/>
+}
+<hr />
+
+@Html.Partial("_IndexPartial", Model)
+<div class="pull-left">
+    @Html.Pager(Model).Options(o => o.SetPageIndexParameterName("id").SetPagerItemTemplate("<li>{0}</li>").SetCurrentPagerItemTemplate("<li class=\"active\"><a href=\"#\">{0}</a></li>").SetDisabledPagerItemTemplate("<li class=\"disabled\"><a>{0}</a></li>").SetCssClass("pagination"))
+</div>
 
 
-
-    <table class="table">
-        <tr>
-            <th>
-                <a href="@Url.Action("Index", "Surveys", new { attr = attr, search=search,Category=Category,sortBy = ViewBag.NameSortParm })">Name</a>
-            </th>
-            <th>
-                <a href="@Url.Action("Index", "Surveys", new { attr = attr, search=search,Category=Category,sortBy = ViewBag.DateSortParm })">Date</a>
-            </th>
-            <th>
-                Category
-            </th>
-            <th>
-                Type
-            </th>
-            <th>
-                Activation
-            </th>
-            <th>
-                Design
-            </th>
-            <th>
-                Add Interviewers
-            </th>
-            <th>
-            </th>
-        </tr>
-
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Name)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Date)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Category1.Category1)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.SurveyType.Survey_type)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Is_active)
-                </td>
-                <td>
-                    @Html.ActionLink("Design", "Design", new { id = item.Id })
-                </td>
-                <td>
-                    @Html.ActionLink("Add Interviewers", "AddInterviewers", new { id = item.Id })
-                </td>
-                <td>
-                    @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
-                    @Html.ActionLink("Details", "Details", new { id = item.Id }) |
-                    @Html.ActionLink("Delete", "Delete", new { id = item.Id })
-                </td>
-
-            </tr>
-        }
-
-    </table>

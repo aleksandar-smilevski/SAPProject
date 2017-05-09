@@ -13,7 +13,6 @@ using SAP.DTO;
 using Microsoft.AspNet.Identity;
 using Webdiyer.WebControls.Mvc;
 
-
 namespace SAP.Controllers
 {
     
@@ -23,19 +22,19 @@ namespace SAP.Controllers
         private ApplicationDbContext db1 = new ApplicationDbContext();
         // GET: Surveys
         [SAP.Attributes.AccessDeniedAuthorize(Roles = "Admin")]
-        public ActionResult Index(string search,string sortBy,string Category, int attr = 0)
+        public ActionResult Index(string search, string sortBy, string Category, int attr = 0, int id = 0)
         {
             ViewBag.NameSortParm = String.IsNullOrEmpty(sortBy) ? "name_desc" : "";
             ViewBag.DateSortParm = sortBy == "Date" ? "date_desc" : "Date";
             ViewBag.Category = new SelectList(db.Category, "Id", "Category1");
-            if (attr == 0 )
-            {               
-                var surveys=db.Survey.Include(s => s.Category1).Include(s => s.SurveyType).AsQueryable();
+            if (attr == 0)
+            {
+                var surveys = db.Survey.Include(s => s.Category1).Include(s => s.SurveyType).AsQueryable();
                 if (!String.IsNullOrEmpty(Category) && !String.IsNullOrEmpty(search))
                 {
                     surveys = surveys.Where(x => x.Category1.Id.ToString().Equals(Category)).AsQueryable();
                     surveys = surveys.Where(x => x.Name.ToLower().Contains(search.ToLower())).AsQueryable();
-                    
+
                 }
                 else if (!String.IsNullOrEmpty(search) && String.IsNullOrEmpty(Category))
                     surveys = surveys.Where(x => x.Name.ToLower().Contains(search.ToLower())).AsQueryable();
@@ -44,30 +43,30 @@ namespace SAP.Controllers
                 {
                     surveys = surveys.Where(x => x.Category1.Id.ToString().Equals(Category)).AsQueryable();
                 }
-                
-                    switch (sortBy)
-                    {
-                        case "name_desc":
-                            surveys = surveys.OrderByDescending(s => s.Name);
-                            break;
-                        case "Date":
-                            surveys = surveys.OrderBy(s => s.Date);
-                            break;
-                        case "date_desc":
-                            surveys = surveys.OrderByDescending(s => s.Date);
-                            break;
-                        default:
-                            surveys = surveys.OrderBy(s => s.Name);
-                            break;
-                    }
-                
-    
 
-                return View(surveys.ToList());
+                switch (sortBy)
+                {
+                    case "name_desc":
+                        surveys = surveys.OrderByDescending(s => s.Name);
+                        break;
+                    case "Date":
+                        surveys = surveys.OrderBy(s => s.Date);
+                        break;
+                    case "date_desc":
+                        surveys = surveys.OrderByDescending(s => s.Date);
+                        break;
+                    default:
+                        surveys = surveys.OrderBy(s => s.Name);
+                        break;
+                }
+
+
+
+                return View(surveys.ToPagedList(id,2));
             }
-         
 
-            var surveys1=db.Survey.Include(s => s.Category1).Include(s => s.SurveyType).Where(x => x.Survey_type == attr).AsQueryable();
+
+            var surveys1 = db.Survey.Include(s => s.Category1).Include(s => s.SurveyType).Where(x => x.Survey_type == attr).AsQueryable();
 
 
             if (!String.IsNullOrEmpty(Category) && !String.IsNullOrEmpty(search))
@@ -102,10 +101,8 @@ namespace SAP.Controllers
 
 
 
-            return View(surveys1.ToList());
+            return View(surveys1.ToPagedList(id, 2));
         }
-       
-
 
         // GET: Surveys/Details/5
         [Authorize]
@@ -325,6 +322,97 @@ namespace SAP.Controllers
             }
             db.SaveChanges();
             return RedirectToAction("AddInterviewers", new { id = survey_id });
+            
         }
+
+        public ActionResult RawQuery(int survey_id)
+        {
+
+            var query = (
+                         from offSurvey in db.OfflineSurvey
+                         join papSurvey in db.PaperSurvey on offSurvey.Id equals papSurvey.id_offlinesurvey
+                         join offQuestion in db.OfflineQuestion on offSurvey.Id equals offQuestion.id_offline_survey
+                         join offAnswer in db.OfflineAnswer on offQuestion.id_question equals offAnswer.id_question
+                         where  offAnswer.id_paper.Equals( papSurvey.id) where survey_id.Equals(offSurvey.Id)
+                         select new {
+                            papSurvey.id,
+                            offQuestion.id_question,
+                            offQuestion.question_text,
+                            offAnswer.answer_text
+                        }
+                        );
+            var surveys = new List<QueryAnswers>();
+            foreach (var t in query)
+            {
+                surveys.Add(new QueryAnswers()
+                {
+                    paperId = t.id,
+                    idQuestion = t.id_question,
+                    questionText = t.question_text,
+                    answersText=t.answer_text});
+            }
+            return View(surveys);
+        }
+
+        [HttpGet]
+        public ActionResult FillOut(int? survey_id)
+        {
+            if(survey_id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            var survey = db.Survey.Where(x => x.Id == survey_id).FirstOrDefault();
+            if(survey == null)
+            {
+                return HttpNotFound();
+            }
+            List<int> listOfQuestions = db.OfflineQuestion.Where(x => x.id_offline_survey == survey.Id).Select(x => x.id_question).ToList();
+            var model = new List<AnswerDTO>();
+            foreach (var i in listOfQuestions)
+            {
+                var ans = new AnswerDTO
+                {
+                    QuestionId = i
+                };
+                model.Add(ans);
+            }
+        
+            return View(model);
+
+        }
+
+        [HttpPost]
+        public ActionResult FillOut(List<AnswerDTO> data)
+        {
+            return null;
+        //    var survey = db.Survey.Where(x => x.Id == data.survey_id).FirstOrDefault();
+        //    if(survey == null)
+        //    {
+        //        return Json("Not Ok", JsonRequestBehavior.AllowGet);
+        //    }
+        //    var newPaperSurvey = new PaperSurvey
+        //    {
+        //        id_offlinesurvey = data.survey_id,
+        //        id_interviewer = User.Identity.GetUserId()
+        //    };
+        //    db.PaperSurvey.Add(newPaperSurvey);
+        //    db.SaveChanges();
+        //    foreach (var ans in data.answers)
+        //    {
+        //        var newOffAns = new OfflineAnswer
+        //        {
+        //            answer_text = ans.Answer,
+        //            id_question = ans.QuestionId,
+        //            id_paper = newPaperSurvey.id
+        //        };
+        //        db.OfflineAnswer.Add(newOffAns);
+        //    }
+        //    db.SaveChanges();
+
+            
+            
+        //    return Json("Ok", JsonRequestBehavior.AllowGet);
+                
+            }
     }
 }

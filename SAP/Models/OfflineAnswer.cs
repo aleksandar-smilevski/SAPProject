@@ -17,7 +17,9 @@ namespace SAP.Models
         public int id { get; set; }
         public string answer_text { get; set; }
         public Nullable<int> id_question { get; set; }
+        public int id_paper { get; set; }
     
         public virtual OfflineQuestion OfflineQuestion { get; set; }
+        public virtual PaperSurvey PaperSurvey { get; set; }
     }
 }

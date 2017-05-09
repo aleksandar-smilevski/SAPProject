@@ -14,11 +14,19 @@ namespace SAP.Models
     
     public partial class PaperSurvey
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public PaperSurvey()
+        {
+            this.OfflineAnswer = new HashSet<OfflineAnswer>();
+        }
+    
         public int id { get; set; }
         public int id_offlinesurvey { get; set; }
         public string id_interviewer { get; set; }
     
         public virtual AspNetUsers AspNetUsers { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<OfflineAnswer> OfflineAnswer { get; set; }
         public virtual OfflineSurvey OfflineSurvey { get; set; }
     }
 }

@@ -89,7 +89,9 @@
     <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
     <Property Name="answer_text" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
     <Property Name="id_question" Type="Int32" />
+    <Property Name="id_paper" Type="Int32" Nullable="false" />
     <NavigationProperty Name="OfflineQuestion" Relationship="Self.fk_answer" FromRole="OfflineAnswer" ToRole="OfflineQuestion" />
+    <NavigationProperty Name="PaperSurvey" Relationship="Self.fk_paper" FromRole="OfflineAnswer" ToRole="PaperSurvey" />
   </EntityType>
   <EntityType Name="OfflineQuestion">
     <Key>
@@ -152,6 +154,7 @@
     <Property Name="id_offlinesurvey" Type="Int32" Nullable="false" />
     <Property Name="id_interviewer" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
     <NavigationProperty Name="AspNetUsers" Relationship="Self.fk_int4" FromRole="PaperSurvey" ToRole="AspNetUsers" />
+    <NavigationProperty Name="OfflineAnswer" Relationship="Self.fk_paper" FromRole="PaperSurvey" ToRole="OfflineAnswer" />
     <NavigationProperty Name="OfflineSurvey" Relationship="Self.fk_int5" FromRole="PaperSurvey" ToRole="OfflineSurvey" />
   </EntityType>
   <EntityType Name="SendsSurvey">
@@ -296,6 +299,18 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
+  <Association Name="fk_paper">
+    <End Role="PaperSurvey" Type="Self.PaperSurvey" Multiplicity="1" />
+    <End Role="OfflineAnswer" Type="Self.OfflineAnswer" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="PaperSurvey">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="OfflineAnswer">
+        <PropertyRef Name="id_paper" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
   <Association Name="FK_OfflineQuestion_OfflineSurvey">
     <End Role="OfflineSurvey" Type="Self.OfflineSurvey" Multiplicity="1" />
     <End Role="OfflineQuestion" Type="Self.OfflineQuestion" Multiplicity="*" />
@@ -396,7 +411,7 @@
     <End Role="AspNetRoles" Type="Self.AspNetRoles" Multiplicity="*" />
     <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="*" />
   </Association>
-  <EntityContainer Name="SAPEntities" annotation:LazyLoadingEnabled="true">
+  <EntityContainer Name="SAPEntities2" annotation:LazyLoadingEnabled="true">
     <EntitySet Name="C__MigrationHistory" EntityType="Self.C__MigrationHistory" />
     <EntitySet Name="AddToSurvey" EntityType="Self.AddToSurvey" />
     <EntitySet Name="AspNetRoles" EntityType="Self.AspNetRoles" />
@@ -445,6 +460,10 @@
     </AssociationSet>
     <AssociationSet Name="fk_answer" Association="Self.fk_answer">
       <End Role="OfflineQuestion" EntitySet="OfflineQuestion" />
+      <End Role="OfflineAnswer" EntitySet="OfflineAnswer" />
+    </AssociationSet>
+    <AssociationSet Name="fk_paper" Association="Self.fk_paper">
+      <End Role="PaperSurvey" EntitySet="PaperSurvey" />
       <End Role="OfflineAnswer" EntitySet="OfflineAnswer" />
     </AssociationSet>
     <AssociationSet Name="FK_OfflineQuestion_OfflineSurvey" Association="Self.FK_OfflineQuestion_OfflineSurvey">

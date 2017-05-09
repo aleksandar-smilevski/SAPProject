@@ -17,17 +17,29 @@
             <input type="submit" value="Search" accesskey="S" class="btn btn-default" />
             @Html.ActionLink("Reset", "Index", new { search = "" }, new { @class = "btn btn-default" })
         }
-        
+
     </div>
     <div id="items">
-        @{ 
+        @{
             @Html.Partial("_IndexPartial", Model);
         }
     </div>
 </div>
 @section Scripts{
-@{
-    Html.RegisterMvcPagerScriptResource();
-}
-<script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+    @{
+        Html.RegisterMvcPagerScriptResource();
     }
+    <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+}
+
+
+
+
+    
+   
+
+    
+
+        
+
+   

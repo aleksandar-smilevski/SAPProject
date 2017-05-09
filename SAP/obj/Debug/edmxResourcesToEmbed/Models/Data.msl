@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
-  <EntityContainerMapping StorageEntityContainer="SAPModelStoreContainer" CdmEntityContainer="SAPEntities">
+  <EntityContainerMapping StorageEntityContainer="SAPModelStoreContainer" CdmEntityContainer="SAPEntities2">
     <EntitySetMapping Name="C__MigrationHistory">
       <EntityTypeMapping TypeName="SAPModel.C__MigrationHistory">
         <MappingFragment StoreEntitySet="__MigrationHistory">
@@ -81,6 +81,7 @@
           <ScalarProperty Name="id" ColumnName="id" />
           <ScalarProperty Name="answer_text" ColumnName="answer_text" />
           <ScalarProperty Name="id_question" ColumnName="id_question" />
+          <ScalarProperty Name="id_paper" ColumnName="id_paper" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

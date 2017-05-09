@@ -53,7 +53,6 @@ app.controller('FormController', function ($scope, $http, $location) {
                     });
             }
         }
-
     }
 
     $scope.confirmQuestion = function () {
@@ -149,16 +148,40 @@ app.controller('FormController', function ($scope, $http, $location) {
     }
 });
 
-app.controller('PaginationController', function ($scope) {
-    $scope.custom = {
-        itemsCount: 42,
-        take: 10,
-
-        activatePage: activatePage
+app.controller('FillOutController', function ($scope, $http, $location, $window) {
+    $scope.form = {};
+    $scope.answers = [];
+    $scope.survey_id = 0;
+    $scope.loadQuestions = function () {
+        var id = $location.search().survey_id;
+        console.log(id);
+        if (id != undefined) {
+            $http.get("/api/Surveys/1/" + id)
+            .then(function (response) {
+                if (response.status == 400) {
+                    $scope.errorMessage = data;
+                } else {
+                    var data = response.data;
+                    //console.log(data);
+                    $scope.survey_id = data.Id;
+                    $scope.form.questions = data.Questions;
+                }
+            }, function (response, data) {
+                $scope.errorMessage = data;
+            });
+        }
     };
 
-    function activatePage(page) {
-        // TODO: here you should process changing of current page
+    $scope.submit = function () {
+        var answers = [];
+        for (var i = 0; i < $scope.form.questions.length; i++) {
+            answers.push({ QuestionId: $scope.form.questions[i].Id, Answer: $scope.form.questions[i].answer });
+        }
+        var data = { survey_id: $scope.survey_id, answers: answers };
+        $http.post("/Surveys/FillOut", JSON.stringify(data))
+        .then(function () {
+            $window.location.href = "/Account/Login";
+        })
     }
 });
 

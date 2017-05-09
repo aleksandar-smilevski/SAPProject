@@ -45,6 +45,9 @@
                     Active
                 </th>
                 <th>
+              
+                   
+               
 
                 </th>
             </tr>
@@ -70,6 +73,19 @@
                     <td>
                         <a href="@Url.Action("Details","Surveys", new { id = item.Id })">Details</a>
                     </td>
+                    <td>
+                        @{
+                            if (item.Survey_type == 1)
+                            {
+                                <a href="@Url.Action("FillOut","Surveys", new { survey_id = item.Id })">Fill Out</a>
+                            }
+                            else
+                            {
+                            <span>Get Link</span>
+                        }
+                    }
+                   </td>
+
 
                 </tr>
             }
