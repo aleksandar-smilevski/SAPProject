@@ -42,7 +42,7 @@
         <tr>
             <td>
                 @*@Html.DisplayFor(modelItem => item.Name)*@
-                @Html.ActionLink(item.Name, "RawQuery", new { survey_id = item.Id })
+                @Html.ActionLink(item.Name, "Answers", new { survey_id = item.Id })
             </td>
 
             <td>

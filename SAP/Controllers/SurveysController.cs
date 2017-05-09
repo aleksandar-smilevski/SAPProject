@@ -21,8 +21,8 @@ namespace SAP.Controllers
         private SAPEntities db = new SAPEntities();
         private ApplicationDbContext db1 = new ApplicationDbContext();
         // GET: Surveys
-        [SAP.Attributes.AccessDeniedAuthorize(Roles = "Admin")]
-        public ActionResult Index(string search, string sortBy, string Category, int attr = 0, int id = 0)
+        [Authorize(Roles = "Admin")]
+        public ActionResult Index(string search, string sortBy, string Category, int attr = 0, int id=1)
         {
             ViewBag.NameSortParm = String.IsNullOrEmpty(sortBy) ? "name_desc" : "";
             ViewBag.DateSortParm = sortBy == "Date" ? "date_desc" : "Date";
@@ -62,7 +62,7 @@ namespace SAP.Controllers
 
 
 
-                return View(surveys.ToPagedList(id,2));
+                return View(surveys.ToPagedList(id, 2));
             }
 
 
@@ -325,7 +325,7 @@ namespace SAP.Controllers
             
         }
 
-        public ActionResult RawQuery(int survey_id)
+        public ActionResult Answers(int survey_id)
         {
 
             var query = (
@@ -359,60 +359,53 @@ namespace SAP.Controllers
         {
             if(survey_id == null)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return null;
             }
             var survey = db.Survey.Where(x => x.Id == survey_id).FirstOrDefault();
             if(survey == null)
             {
-                return HttpNotFound();
+                return null;
             }
-            List<int> listOfQuestions = db.OfflineQuestion.Where(x => x.id_offline_survey == survey.Id).Select(x => x.id_question).ToList();
-            var model = new List<AnswerDTO>();
-            foreach (var i in listOfQuestions)
+            var listOfQuestions = db.OfflineQuestion.Where(x => x.id_offline_survey == survey.Id).ToList();
+            var model = new FillOutSurveyQuestionsViewModel
             {
-                var ans = new AnswerDTO
-                {
-                    QuestionId = i
-                };
-                model.Add(ans);
-            }
-        
+                Survey = survey,
+                Questions = listOfQuestions
+            };
             return View(model);
 
         }
 
         [HttpPost]
-        public ActionResult FillOut(List<AnswerDTO> data)
+        public ActionResult FillOut(FillsDTO data)
         {
-            return null;
-        //    var survey = db.Survey.Where(x => x.Id == data.survey_id).FirstOrDefault();
-        //    if(survey == null)
-        //    {
-        //        return Json("Not Ok", JsonRequestBehavior.AllowGet);
-        //    }
-        //    var newPaperSurvey = new PaperSurvey
-        //    {
-        //        id_offlinesurvey = data.survey_id,
-        //        id_interviewer = User.Identity.GetUserId()
-        //    };
-        //    db.PaperSurvey.Add(newPaperSurvey);
-        //    db.SaveChanges();
-        //    foreach (var ans in data.answers)
-        //    {
-        //        var newOffAns = new OfflineAnswer
-        //        {
-        //            answer_text = ans.Answer,
-        //            id_question = ans.QuestionId,
-        //            id_paper = newPaperSurvey.id
-        //        };
-        //        db.OfflineAnswer.Add(newOffAns);
-        //    }
-        //    db.SaveChanges();
+            var survey = db.Survey.Where(x => x.Id == data.survey_id).FirstOrDefault();
+            if(survey == null)
+            {
+                return Json("Not Ok", JsonRequestBehavior.AllowGet);
+            }
+            var newPaperSurvey = new PaperSurvey
+            {
+                id_offlinesurvey = data.survey_id,
+                id_interviewer = User.Identity.GetUserId()
+            };
+            db.PaperSurvey.Add(newPaperSurvey);
+            db.SaveChanges();
+            foreach (var ans in data.answers)
+            {
+                var newOffAns = new OfflineAnswer
+                {
+                    answer_text = ans.Answer,
+                    id_question = ans.QuestionId,
+                    id_paper = newPaperSurvey.id
+                };
+                db.OfflineAnswer.Add(newOffAns);
+            }
+            db.SaveChanges();
 
             
             
-        //    return Json("Ok", JsonRequestBehavior.AllowGet);
-                
-            }
+            return Json("Ok", JsonRequestBehavior.AllowGet);
+        }
     }
 }
