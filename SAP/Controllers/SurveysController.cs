@@ -9,7 +9,7 @@ using System.Web.Mvc;
 using SAP.Models;
 using Newtonsoft.Json.Linq;
 using System.Diagnostics;
-using SAP.DTO;
+using SAP.DTO;  
 using Microsoft.AspNet.Identity;
 using Webdiyer.WebControls.Mvc;
 
@@ -62,7 +62,7 @@ namespace SAP.Controllers
 
 
 
-                return View(surveys.ToPagedList(id, 2));
+                return View(surveys.ToPagedList(id, 4));
             }
 
 
@@ -101,7 +101,7 @@ namespace SAP.Controllers
 
 
 
-            return View(surveys1.ToPagedList(id, 2));
+            return View(surveys1.ToPagedList(id, 4));
         }
 
         // GET: Surveys/Details/5

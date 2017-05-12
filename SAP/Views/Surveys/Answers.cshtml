@@ -23,7 +23,7 @@
         <table class="table">
             <tr>
                 <th>
-                    Survey ID
+                    Survey ReferenceID
                 </th>
 
                 <th>
@@ -34,11 +34,28 @@
                 </th>
 
             </tr>
-
+            @{
+                var idItem = Model.First().paperId;
+            }
+                
             @foreach (var item in Model)
             {
 
+                if (idItem != item.paperId) {
 
+                    idItem = item.paperId;
+                      <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Survey ReferenceID</strong></td>
+                        <td><strong>Question</strong></td>
+                        <td><strong>Answer</strong></td>
+                    </tr>
+
+                }
                 <tr>
                     <td>
                         @Html.DisplayFor(modelItem => item.paperId)
@@ -52,12 +69,14 @@
                         @Html.DisplayFor(modelItem => item.answersText)
                     </td>
 
-
                 </tr>
+               
+
             }
 
+            
         </table>
-
+    
 
 
     }
