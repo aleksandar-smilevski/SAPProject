@@ -1,0 +1,44 @@
+﻿@model IEnumerable<SAP.Models.SurveyStatistics>
+
+<table class="table">
+    <tr>
+
+
+        <th>
+            Answer name
+        </th>
+        <th>
+            count
+        </th>
+
+    </tr>
+
+
+    @foreach (var item in Model)
+            {
+
+
+        <tr>
+
+
+            <td>
+                @Html.DisplayFor(modelItem => item.answerName)
+                
+            </td>
+
+            <td>
+                @Html.DisplayFor(modelItem => item.count)
+
+            </td>
+
+
+        </tr>
+    }
+
+</table>
+
+
+
+@Html.ActionLink("Back To List", "Index")
+
+

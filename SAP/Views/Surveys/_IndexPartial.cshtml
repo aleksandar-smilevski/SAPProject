@@ -8,21 +8,22 @@
     string search = Request.QueryString["search"] ?? null;
     string sortBy = Request.QueryString["sortBy"] ?? null;
 }
-<div ng-app="SapApp" ng-controller="LinkController">
+@*<div ng-app="SapApp" ng-controller="LinkController">*@
+<div>
 
     <div class="well-sm" ng-show="isShowing">
         <label>Generating link for {{ surveyName }}</label>
-        <input type="text" class="form-control" ng-model="UID" readonly="readonly"/>
+        <input type="text" class="form-control" ng-model="UID" readonly="readonly" />
     </div>
 
-    <table class="table" >
+    <table class="table">
         <tr>
 
             <th>
-                <a href="@Url.Action("Index", "Surveys", new { id = 1, attr = attr, search=search,Category=Category,sortBy = ViewBag.NameSortParm })">Name</a>
+                <a href="@Url.Action("Index", "Surveys", new { id = 1, attr = attr, search=search,Category=Category,sortBy = ViewBag.NameSortParm })" target="_self">Name</a>
             </th>
             <th>
-                <a href="@Url.Action("Index", "Surveys", new { id = 1, attr = attr, search=search,Category=Category,sortBy = ViewBag.DateSortParm })">Date</a>
+                <a href="@Url.Action("Index", "Surveys", new { id = 1, attr = attr, search=search,Category=Category,sortBy = ViewBag.DateSortParm })" target="_self">Date</a>
             </th>
             <th>
                 Category
@@ -52,7 +53,10 @@
             <tr>
                 <td>
                     @*@Html.DisplayFor(modelItem => item.Name)*@
-                    @Html.ActionLink(item.Name, "Answers", new { survey_id = item.Id })
+                    @Html.ActionLink(item.Name, "Answers", new { survey_id = item.Id }, new { target = "_self" })  |
+                    @Html.ActionLink("Statistics", "Statistics", new { id_clicked = item.Id })
+
+
                 </td>
 
                 <td>
@@ -68,16 +72,16 @@
                     @Html.DisplayFor(modelItem => item.Is_active)
                 </td>
                 <td>
-                    @Html.ActionLink("Design", "Design", new { id = item.Id })
+                    @Html.ActionLink("Design", "Design", new { id = item.Id }, new { target = "_self" })
                 </td>
                 <td>
-                    @Html.ActionLink("Add Interviewers", "AddInterviewers", new { id = item.Id })
+                    @Html.ActionLink("Add Interviewers", "AddInterviewers", new { id = item.Id }, new { target = "_self" })
                 </td>
                 <td>
                     @{
                         if (item.Survey_type == 1)
                         {
-                            @Html.ActionLink("Fill Survey", "FillOut", new { survey_id = item.Id })
+                            @Html.ActionLink("Fill Survey", "FillOut", new { survey_id = item.Id }, new { target = "_self" })
                         }
                         else
                         {
@@ -88,9 +92,9 @@
 
                 </td>
                 <td>
-                    @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
-                    @Html.ActionLink("Details", "Details", new { id = item.Id }) |
-                    @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+                    @Html.ActionLink("Edit", "Edit", new { id = item.Id }, new { target = "_self" }) |
+                    @Html.ActionLink("Details", "Details", new { id = item.Id }, new { target = "_self" }) |
+                    @Html.ActionLink("Delete", "Delete", new { id = item.Id }, new { target = "_self" })
                 </td>
 
             </tr>

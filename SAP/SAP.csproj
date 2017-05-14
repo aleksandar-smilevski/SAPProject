@@ -188,14 +188,16 @@
     <Compile Include="Attributes\AccessDeniedAuthorizeAttribute.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AdminController.cs" />
+    <Compile Include="Controllers\fController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\SurveysController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="DTO\AnswerDTO.cs" />
     <Compile Include="DTO\FillsDTO.cs" />
+    <Compile Include="DTO\LinkDTO.cs" />
     <Compile Include="DTO\QuestionDTO.cs" />
-    <Compile Include="DTO\RadioDTO.cs" />
     <Compile Include="DTO\SurveyDTO.cs" />
+    <Compile Include="DTO\ValuesDTO.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -253,6 +255,7 @@
     <Compile Include="Models\InterviewerInSurvey.cs" />
     <Compile Include="Models\InterviewerStatistics.cs" />
     <Compile Include="Models\InterviewersToSurveys.cs" />
+    <Compile Include="Models\Links.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\Metadata.cs" />
     <Compile Include="Models\OfflineAnswer.cs">
@@ -264,6 +267,7 @@
     <Compile Include="Models\OfflineSurvey.cs">
       <DependentUpon>Data.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\OfflineValues.cs" />
     <Compile Include="Models\OnlineAnswer.cs">
       <DependentUpon>Data.tt</DependentUpon>
     </Compile>
@@ -273,6 +277,7 @@
     <Compile Include="Models\OnlineSurvey.cs">
       <DependentUpon>Data.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\OnlineValues.cs" />
     <Compile Include="Models\PaperSurvey.cs">
       <DependentUpon>Data.tt</DependentUpon>
     </Compile>
@@ -336,6 +341,7 @@
     <Content Include="Models\Data.edmx.diagram">
       <DependentUpon>Data.edmx</DependentUpon>
     </Content>
+    <Compile Include="Models\SurveyStatistics.cs" />
     <None Include="Properties\PublishProfiles\Aleksandar.pubxml" />
     <Content Include="Scripts\angular.min.js.map" />
     <Content Include="Scripts\angular-animate.min.js.map" />
@@ -420,6 +426,8 @@
     <Content Include="Views\Categories\Details.cshtml" />
     <Content Include="Views\Categories\Edit.cshtml" />
     <Content Include="Views\Categories\Index.cshtml" />
+    <Content Include="Views\Surveys\Statistics.cshtml" />
+    <Content Include="Views\Surveys\Analyze.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

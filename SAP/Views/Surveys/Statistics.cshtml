@@ -1,0 +1,39 @@
+﻿@model IEnumerable<SAP.Models.OfflineQuestion>
+ 
+ <table class="table">
+            <tr>
+             
+
+                <th>
+                    Question name
+                </th>
+
+            </tr>
+
+
+            @foreach (var item in Model)
+            {
+
+
+                <tr>
+               
+
+                    <td>
+                       
+                        @Html.ActionLink(item.question_text, "Analyze", new { id_clicked = item.id_question })
+
+                        
+                       
+                    </td>
+
+
+                </tr>
+            }
+
+        </table>
+
+
+    
+    @Html.ActionLink("Back To List", "Index")
+    
+
