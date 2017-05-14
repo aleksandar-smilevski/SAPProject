@@ -226,6 +226,7 @@
     <Compile Include="Models\AspNetUsers.cs">
       <DependentUpon>Data.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\CategoriesController.cs" />
     <Compile Include="Models\Category.cs">
       <DependentUpon>Data.tt</DependentUpon>
     </Compile>
@@ -414,6 +415,11 @@
     <Content Include="Views\Admin\Statistics.cshtml" />
     <Content Include="Views\Admin\_IndexPartial.cshtml" />
     <Content Include="Views\Surveys\_IndexPartial.cshtml" />
+    <Content Include="Views\Categories\Create.cshtml" />
+    <Content Include="Views\Categories\Delete.cshtml" />
+    <Content Include="Views\Categories\Details.cshtml" />
+    <Content Include="Views\Categories\Edit.cshtml" />
+    <Content Include="Views\Categories\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -1,0 +1,59 @@
+﻿@model IEnumerable<SAP.Models.Category>
+
+@{
+    ViewBag.Title = "Index";
+
+}
+@{ 
+    var attr = Request.QueryString["error"];
+}
+
+<h4>
+    Categories <a href="@Url.Action("Create", "Categories")"><i class="glyphicon glyphicon-plus"></i></a>
+</h4>
+@{
+
+    if (attr == "True")
+    {
+        <div class="container-fluid">
+            <div class="alert alert-info">
+                <h4>
+                    @ViewBag.errorTitle
+                </h4>
+                <p>
+                    <strong>@ViewBag.error</strong>
+                </p>
+            </div>
+        </div>
+    }
+}
+
+
+
+<table class="table">
+    <tr>
+        <th>
+           Name
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Category1)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
+         
+            @Html.ActionLink("Delete", "Delete", new { id=item.Id })
+        </td>
+    </tr>
+}
+
+</table>
+
+<div>
+
+    <a href="@Url.Action("Create","Surveys")"><i class="glyphicon glyphicon-arrow-left"></i></a>
+</div>
