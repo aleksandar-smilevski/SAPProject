@@ -51,7 +51,7 @@ namespace SAP.API
             {
                 return NotFound();
             }
-            var questions = db.OfflineQuestion.Where(x => x.id_offline_survey == offlineSurvey.Id).ToList();
+            var questions = db.OfflineQuestion.Include(x => x.OfflineValues).Where(x => x.id_offline_survey == offlineSurvey.Id).ToList();
             List<QuestionDTO> questionsList = new List<QuestionDTO>();
             foreach(var q in questions)
             {
@@ -64,6 +64,18 @@ namespace SAP.API
                     survey_id = q.id_offline_survey,
                     Id = q.id_question
                 };
+
+                if (q.question_type != "text" && q.question_type != "textarea")
+                {
+                    var listOfValues = db.OfflineValues.Where(x => x.question_id == q.id_question).ToList();
+                    List<string> values = new List<string>();
+                    foreach(var val in listOfValues)
+                    {
+                        values.Add(val.Value);
+                    }
+                    newQ.values = values;
+                }
+                
                 questionsList.Add(newQ);
             }
             var model = new SurveyDTO
@@ -98,6 +110,18 @@ namespace SAP.API
                     survey_id = q.id_online_survey,
                     Id = q.id_question
                 };
+
+                if (q.question_type != "text" && q.question_type != "textarea")
+                {
+                    var listOfValues = db.OnlineValues.Where(x => x.question_id == q.id_question).ToList();
+                    List<string> values = new List<string>();
+                    foreach (var val in listOfValues)
+                    {
+                        values.Add(val.Value);
+                    }
+                    newQ.values = values;
+                }
+
                 questionsList.Add(newQ);
             }
             var model = new SurveyDTO
@@ -108,6 +132,24 @@ namespace SAP.API
                 Survey_type = onlineSurvey.Survey_type
             };
 
+            return Ok(model);
+        }
+        [HttpGet]
+        [Route("link/{id:int}")]
+        public IHttpActionResult GenerateLink(int id)
+        {
+            Survey survey = db.Survey.Find(id);
+            Guid newGUID = Guid.NewGuid();
+            var surDTO = new SurveyDTO
+            {
+                Id = survey.Id,
+                Name = survey.Name
+            };
+            var model = new LinkDTO
+            {
+                UID = GuidToBase64(newGUID),
+                Survey = surDTO
+            };
             return Ok(model);
         }
 
@@ -124,5 +166,11 @@ namespace SAP.API
         {
             return db.Survey.Count(e => e.Id == id) > 0;
         }
+
+        public string GuidToBase64(Guid guid)
+        {
+            return Convert.ToBase64String(guid.ToByteArray()).Replace("/", "-").Replace("+", "_").Replace("=", "");
+        }
+
     }
 }

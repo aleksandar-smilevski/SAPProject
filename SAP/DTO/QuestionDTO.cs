@@ -20,6 +20,6 @@ namespace SAP.DTO
         public bool required { get; set; }
         [Required]
         public int survey_id { get; set; }
-        public List<string> radios { get; set; }
+        public List<string> values { get; set; }
     }
 }

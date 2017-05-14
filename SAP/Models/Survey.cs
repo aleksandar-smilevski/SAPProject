@@ -18,6 +18,7 @@ namespace SAP.Models
         public Survey()
         {
             this.AddToSurvey = new HashSet<AddToSurvey>();
+            this.Links = new HashSet<Links>();
         }
     
         public int Id { get; set; }
@@ -30,6 +31,8 @@ namespace SAP.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<AddToSurvey> AddToSurvey { get; set; }
         public virtual Category Category1 { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Links> Links { get; set; }
         public virtual OfflineSurvey OfflineSurvey { get; set; }
         public virtual OnlineSurvey OnlineSurvey { get; set; }
         public virtual SurveyType SurveyType { get; set; }

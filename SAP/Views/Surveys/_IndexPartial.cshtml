@@ -8,82 +8,102 @@
     string search = Request.QueryString["search"] ?? null;
     string sortBy = Request.QueryString["sortBy"] ?? null;
 }
-<table class="table">
-    <tr>
+<div ng-app="SapApp" ng-controller="LinkController">
 
-        <th>
-            <a href="@Url.Action("Index", "Surveys", new { id = 1, attr = attr, search=search,Category=Category,sortBy = ViewBag.NameSortParm })">Name</a>
-        </th>
-        <th>
-            <a href="@Url.Action("Index", "Surveys", new { id = 1, attr = attr, search=search,Category=Category,sortBy = ViewBag.DateSortParm })">Date</a>
-        </th>
-        <th>
-            Category
-        </th>
-        <th>
-            Type
-        </th>
-        <th>
-            Activation
-        </th>
-        <th>
-            Design
-        </th>
-        <th>
-            Add Interviewers
-        </th>
-        <th>
-            Fill Surveys
-        </th>
-    </tr>
+    <div class="well-sm" ng-show="isShowing">
+        <label>Generating link for {{ surveyName }}</label>
+        <input type="text" class="form-control" ng-model="UID" readonly="readonly"/>
+    </div>
 
-    @foreach (var item in Model)
-    {
+    <table class="table" >
         <tr>
-            <td>
-                @*@Html.DisplayFor(modelItem => item.Name)*@
-                @Html.ActionLink(item.Name, "Answers", new { survey_id = item.Id })
-            </td>
 
-            <td>
-                @Html.DisplayFor(modelItem => item.Date)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Category1.Category1)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.SurveyType.Survey_type)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Is_active)
-            </td>
-            <td>
-                @Html.ActionLink("Design", "Design", new { id = item.Id })
-            </td>
-            <td>
-                @Html.ActionLink("Add Interviewers", "AddInterviewers", new { id = item.Id })
-            </td>
-            <td>
-                @{
-                    if (item.Survey_type == 1)
-                    {
-                        @Html.ActionLink("Fill Survey", "FillOut", new { survey_id = item.Id })
-                    }
-                    else
-                    {
-                        <span>Get Link</span>
-                    }
-                }
+            <th>
+                <a href="@Url.Action("Index", "Surveys", new { id = 1, attr = attr, search=search,Category=Category,sortBy = ViewBag.NameSortParm })">Name</a>
+            </th>
+            <th>
+                <a href="@Url.Action("Index", "Surveys", new { id = 1, attr = attr, search=search,Category=Category,sortBy = ViewBag.DateSortParm })">Date</a>
+            </th>
+            <th>
+                Category
+            </th>
+            <th>
+                Type
+            </th>
+            <th>
+                Activation
+            </th>
+            <th>
+                Design
+            </th>
+            <th>
+                Add Interviewers
+            </th>
+            <th>
+                Fill Surveys
+            </th>
+            <th>
 
-            </td>
-            <td>
-                @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
-                @Html.ActionLink("Details", "Details", new { id = item.Id }) |
-                @Html.ActionLink("Delete", "Delete", new { id = item.Id })
-            </td>
-
+            </th>
         </tr>
-       
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @*@Html.DisplayFor(modelItem => item.Name)*@
+                    @Html.ActionLink(item.Name, "Answers", new { survey_id = item.Id })
+                </td>
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.Date)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Category1.Category1)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.SurveyType.Survey_type)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Is_active)
+                </td>
+                <td>
+                    @Html.ActionLink("Design", "Design", new { id = item.Id })
+                </td>
+                <td>
+                    @Html.ActionLink("Add Interviewers", "AddInterviewers", new { id = item.Id })
+                </td>
+                <td>
+                    @{
+                        if (item.Survey_type == 1)
+                        {
+                            @Html.ActionLink("Fill Survey", "FillOut", new { survey_id = item.Id })
+                        }
+                        else
+                        {
+                            <a href="#" ng-click="getLink(@item.Id)">Get link</a>
+                            //<a href="#" data-toggle="popover" title="Generatin link for @item.Name" data-html="true" data-content="<p>Shareable link</p><input type='text' class='form-control' ng-model='UID' />" ng-click="getLink(@item.Id)">Get link</a>
+                        }
                     }
 
-</table>
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
+                    @Html.ActionLink("Details", "Details", new { id = item.Id }) |
+                    @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+                </td>
+
+            </tr>
+
+                        }
+
+    </table>
+
+</div>
+
+
+
+
+
+
+

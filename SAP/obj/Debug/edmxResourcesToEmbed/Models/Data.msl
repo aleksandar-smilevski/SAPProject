@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
-  <EntityContainerMapping StorageEntityContainer="SAPModelStoreContainer" CdmEntityContainer="SAPEntities2">
+  <EntityContainerMapping StorageEntityContainer="SAPModelStoreContainer" CdmEntityContainer="SAPEntities">
     <EntitySetMapping Name="C__MigrationHistory">
       <EntityTypeMapping TypeName="SAPModel.C__MigrationHistory">
         <MappingFragment StoreEntitySet="__MigrationHistory">
@@ -75,6 +75,14 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
+    <EntitySetMapping Name="Links">
+      <EntityTypeMapping TypeName="SAPModel.Links">
+        <MappingFragment StoreEntitySet="Links">
+          <ScalarProperty Name="UID" ColumnName="UID" />
+          <ScalarProperty Name="SurveyID" ColumnName="SurveyID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
     <EntitySetMapping Name="OfflineAnswer">
       <EntityTypeMapping TypeName="SAPModel.OfflineAnswer">
         <MappingFragment StoreEntitySet="OfflineAnswer">
@@ -104,6 +112,15 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
+    <EntitySetMapping Name="OfflineValues">
+      <EntityTypeMapping TypeName="SAPModel.OfflineValues">
+        <MappingFragment StoreEntitySet="OfflineValues">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Value" ColumnName="Value" />
+          <ScalarProperty Name="question_id" ColumnName="question_id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
     <EntitySetMapping Name="OnlineAnswer">
       <EntityTypeMapping TypeName="SAPModel.OnlineAnswer">
         <MappingFragment StoreEntitySet="OnlineAnswer">
@@ -129,6 +146,15 @@
       <EntityTypeMapping TypeName="SAPModel.OnlineSurvey">
         <MappingFragment StoreEntitySet="OnlineSurvey">
           <ScalarProperty Name="Id" ColumnName="Id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="OnlineValues">
+      <EntityTypeMapping TypeName="SAPModel.OnlineValues">
+        <MappingFragment StoreEntitySet="OnlineValues">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Value" ColumnName="Value" />
+          <ScalarProperty Name="question_id" ColumnName="question_id" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
