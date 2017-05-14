@@ -94,6 +94,9 @@ C:\Users\Marina\Desktop\SAPProject\SAP\bin\Webdiyer.MvcPager.dll
 C:\Users\Marina\Desktop\SAPProject\SAP\bin\Webdiyer.MvcPager.xml
 C:\Users\Marina\Desktop\SAPProject\SAP\bin\zh-CHS\Webdiyer.MvcPager.resources.dll
 C:\Users\Marina\Desktop\SAPProject\SAP\bin\zh-CHT\Webdiyer.MvcPager.resources.dll
+C:\Users\Aleksandar\Desktop\SAP\SAPProject\SAP\obj\Debug\SAP.Migrations.InitialCreate.resources
+C:\Users\Aleksandar\Desktop\SAP\SAPProject\SAP\obj\Debug\SAP.Migrations.Age.resources
+C:\Users\Aleksandar\Desktop\SAP\SAPProject\SAP\obj\Debug\SAP.csproj.GenerateResource.Cache
 C:\Users\Aleksandar\Desktop\SAP\SAPProject\SAP\bin\roslyn\csc.exe
 C:\Users\Aleksandar\Desktop\SAP\SAPProject\SAP\bin\roslyn\csc.exe.config
 C:\Users\Aleksandar\Desktop\SAP\SAPProject\SAP\bin\roslyn\csc.rsp
@@ -184,9 +187,6 @@ C:\Users\Aleksandar\Desktop\SAP\SAPProject\SAP\bin\Microsoft.Owin.Security.Twitt
 C:\Users\Aleksandar\Desktop\SAP\SAPProject\SAP\bin\Microsoft.Owin.Security.MicrosoftAccount.xml
 C:\Users\Aleksandar\Desktop\SAP\SAPProject\SAP\bin\zh-CHS\Webdiyer.MvcPager.resources.dll
 C:\Users\Aleksandar\Desktop\SAP\SAPProject\SAP\bin\zh-CHT\Webdiyer.MvcPager.resources.dll
-C:\Users\Aleksandar\Desktop\SAP\SAPProject\SAP\obj\Debug\SAP.csprojResolveAssemblyReference.cache
-C:\Users\Aleksandar\Desktop\SAP\SAPProject\SAP\obj\Debug\SAP.Migrations.InitialCreate.resources
-C:\Users\Aleksandar\Desktop\SAP\SAPProject\SAP\obj\Debug\SAP.Migrations.Age.resources
-C:\Users\Aleksandar\Desktop\SAP\SAPProject\SAP\obj\Debug\SAP.csproj.GenerateResource.Cache
 C:\Users\Aleksandar\Desktop\SAP\SAPProject\SAP\obj\Debug\SAP.dll
 C:\Users\Aleksandar\Desktop\SAP\SAPProject\SAP\obj\Debug\SAP.pdb
+C:\Users\Aleksandar\Desktop\SAP\SAPProject\SAP\obj\Debug\SAP.csprojResolveAssemblyReference.cache

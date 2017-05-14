@@ -46,4 +46,14 @@
     @Html.Pager(Model).Options(o => o.SetPageIndexParameterName("id").SetPagerItemTemplate("<li>{0}</li>").SetCurrentPagerItemTemplate("<li class=\"active\"><a href=\"#\">{0}</a></li>").SetDisabledPagerItemTemplate("<li class=\"disabled\"><a>{0}</a></li>").SetCssClass("pagination"))
 </div>
 
+@section Scripts{
+    <script src="~/Scripts/angular.min.js"></script>
+    <script src="~/Scripts/angular-animate.js"></script>
+    <script src="~/app/app.js"></script>
+    <script>
+    //$(function () {
+    //    $('[data-toggle="popover"]').popover();
+    //});
+    </script>
+}
 

@@ -5,7 +5,8 @@ using System.Web;
 
 namespace SAP.DTO
 {
-    public class RadioDTO
+    public class ValuesDTO
     {
+        public string Value { get; set; }
     }
 }

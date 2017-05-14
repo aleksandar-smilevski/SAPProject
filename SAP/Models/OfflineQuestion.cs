@@ -18,6 +18,7 @@ namespace SAP.Models
         public OfflineQuestion()
         {
             this.OfflineAnswer = new HashSet<OfflineAnswer>();
+            this.OfflineValues = new HashSet<OfflineValues>();
         }
     
         public int id_question { get; set; }
@@ -30,5 +31,7 @@ namespace SAP.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<OfflineAnswer> OfflineAnswer { get; set; }
         public virtual OfflineSurvey OfflineSurvey { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<OfflineValues> OfflineValues { get; set; }
     }
 }

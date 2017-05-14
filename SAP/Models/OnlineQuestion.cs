@@ -18,6 +18,7 @@ namespace SAP.Models
         public OnlineQuestion()
         {
             this.OnlineAnswer = new HashSet<OnlineAnswer>();
+            this.OnlineValues = new HashSet<OnlineValues>();
         }
     
         public int id_question { get; set; }
@@ -30,5 +31,7 @@ namespace SAP.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<OnlineAnswer> OnlineAnswer { get; set; }
         public virtual OnlineSurvey OnlineSurvey { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<OnlineValues> OnlineValues { get; set; }
     }
 }

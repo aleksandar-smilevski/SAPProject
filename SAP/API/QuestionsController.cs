@@ -29,11 +29,12 @@ namespace SAP.API
         [Route("1/{id:int}")]
         public IHttpActionResult GetOfflineQuestion(int id)
         {
-            OfflineQuestion offlineQuestion = db.OfflineQuestion.SingleOrDefault(x => x.id_question == id);
+            OfflineQuestion offlineQuestion = db.OfflineQuestion.Include(x => x.OfflineValues).SingleOrDefault(x => x.id_question == id);
             if (offlineQuestion == null)
             {
                 return NotFound();
             }
+
             var model = new QuestionDTO
             {
                 description = offlineQuestion.question_desc,
@@ -43,6 +44,18 @@ namespace SAP.API
                 survey_id = offlineQuestion.id_offline_survey,
                 Id = offlineQuestion.id_question
             };
+            if (offlineQuestion.question_type != "text" && offlineQuestion.question_type != "textarea")
+            {
+                var listOfValues = db.OfflineValues.Where(x => x.question_id == offlineQuestion.id_question).ToList();
+                List<string> values = new List<string>();
+                foreach (var val in listOfValues)
+                {
+                    values.Add(val.Value);
+                }
+                model.values = values;
+            }
+
+
             return Ok(model);
         }
         [Route("2/{id:int}")]
@@ -62,6 +75,17 @@ namespace SAP.API
                 survey_id = onlineQuestion.id_online_survey,
                 Id = onlineQuestion.id_question
             };
+
+            if (onlineQuestion.question_type != "text" && onlineQuestion.question_type != "textarea")
+            {
+                var listOfValues = db.OnlineValues.Where(x => x.question_id == onlineQuestion.id_question).ToList();
+                List<string> values = new List<string>();
+                foreach (var val in listOfValues)
+                {
+                    values.Add(val.Value);
+                }
+                model.values = values;
+            }
             return Ok(model);
         }
 
@@ -82,12 +106,46 @@ namespace SAP.API
             if (question.Id != null)
             {
                 var offQ = db.OfflineQuestion.Find(question.Id);
+                if (question.type != "text" && question.type != "textarea")
+                {
+                    offQ.is_required = question.required;
+                    offQ.question_desc = question.description;
+                    offQ.question_text = question.title;
+                    offQ.question_type = question.type;
 
-                offQ.is_required = question.required;
-                offQ.question_desc = question.description;
-                offQ.question_text = question.title;
-                offQ.question_type = question.type;
-
+                    List<OfflineValues> listToDelete = db.OfflineValues.Where(x => x.question_id == question.Id).ToList();
+                    foreach (var val in listToDelete)
+                    {
+                        db.OfflineValues.Remove(val);
+                    }
+                    db.SaveChanges();
+                    foreach (var val in question.values)
+                    {
+                        var newVal = new OfflineValues
+                        {
+                            Value = val,
+                            OfflineQuestion = offQ
+                        };
+                        db.OfflineValues.Add(newVal);
+                    }
+                    db.SaveChanges();
+                }
+                else
+                {
+                    if (question.values != null)
+                    {
+                        List<OfflineValues> listToDelete = db.OfflineValues.Where(x => x.question_id == question.Id).ToList();
+                        foreach (var val in listToDelete)
+                        {
+                            db.OfflineValues.Remove(val);
+                        }
+                        db.SaveChanges();
+                    }
+                    offQ.is_required = question.required;
+                    offQ.question_desc = question.description;
+                    offQ.question_text = question.title;
+                    offQ.question_type = question.type;
+                }
                 db.Entry(offQ).State = EntityState.Modified;
                 db.SaveChanges();
 
@@ -95,19 +153,44 @@ namespace SAP.API
             }
             else
             {
-                var newQ = new OfflineQuestion
+                if(question.type != "text" && question.type != "textarea")
                 {
-                    question_desc = question.description,
-                    question_text = question.title,
-                    question_type = question.type,
-                    is_required = question.required,
-                    id_offline_survey = question.survey_id
-                };
+                    var newQ = new OfflineQuestion
+                    {
+                        question_desc = question.description,
+                        question_text = question.title,
+                        question_type = question.type,
+                        is_required = question.required,
+                        id_offline_survey = question.survey_id
+                    };
+                    db.OfflineQuestion.Add(newQ);
+                    db.SaveChanges();
 
-                db.OfflineQuestion.Add(newQ);
+                    foreach (var val in question.values)
+                    {
+                        var newVal = new OfflineValues
+                        {
+                            Value = val,
+                            OfflineQuestion = newQ
+                        };
+                        db.OfflineValues.Add(newVal);
+                    }
+                    db.SaveChanges();
+                }
+                else
+                {
+                    var newQ = new OfflineQuestion
+                    {
+                        question_desc = question.description,
+                        question_text = question.title,
+                        question_type = question.type,
+                        is_required = question.required,
+                        id_offline_survey = question.survey_id
+                    };
+                    db.OfflineQuestion.Add(newQ);
+                }
                 db.SaveChanges();
-
-                return Ok(newQ);
+                return Ok();
             }
         }
 
@@ -127,11 +210,47 @@ namespace SAP.API
             if (question.Id != null)
             {
                 var onQ = db.OnlineQuestion.Find(question.Id);
+                if (question.type != "text" && question.type != "textarea")
+                {
+                    onQ.is_required = question.required;
+                    onQ.question_desc = question.description;
+                    onQ.question_text = question.title;
+                    onQ.question_type = question.type;
 
-                onQ.is_required = question.required;
-                onQ.question_desc = question.description;
-                onQ.question_text = question.title;
-                onQ.question_type = question.type;
+                    List<OnlineValues> listToDelete = db.OnlineValues.Where(x => x.question_id == question.Id).ToList();
+                    foreach (var val in listToDelete)
+                    {
+                        db.OnlineValues.Remove(val);
+                    }
+                    db.SaveChanges();
+                    foreach (var val in question.values)
+                    {
+                        var newVal = new OnlineValues
+                        {
+                            Value = val,
+                            OnlineQuestion = onQ
+                        };
+                        db.OnlineValues.Add(newVal);
+                    }
+                    db.SaveChanges();
+                }
+                else
+                {
+                    if(question.values != null)
+                    {
+                        List<OnlineValues> listToDelete = db.OnlineValues.Where(x => x.question_id == question.Id).ToList();
+                        foreach (var val in listToDelete)
+                        {
+                            db.OnlineValues.Remove(val);
+                        }
+                        db.SaveChanges();
+                    }
+                    onQ.is_required = question.required;
+                    onQ.question_desc = question.description;
+                    onQ.question_text = question.title;
+                    onQ.question_type = question.type;
+                }
+
 
                 db.Entry(onQ).State = EntityState.Modified;
                 db.SaveChanges();
@@ -140,19 +259,50 @@ namespace SAP.API
             }
             else
             {
-                var newQ = new OnlineQuestion
+                if (question.type != "text" && question.type != "textarea")
                 {
-                    question_desc = question.description,
-                    question_text = question.title,
-                    question_type = question.type,
-                    is_required = question.required,
-                    id_online_survey = question.survey_id
-                };
+                    var newQ = new OnlineQuestion
+                    {
+                        question_desc = question.description,
+                        question_text = question.title,
+                        question_type = question.type,
+                        is_required = question.required,
+                        id_online_survey = question.survey_id
+                    };
+                    db.OnlineQuestion.Add(newQ);
+                    db.SaveChanges();
 
-                db.OnlineQuestion.Add(newQ);
+                    //List<OfflineValues> listToDelete = db.OfflineValues.Where(x => x.question_id == question.Id).ToList();
+                    //foreach(var val in listToDelete)
+                    //{
+                    //    db.OfflineValues.Remove(val);
+                    //}
+                    //db.SaveChanges();
+                    foreach (var val in question.values)
+                    {
+                        var newVal = new OnlineValues
+                        {
+                            Value = val,
+                            OnlineQuestion = newQ
+                        };
+                        db.OnlineValues.Add(newVal);
+                    }
+                    db.SaveChanges();
+                }
+                else
+                {
+                    var newQ = new OnlineQuestion
+                    {
+                        question_desc = question.description,
+                        question_text = question.title,
+                        question_type = question.type,
+                        is_required = question.required,
+                        id_online_survey = question.survey_id
+                    };
+                    db.OnlineQuestion.Add(newQ);
+                }
                 db.SaveChanges();
-
-                return Ok(newQ);
+                return Ok();
             }
         }
 
@@ -160,7 +310,7 @@ namespace SAP.API
         [HttpDelete]
         public IHttpActionResult DeleteOfflineQuestion(int id)
         {
-            OfflineQuestion offlineQuestion = db.OfflineQuestion.Find(id);
+            OfflineQuestion offlineQuestion = db.OfflineQuestion.Include(x => x.OfflineValues).Include(x => x.OfflineAnswer).Where(x => x.id_question == id).Single();
             if (offlineQuestion == null)
             {
                 return NotFound();
@@ -176,7 +326,7 @@ namespace SAP.API
         [HttpDelete]
         public IHttpActionResult DeleteOnlineQuestion(int id)
         {
-            OnlineQuestion onlineQuestion = db.OnlineQuestion.Find(id);
+            OnlineQuestion onlineQuestion = db.OnlineQuestion.Include(x => x.OnlineValues).Include(x => x.OnlineAnswer).Where(x => x.id_question == id).Single();
             if (onlineQuestion == null)
             {
                 return NotFound();

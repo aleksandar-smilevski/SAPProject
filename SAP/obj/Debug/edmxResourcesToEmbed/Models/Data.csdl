@@ -82,6 +82,14 @@
     <Property Name="Category1" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
     <NavigationProperty Name="Survey" Relationship="Self.fk_category" FromRole="Category" ToRole="Survey" />
   </EntityType>
+  <EntityType Name="Links">
+    <Key>
+      <PropertyRef Name="UID" />
+    </Key>
+    <Property Name="UID" Type="String" MaxLength="64" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="SurveyID" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="Survey" Relationship="Self.FK_Links_Survey" FromRole="Links" ToRole="Survey" />
+  </EntityType>
   <EntityType Name="OfflineAnswer">
     <Key>
       <PropertyRef Name="id" />
@@ -105,6 +113,7 @@
     <Property Name="id_offline_survey" Type="Int32" Nullable="false" />
     <NavigationProperty Name="OfflineAnswer" Relationship="Self.fk_answer" FromRole="OfflineQuestion" ToRole="OfflineAnswer" />
     <NavigationProperty Name="OfflineSurvey" Relationship="Self.FK_OfflineQuestion_OfflineSurvey" FromRole="OfflineQuestion" ToRole="OfflineSurvey" />
+    <NavigationProperty Name="OfflineValues" Relationship="Self.FK_OfflineValues_OfflineQuestion1" FromRole="OfflineQuestion" ToRole="OfflineValues" />
   </EntityType>
   <EntityType Name="OfflineSurvey">
     <Key>
@@ -114,6 +123,15 @@
     <NavigationProperty Name="OfflineQuestion" Relationship="Self.FK_OfflineQuestion_OfflineSurvey" FromRole="OfflineSurvey" ToRole="OfflineQuestion" />
     <NavigationProperty Name="PaperSurvey" Relationship="Self.fk_int5" FromRole="OfflineSurvey" ToRole="PaperSurvey" />
     <NavigationProperty Name="Survey" Relationship="Self.FK_OfflineSurvey_Survey" FromRole="OfflineSurvey" ToRole="Survey" />
+  </EntityType>
+  <EntityType Name="OfflineValues">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Value" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="question_id" Type="Int32" />
+    <NavigationProperty Name="OfflineQuestion" Relationship="Self.FK_OfflineValues_OfflineQuestion1" FromRole="OfflineValues" ToRole="OfflineQuestion" />
   </EntityType>
   <EntityType Name="OnlineAnswer">
     <Key>
@@ -136,6 +154,7 @@
     <Property Name="id_online_survey" Type="Int32" Nullable="false" />
     <NavigationProperty Name="OnlineAnswer" Relationship="Self.fk_answer1" FromRole="OnlineQuestion" ToRole="OnlineAnswer" />
     <NavigationProperty Name="OnlineSurvey" Relationship="Self.FK_OnlineQuestion_OnlineSurvey" FromRole="OnlineQuestion" ToRole="OnlineSurvey" />
+    <NavigationProperty Name="OnlineValues" Relationship="Self.FK_OnlineValues_OnlineQuestion" FromRole="OnlineQuestion" ToRole="OnlineValues" />
   </EntityType>
   <EntityType Name="OnlineSurvey">
     <Key>
@@ -145,6 +164,15 @@
     <NavigationProperty Name="OnlineQuestion" Relationship="Self.FK_OnlineQuestion_OnlineSurvey" FromRole="OnlineSurvey" ToRole="OnlineQuestion" />
     <NavigationProperty Name="SendsSurvey" Relationship="Self.fk_int2" FromRole="OnlineSurvey" ToRole="SendsSurvey" />
     <NavigationProperty Name="Survey" Relationship="Self.FK_OnlineSurvey_Survey" FromRole="OnlineSurvey" ToRole="Survey" />
+  </EntityType>
+  <EntityType Name="OnlineValues">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Value" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="question_id" Type="Int32" />
+    <NavigationProperty Name="OnlineQuestion" Relationship="Self.FK_OnlineValues_OnlineQuestion" FromRole="OnlineValues" ToRole="OnlineQuestion" />
   </EntityType>
   <EntityType Name="PaperSurvey">
     <Key>
@@ -179,6 +207,7 @@
     <Property Name="Is_active" Type="Boolean" Nullable="false" />
     <NavigationProperty Name="AddToSurvey" Relationship="Self.FK__AddToSurv__Id_su__09746778" FromRole="Survey" ToRole="AddToSurvey" />
     <NavigationProperty Name="Category1" Relationship="Self.fk_category" FromRole="Survey" ToRole="Category" />
+    <NavigationProperty Name="Links" Relationship="Self.FK_Links_Survey" FromRole="Survey" ToRole="Links" />
     <NavigationProperty Name="OfflineSurvey" Relationship="Self.FK_OfflineSurvey_Survey" FromRole="Survey" ToRole="OfflineSurvey" />
     <NavigationProperty Name="OnlineSurvey" Relationship="Self.FK_OnlineSurvey_Survey" FromRole="Survey" ToRole="OnlineSurvey" />
     <NavigationProperty Name="SurveyType" Relationship="Self.fk_type" FromRole="Survey" ToRole="SurveyType" />
@@ -287,6 +316,18 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
+  <Association Name="FK_Links_Survey">
+    <End Role="Survey" Type="Self.Survey" Multiplicity="1" />
+    <End Role="Links" Type="Self.Links" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Survey">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Links">
+        <PropertyRef Name="SurveyID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
   <Association Name="fk_answer">
     <End Role="OfflineQuestion" Type="Self.OfflineQuestion" Multiplicity="0..1" />
     <End Role="OfflineAnswer" Type="Self.OfflineAnswer" Multiplicity="*" />
@@ -320,6 +361,18 @@
       </Principal>
       <Dependent Role="OfflineQuestion">
         <PropertyRef Name="id_offline_survey" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_OfflineValues_OfflineQuestion1">
+    <End Role="OfflineQuestion" Type="Self.OfflineQuestion" Multiplicity="0..1" />
+    <End Role="OfflineValues" Type="Self.OfflineValues" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="OfflineQuestion">
+        <PropertyRef Name="id_question" />
+      </Principal>
+      <Dependent Role="OfflineValues">
+        <PropertyRef Name="question_id" />
       </Dependent>
     </ReferentialConstraint>
   </Association>
@@ -371,6 +424,18 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
+  <Association Name="FK_OnlineValues_OnlineQuestion">
+    <End Role="OnlineQuestion" Type="Self.OnlineQuestion" Multiplicity="0..1" />
+    <End Role="OnlineValues" Type="Self.OnlineValues" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="OnlineQuestion">
+        <PropertyRef Name="id_question" />
+      </Principal>
+      <Dependent Role="OnlineValues">
+        <PropertyRef Name="question_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
   <Association Name="fk_int2">
     <End Role="OnlineSurvey" Type="Self.OnlineSurvey" Multiplicity="1" />
     <End Role="SendsSurvey" Type="Self.SendsSurvey" Multiplicity="*" />
@@ -411,7 +476,7 @@
     <End Role="AspNetRoles" Type="Self.AspNetRoles" Multiplicity="*" />
     <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="*" />
   </Association>
-  <EntityContainer Name="SAPEntities2" annotation:LazyLoadingEnabled="true">
+  <EntityContainer Name="SAPEntities" annotation:LazyLoadingEnabled="true">
     <EntitySet Name="C__MigrationHistory" EntityType="Self.C__MigrationHistory" />
     <EntitySet Name="AddToSurvey" EntityType="Self.AddToSurvey" />
     <EntitySet Name="AspNetRoles" EntityType="Self.AspNetRoles" />
@@ -419,12 +484,15 @@
     <EntitySet Name="AspNetUserLogins" EntityType="Self.AspNetUserLogins" />
     <EntitySet Name="AspNetUsers" EntityType="Self.AspNetUsers" />
     <EntitySet Name="Category" EntityType="Self.Category" />
+    <EntitySet Name="Links" EntityType="Self.Links" />
     <EntitySet Name="OfflineAnswer" EntityType="Self.OfflineAnswer" />
     <EntitySet Name="OfflineQuestion" EntityType="Self.OfflineQuestion" />
     <EntitySet Name="OfflineSurvey" EntityType="Self.OfflineSurvey" />
+    <EntitySet Name="OfflineValues" EntityType="Self.OfflineValues" />
     <EntitySet Name="OnlineAnswer" EntityType="Self.OnlineAnswer" />
     <EntitySet Name="OnlineQuestion" EntityType="Self.OnlineQuestion" />
     <EntitySet Name="OnlineSurvey" EntityType="Self.OnlineSurvey" />
+    <EntitySet Name="OnlineValues" EntityType="Self.OnlineValues" />
     <EntitySet Name="PaperSurvey" EntityType="Self.PaperSurvey" />
     <EntitySet Name="SendsSurvey" EntityType="Self.SendsSurvey" />
     <EntitySet Name="Survey" EntityType="Self.Survey" />
@@ -458,6 +526,10 @@
       <End Role="Category" EntitySet="Category" />
       <End Role="Survey" EntitySet="Survey" />
     </AssociationSet>
+    <AssociationSet Name="FK_Links_Survey" Association="Self.FK_Links_Survey">
+      <End Role="Survey" EntitySet="Survey" />
+      <End Role="Links" EntitySet="Links" />
+    </AssociationSet>
     <AssociationSet Name="fk_answer" Association="Self.fk_answer">
       <End Role="OfflineQuestion" EntitySet="OfflineQuestion" />
       <End Role="OfflineAnswer" EntitySet="OfflineAnswer" />
@@ -469,6 +541,10 @@
     <AssociationSet Name="FK_OfflineQuestion_OfflineSurvey" Association="Self.FK_OfflineQuestion_OfflineSurvey">
       <End Role="OfflineSurvey" EntitySet="OfflineSurvey" />
       <End Role="OfflineQuestion" EntitySet="OfflineQuestion" />
+    </AssociationSet>
+    <AssociationSet Name="FK_OfflineValues_OfflineQuestion1" Association="Self.FK_OfflineValues_OfflineQuestion1">
+      <End Role="OfflineQuestion" EntitySet="OfflineQuestion" />
+      <End Role="OfflineValues" EntitySet="OfflineValues" />
     </AssociationSet>
     <AssociationSet Name="fk_int5" Association="Self.fk_int5">
       <End Role="OfflineSurvey" EntitySet="OfflineSurvey" />
@@ -485,6 +561,10 @@
     <AssociationSet Name="FK_OnlineQuestion_OnlineSurvey" Association="Self.FK_OnlineQuestion_OnlineSurvey">
       <End Role="OnlineSurvey" EntitySet="OnlineSurvey" />
       <End Role="OnlineQuestion" EntitySet="OnlineQuestion" />
+    </AssociationSet>
+    <AssociationSet Name="FK_OnlineValues_OnlineQuestion" Association="Self.FK_OnlineValues_OnlineQuestion">
+      <End Role="OnlineQuestion" EntitySet="OnlineQuestion" />
+      <End Role="OnlineValues" EntitySet="OnlineValues" />
     </AssociationSet>
     <AssociationSet Name="fk_int2" Association="Self.fk_int2">
       <End Role="OnlineSurvey" EntitySet="OnlineSurvey" />
