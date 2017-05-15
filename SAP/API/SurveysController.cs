@@ -205,7 +205,7 @@ namespace SAP.API
             };
             db.Links.Add(link);
             db.SendsSurvey.Add(sends);
-            await SendEmail(message.Email, "Invitation to Survey", "You have been invited to fill in the survey" + survey.Name + "<br> To answer the survey follow this link: " + message.URL);
+            await SendEmail(message.Email, "Invitation to Survey", "You have been invited to fill in the survey " + survey.Name + "<br> To answer the survey follow this link: " + message.URL);
             db.SaveChanges();
             return Ok();
         }
