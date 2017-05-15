@@ -109,38 +109,117 @@ namespace SAP.Controllers
         [Authorize]
         public ActionResult Statistics(int id_clicked)
         {
+            var list = new List<Question>();
+            var survey = db.Survey.Where(x => x.Id.Equals(id_clicked)).ToList().FirstOrDefault();
+            if (survey.Survey_type == 1)
+            {
+                var questions = db.OfflineQuestion.Where(x => x.OfflineSurvey.Id.Equals(id_clicked)).ToList();
+                foreach (var item in questions)
+                {
+                    list.Add(new Question()
+                    {
 
-            var questions = db.OfflineQuestion.Where(x => x.OfflineSurvey.Id.Equals(id_clicked)).ToList();
-            return View(questions);
+                        question_id = item.id_question,
+                        question_text = item.question_text
+
+                    }
+
+                   );
+
+                }
+
+               
+            }
+            else {
+
+                var questions = db.OnlineQuestion.Where(x => x.OnlineSurvey.Id.Equals(id_clicked)).ToList();
+                foreach (var item in questions)
+                {
+                    list.Add(new Question()
+                    {
+
+                        question_id = item.id_question,
+                        question_text = item.question_text
+
+                    }
+
+                   );
+
+                }
+            }
+         
+         
+         
+            return View(list);
+
+
         }
         public ActionResult Analyze(int id_clicked) {
-            var query = (from OffAnswer in db.OfflineAnswer
-                         join OffQuestion in db.OfflineQuestion on OffAnswer.id_question equals OffQuestion.id_question
-
-                         where OffQuestion.id_question.Equals(id_clicked)
-                         group OffAnswer by OffAnswer.answer_text into g
-                         select new
-                         {
-                             g
-                         }
-                );
 
             var list = new List<SurveyStatistics>();
+            var survey = db.OfflineQuestion.Where(x => x.id_question.Equals(id_clicked)).ToList().FirstOrDefault();
+            var question = survey.question_text;
+            if (survey != null)
+            {
 
-            foreach (var item in query) {
-                var tmp = item.g.Key;
-                var pom = item.g.ToList().Count();
+                var offlineQuery = (from OffAnswer in db.OfflineAnswer
+                             join OffQuestion in db.OfflineQuestion on OffAnswer.id_question equals OffQuestion.id_question
 
-                list.Add(new SurveyStatistics()
+                             where OffQuestion.id_question.Equals(id_clicked)
+                             group OffAnswer by OffAnswer.answer_text into g
+                             select new
+                             {
+                                 g
+                             }
+                );
+                foreach (var item in offlineQuery)
                 {
+                    var tmp = item.g.Key;
+                    var pom = item.g.ToList().Count();
+
+                    list.Add(new SurveyStatistics()
+                    {
 
 
-                    answerName = tmp,
-                    count = pom
+                        answerName = tmp,
+                        count = pom,
+                        questionName=question
 
-                });
+                    });
+                }
+
             }
-            
+            else
+            {
+             var onlineQuery = (from OnAnswer in db.OnlineAnswer
+                             join OnQuestion in db.OnlineQuestion on OnAnswer.id_question equals OnQuestion.id_question
+
+                             where OnQuestion.id_question.Equals(id_clicked)
+                             group OnAnswer by OnAnswer.answer_text into g
+                             select new
+                             {
+                                 g
+                             }
+                );
+                foreach (var item in onlineQuery)
+                {
+                    var tmp = item.g.Key;
+                    var pom = item.g.ToList().Count();
+
+                    list.Add(new SurveyStatistics()
+                    {
+
+
+                        answerName = tmp,
+                        count = pom
+
+                    });
+                }
+            }
+
+           
+
+           
             return View(list);
         }
 
@@ -387,30 +466,70 @@ namespace SAP.Controllers
 
         public ActionResult Answers(int survey_id)
         {
-
-            var query = (
-                         from offSurvey in db.OfflineSurvey
-                         join papSurvey in db.PaperSurvey on offSurvey.Id equals papSurvey.id_offlinesurvey
-                         join offQuestion in db.OfflineQuestion on offSurvey.Id equals offQuestion.id_offline_survey
-                         join offAnswer in db.OfflineAnswer on offQuestion.id_question equals offAnswer.id_question
-                         where  offAnswer.id_paper.Equals( papSurvey.id) where survey_id.Equals(offSurvey.Id)
-                         select new {
-                            papSurvey.id,
-                            offQuestion.id_question,
-                            offQuestion.question_text,
-                            offAnswer.answer_text
-                        }
-                        );
+            var survey = db.Survey.Where(x => x.Id.Equals(survey_id)).ToList().FirstOrDefault();
             var surveys = new List<QueryAnswers>();
-            foreach (var t in query)
+
+            if (survey.Survey_type==1)
             {
-                surveys.Add(new QueryAnswers()
+                var offlineSurvey = db.OfflineSurvey.Where(x => x.Id.Equals(survey_id)).ToList().FirstOrDefault();
+                var numQuestions = offlineSurvey.OfflineQuestion.Count();
+                var query = (
+                       from offSurvey in db.OfflineSurvey
+                       join papSurvey in db.PaperSurvey on offSurvey.Id equals papSurvey.id_offlinesurvey
+                       join offQuestion in db.OfflineQuestion on offSurvey.Id equals offQuestion.id_offline_survey
+                       join offAnswer in db.OfflineAnswer on offQuestion.id_question equals offAnswer.id_question
+                       where offAnswer.id_paper.Equals(papSurvey.id)
+                       where survey_id.Equals(offSurvey.Id)
+                       select new
+                       {
+                           papSurvey.id,
+                           offQuestion.id_question,
+                           offQuestion.question_text,
+                           offAnswer.answer_text
+                       }
+                      );
+                foreach (var t in query)
                 {
-                    paperId = t.id,
-                    idQuestion = t.id_question,
-                    questionText = t.question_text,
-                    answersText=t.answer_text});
+                    surveys.Add(new QueryAnswers()
+                    {
+                        paperId = numQuestions,
+                        idQuestion = t.id_question,
+                        questionText = t.question_text,
+                        answersText = t.answer_text
+                    });
+                }
             }
+            else
+            {
+                var onlineSurvey = db.OnlineSurvey.Where(x => x.Id.Equals(survey_id)).ToList().FirstOrDefault();
+                var numQuestions = onlineSurvey.OnlineQuestion.Count();
+                var query = (
+                      from onSurvey in db.OnlineSurvey
+                      join onQuestion in db.OnlineQuestion on onSurvey.Id equals onQuestion.id_online_survey
+                      join onAnswer in db.OnlineAnswer on onQuestion.id_question equals onAnswer.id_question
+                      where survey_id.Equals(onSurvey.Id)
+                      select new
+                      {
+                          
+                          onQuestion.id_question,
+                          onQuestion.question_text,
+                          onAnswer.answer_text
+                      }
+                     );
+                foreach (var t in query)
+                {
+                    surveys.Add(new QueryAnswers()
+                    {
+                        paperId = numQuestions,
+                        idQuestion = t.id_question,
+                        questionText = t.question_text,
+                        answersText = t.answer_text
+                    });
+                }
+            }
+          
+           
+            
             return View(surveys);
         }
 

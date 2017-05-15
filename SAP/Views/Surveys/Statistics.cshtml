@@ -1,8 +1,7 @@
-﻿@model IEnumerable<SAP.Models.OfflineQuestion>
+﻿@model IEnumerable<SAP.Models.Question>
  
  <table class="table">
-            <tr>
-             
+            <tr>           
 
                 <th>
                     Question name
@@ -20,7 +19,8 @@
 
                     <td>
                        
-                        @Html.ActionLink(item.question_text, "Analyze", new { id_clicked = item.id_question })
+                        @Html.ActionLink(item.question_text, "Analyze", new { id_clicked = item.question_id })
+                       
 
                         
                        

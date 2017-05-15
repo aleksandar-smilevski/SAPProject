@@ -291,6 +291,7 @@
     </Compile>
     <Compile Include="Models\PartialClasses.cs" />
     <Compile Include="Models\QueryAnswers.cs" />
+    <Compile Include="Models\Question.cs" />
     <Compile Include="Models\SendsSurvey.cs">
       <DependentUpon>Data.tt</DependentUpon>
     </Compile>
@@ -442,6 +443,7 @@
     <Content Include="Views\f\Edit.cshtml" />
     <Content Include="Views\f\Index.cshtml" />
     <Content Include="Views\Surveys\SendingLinks.cshtml" />
+    <Content Include="Views\Surveys\Charts.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

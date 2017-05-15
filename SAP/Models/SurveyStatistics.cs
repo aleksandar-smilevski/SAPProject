@@ -9,5 +9,6 @@ namespace SAP.Models
 	{
 		public String answerName { get; set; }
 		public int count { get; set; }
+        public String questionName { get; set; }
 	}
 }
