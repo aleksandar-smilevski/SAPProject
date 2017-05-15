@@ -90,7 +90,7 @@
       <PropertyRef Name="id" />
     </Key>
     <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-    <Property Name="answer_text" Type="varchar" MaxLength="50" />
+    <Property Name="answer_text" Type="varchar(max)" />
     <Property Name="id_question" Type="int" />
     <Property Name="id_paper" Type="int" Nullable="false" />
   </EntityType>
@@ -124,7 +124,7 @@
       <PropertyRef Name="id" />
     </Key>
     <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-    <Property Name="answer_text" Type="varchar" MaxLength="50" />
+    <Property Name="answer_text" Type="varchar(max)" />
     <Property Name="id_question" Type="int" />
   </EntityType>
   <EntityType Name="OnlineQuestion">

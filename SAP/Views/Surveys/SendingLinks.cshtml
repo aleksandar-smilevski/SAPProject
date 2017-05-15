@@ -1,0 +1,72 @@
+﻿@model SAP.Models.Survey
+
+@{
+    ViewBag.Title = "Send Links";
+}
+
+<div class="container">
+    <div class="well well-sm" ng-app="SapApp" ng-controller="LinkController" ng-init="setSurveyId(@Model.Id)">
+        <div class="alert alert-danger alert-dismissable" ng-show="isShowingErr">
+            @*<button type="button" class="close" data-dismiss="alert" aria-hidden="true" ng-click="closeAlert()">×</button>*@
+            <strong>Error!</strong><p>{{error}}</p>
+        </div>
+        <div class="alert alert-success alert-dismissable" ng-show="isShowing">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true" ng-click="closeAlert()">×</button>
+            <strong>Success!</strong><p>{{alert}}</p>
+        </div>
+        <label>Generating link for @Model.Name</label>
+        <div class="input-group">
+            <input type="text" class="form-control form-width" placeholder="Link" ng-model="path" ng-readonly="true" select-on-click>
+            <span class="input-group-btn">
+                <button class="btn btn-secondary" type="button" ng-click="getLink(@Model.Id)">Generate link</button>
+            </span>
+        </div>
+        <p class="text-center" style="margin-top:72px">
+            <label class="control-label">Send to:</label>
+            <div class="input-group">
+                <input type="text" class="form-control form-width" placeholder="eg. john@("@")doe" ng-model="email">
+                <span class="input-group-btn">
+                    <button class="btn btn-secondary" type="button" ng-click="send()">Send Email</button>
+                </span>
+            </div>
+        </p>
+    </div>
+</div>
+
+@*<div class="container">
+    <label>Message</label>
+    <div class="well well-sm">
+        <form name="emailForm" ng-submit="submit()" novalidate>
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="form-group" ng-class="{'has-error': emailForm.to.$invalid && emailForm.to.$touched}">
+                        <label>To:</label>
+                        <input type="email" name="to" class="form-control form-width" placeholder="eg. john@("@")doe" ng-model="message.To" ng-required="true">
+                        <span ng-show="emailForm.to.$error.required">Required</span>
+                    </div>
+                    <div class="form-group" ng-class="{'has-error': emailForm.subject.$invalid && emailForm.subject.$touched}">
+                        <label>Subject:</label>
+                        <input type="text" name="Subject" class="form-control form-width" ng-model="message.Subject" ng-required="true" placeholder="eg. Invitation to Survey">
+                    </div>
+                    <div class="form-group">
+                        <label>Message:</label>
+                        <textarea class="form-control form-width" rows="8" ng-model="message.Text"></textarea>
+                    </div>
+                    <p class="text-center"><button type="button" class="btn btn-primary">Send</button></p>
+                </div>
+            </div>
+        </form>
+        <div
+            <input type="text" required ng-model="message.To" placeholder="To">
+            <input type="text" required ng-model="message.Subject" placeholder="Subject">
+            <input type="text" required ng-model="message.Text" placeholder="Message">
+            <button ng-click="doSomething()">DO</button>
+        </div>
+    </div>
+</div>*@
+
+@section Scripts{
+    <script src="~/Scripts/angular.min.js"></script>
+    <script src="~/Scripts/angular-animate.js"></script>
+    <script src="~/app/app.js"></script>
+}

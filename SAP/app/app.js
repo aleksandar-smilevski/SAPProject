@@ -236,42 +236,125 @@ app.controller('FillOutController', function ($scope, $http, $location, $window)
     }
 });
 
-app.controller("LinkController", function ($scope, $http, $location) {
-    $scope.path = "/f/s/";
-    $scope.isShowing = false;
-    $scope.surveyName = null;
-    $scope.UID = null;
-    $scope.getLink = function (id, name) {
-        console.log(name);
-        if (name != undefined && name != null) {
-            $scope.surveyName = name;
-            console.log($scope.surveyName);
+
+app.controller('fController', function ($scope, $http, $location, $window) {
+    $scope.form = {};
+    $scope.answers = [];
+    $scope.checkboxes = [];
+    $scope.survey_id = 0;
+    $scope.loadQuestions = function (id) {
+        console.log(id);
+        if (id != undefined) {
+            $http.get("/api/Surveys/2/" + id)
+            .then(function (response) {
+                if (response.status == 400) {
+                    $scope.errorMessage = data;
+                } else {
+                    var data = response.data;
+                    console.log(data);
+                    $scope.survey_id = data.Id;
+                    $scope.form.questions = data.Questions;
+                }
+            }, function (response, data) {
+                $scope.errorMessage = data;
+            });
         }
-        if($scope.isShowing == true){
-            $scope.isShowing = false;
-            $scope.UID = null;
-            $scope.surveyName = null;
-            return;
-        } else {
-            if (id == undefined) {
-                //Show some error
-                $scope.isShowing = false;
-            }
-            else {
-               
-                $http.get("/api/surveys/link/" + id)
-                    .then(function (response) {
-                        $scope.UID = $location.protocol() + "://" + location.host + $scope.path + response.data.UID;
-                        $scope.surveyName = response.data.Survey.Name;
-                        $scope.isShowing = true;
-                    });
+    };
 
+    $scope.submit = function () {
+        var answers = [];
+        for (var i = 0; i < $scope.form.questions.length; i++) {
+            if ($scope.form.questions[i].type == "checkbox") {
+                for (var j = 0; j < $scope.form.questions[i].values.length; j++) {
+                    var id = $scope.form.questions[i].values[j];
+                    if ($scope.checkboxes[id] != undefined && $scope.checkboxes[id] == true) {
+                        //console.log($scope.form.questions[i].values[j]);
+                        answers.push({ QuestionId: $scope.form.questions[i].Id, Answer: $scope.form.questions[i].values[j] });
+                    }
+                }
+            } else {
+                answers.push({ QuestionId: $scope.form.questions[i].Id, Answer: $scope.form.questions[i].answer });
             }
+
         }
-        
-        
-
-
+        var data = { survey_id: $scope.survey_id, answers: answers };
+        $http.post("/f/FillOut", JSON.stringify(data))
+        .then(function () {
+            $window.location.href = "/f/ThankYou";
+        });
     }
+});
+
+app.controller("LinkController", function ($scope, $http, $location) {
+    $scope.path = null;
+    $scope.isShowingErr = false;
+    $scope.isShowing = false;
+    $scope.email = null;
+    $scope.UID = null;
+    $scope.getLink = function (id) {
+        if (id != undefined) {
+            if ($scope.UID == null) {
+                $http.get("/api/surveys/link/" + id)
+                .then(function (response) {
+                    $scope.path = $location.protocol() + "://" + location.host + "/f/s/" + response.data.UID;
+                    $scope.UID = response.data.UID;
+                    $scope.surveyName = response.data.Survey.Name;
+                });
+            }
+
+        } else {
+            
+        }
+    }
+    $scope.send = function () {
+        if (!validateEmail($scope.email) && $scope.UID == null) {
+            $scope.isShowingErr = true;
+            $scope.error = "Please input a valid email address & generate a link";
+            return;
+        } 
+        if ($scope.UID == null) {
+            $scope.isShowingErr = true;
+            $scope.error = "Please generate a link";
+            return;
+        }
+        if (!validateEmail($scope.email)) {
+            $scope.isShowingErr = true;
+            $scope.error = "Please input a valid email address";
+            return;
+        }
+        var data = { UID: $scope.UID, Email: $scope.email, SurveyId: $scope.SurveyId, URL : $scope.path };
+        $scope.isShowingErr = false;
+        $http.post("/api/surveys/link", JSON.stringify(data))
+        .then(function () {
+            $scope.alert = "Email to " + $scope.email + " sent successfully";
+            $scope.email = null;
+            $scope.isShowing = true;
+        });
+        
+    }
+
+    $scope.setSurveyId = function (id) {
+        if (id != undefined) {
+            $scope.SurveyId = id;
+        }
+    }
+
+    $scope.closeAlert = function () {
+        $scope.isShowing = !$scope.isShowing;
+    }
+
+    function validateEmail(email) {
+        var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        return re.test(email);
+    }
+});
+
+app.directive('selectOnClick', function () {
+    // Linker function
+    return function (scope, element, attrs) {
+        element.bind('click', function () {
+            this.select();
+        });
+    };
 });
 

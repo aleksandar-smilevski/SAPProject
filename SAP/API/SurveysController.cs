@@ -10,6 +10,9 @@ using System.Web.Http;
 using System.Web.Http.Description;
 using SAP.Models;
 using SAP.DTO;
+using Microsoft.AspNet.Identity;
+using System.Net.Mail;
+using System.Threading.Tasks;
 
 namespace SAP.API
 {
@@ -170,6 +173,55 @@ namespace SAP.API
         public string GuidToBase64(Guid guid)
         {
             return Convert.ToBase64String(guid.ToByteArray()).Replace("/", "-").Replace("+", "_").Replace("=", "");
+        }
+
+        [HttpPost]
+        [Route("link")]
+        public async Task<IHttpActionResult> SendingLinks(MessageDTO message)
+        {
+            if (message == null)
+            {
+                return BadRequest();
+            }
+            var survey = db.Survey.Find(message.SurveyId);
+            if (survey == null)
+            {
+                return BadRequest();
+            }
+            var users = db.AspNetUsers.Find(User.Identity.GetUserId());
+            if (users == null)
+            {
+                return BadRequest();
+            }
+            var link = new Links
+            {
+                SurveyID = message.SurveyId,
+                UID = message.UID
+            };
+            var sends = new SendsSurvey
+            {
+                id_onlinesurvey = message.SurveyId,
+                id_interviewer = users.Id,
+            };
+            db.Links.Add(link);
+            db.SendsSurvey.Add(sends);
+            await SendEmail(message.Email, "Invitation to Survey", "You have been invited to fill in the survey" + survey.Name + "<br> To answer the survey follow this link: " + message.URL);
+            db.SaveChanges();
+            return Ok();
+        }
+
+        public async Task SendEmail(string toEmailAddress, string emailSubject, string emailMessage)
+        {
+            var message = new MailMessage();
+            message.To.Add(toEmailAddress);
+            message.IsBodyHtml = true;
+            message.Subject = emailSubject;
+            message.Body = emailMessage;
+
+            using (var smtpClient = new SmtpClient())
+            {
+                await smtpClient.SendMailAsync(message);
+            }
         }
 
     }

@@ -9,9 +9,11 @@ using System.Web.Mvc;
 using SAP.Models;
 using Newtonsoft.Json.Linq;
 using System.Diagnostics;
-using SAP.DTO;  
+using SAP.DTO;
 using Microsoft.AspNet.Identity;
 using Webdiyer.WebControls.Mvc;
+using System.Threading.Tasks;
+using System.Net.Mail;
 
 namespace SAP.Controllers
 {
@@ -461,9 +463,21 @@ namespace SAP.Controllers
             }
             db.SaveChanges();
 
-            
-            
             return Json("Ok", JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult SendingLinks(int? id)
+        {
+            if(id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            var survey = db.Survey.Find(id);
+            if(survey == null)
+            {
+                return HttpNotFound();
+            }
+            return View(survey);
         }
     }
 }

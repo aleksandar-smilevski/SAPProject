@@ -95,7 +95,7 @@
       <PropertyRef Name="id" />
     </Key>
     <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-    <Property Name="answer_text" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="answer_text" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
     <Property Name="id_question" Type="Int32" />
     <Property Name="id_paper" Type="Int32" Nullable="false" />
     <NavigationProperty Name="OfflineQuestion" Relationship="Self.fk_answer" FromRole="OfflineAnswer" ToRole="OfflineQuestion" />
@@ -138,7 +138,7 @@
       <PropertyRef Name="id" />
     </Key>
     <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-    <Property Name="answer_text" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="answer_text" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
     <Property Name="id_question" Type="Int32" />
     <NavigationProperty Name="OnlineQuestion" Relationship="Self.fk_answer1" FromRole="OnlineAnswer" ToRole="OnlineQuestion" />
   </EntityType>

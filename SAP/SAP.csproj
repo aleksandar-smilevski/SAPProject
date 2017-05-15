@@ -195,6 +195,7 @@
     <Compile Include="DTO\AnswerDTO.cs" />
     <Compile Include="DTO\FillsDTO.cs" />
     <Compile Include="DTO\LinkDTO.cs" />
+    <Compile Include="DTO\MessageDTO.cs" />
     <Compile Include="DTO\QuestionDTO.cs" />
     <Compile Include="DTO\SurveyDTO.cs" />
     <Compile Include="DTO\ValuesDTO.cs" />
@@ -250,12 +251,15 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Data.edmx</DependentUpon>
     </Compile>
+    <Compile Include="Models\FillOutOnlineSurveyViewModel.cs" />
     <Compile Include="Models\FillOutSurveyQuestionsViewModel.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\InterviewerInSurvey.cs" />
     <Compile Include="Models\InterviewerStatistics.cs" />
     <Compile Include="Models\InterviewersToSurveys.cs" />
-    <Compile Include="Models\Links.cs" />
+    <Compile Include="Models\Links.cs">
+      <DependentUpon>Data.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\Metadata.cs" />
     <Compile Include="Models\OfflineAnswer.cs">
@@ -267,7 +271,9 @@
     <Compile Include="Models\OfflineSurvey.cs">
       <DependentUpon>Data.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\OfflineValues.cs" />
+    <Compile Include="Models\OfflineValues.cs">
+      <DependentUpon>Data.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\OnlineAnswer.cs">
       <DependentUpon>Data.tt</DependentUpon>
     </Compile>
@@ -277,7 +283,9 @@
     <Compile Include="Models\OnlineSurvey.cs">
       <DependentUpon>Data.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\OnlineValues.cs" />
+    <Compile Include="Models\OnlineValues.cs">
+      <DependentUpon>Data.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\PaperSurvey.cs">
       <DependentUpon>Data.tt</DependentUpon>
     </Compile>
@@ -428,6 +436,12 @@
     <Content Include="Views\Categories\Index.cshtml" />
     <Content Include="Views\Surveys\Statistics.cshtml" />
     <Content Include="Views\Surveys\Analyze.cshtml" />
+    <Content Include="Views\f\Create.cshtml" />
+    <Content Include="Views\f\Delete.cshtml" />
+    <Content Include="Views\f\Details.cshtml" />
+    <Content Include="Views\f\Edit.cshtml" />
+    <Content Include="Views\f\Index.cshtml" />
+    <Content Include="Views\Surveys\SendingLinks.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

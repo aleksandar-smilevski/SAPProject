@@ -13,7 +13,6 @@ namespace SAP.Models
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
     
-    
     public partial class SAPEntities : DbContext
     {
         public SAPEntities()
