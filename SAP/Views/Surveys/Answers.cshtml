@@ -1,5 +1,6 @@
 ﻿@model IEnumerable<SAP.Models.QueryAnswers>
-@{var i = 1;}
+@{var i = 1;
+    var counter = 0;}
 
 @Html.ActionLink("Back To List", "Index")
 @{
@@ -22,9 +23,7 @@
 
         <table class="table">
             <tr>
-                <th>
-                    Survey ReferenceID
-                </th>
+           
 
                 <th>
                     Question
@@ -41,26 +40,26 @@
             @foreach (var item in Model)
             {
 
-                if (idItem != item.paperId) {
-
+                if (counter==item.paperId) {
+                    counter = 0;
                     idItem = item.paperId;
                       <tr>
-                        <td></td>
+          
                         <td></td>
                         <td></td>
                     </tr>
                     <tr>
-                        <td><strong>Survey ReferenceID</strong></td>
+               
                         <td><strong>Question</strong></td>
                         <td><strong>Answer</strong></td>
                     </tr>
 
-                }
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.paperId)
 
-                    </td>
+                }
+                counter++;
+
+                <tr>
+                   
 
                     <td>
                         @Html.DisplayFor(modelItem => item.questionText)

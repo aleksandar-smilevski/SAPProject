@@ -9,20 +9,22 @@ using System.Web.Mvc;
 using SAP.Models;
 using Newtonsoft.Json.Linq;
 using System.Diagnostics;
-using SAP.DTO;  
+using SAP.DTO;
 using Microsoft.AspNet.Identity;
 using Webdiyer.WebControls.Mvc;
+using System.Threading.Tasks;
+using System.Net.Mail;
 
 namespace SAP.Controllers
 {
-    
+
     public class SurveysController : Controller
     {
         private SAPEntities db = new SAPEntities();
         private ApplicationDbContext db1 = new ApplicationDbContext();
         // GET: Surveys
         [Authorize(Roles = "Admin")]
-        public ActionResult Index(string search, string sortBy, string Category, int attr = 0, int id=1)
+        public ActionResult Index(string search, string sortBy, string Category, int attr = 0, int id = 1)
         {
             ViewBag.NameSortParm = String.IsNullOrEmpty(sortBy) ? "name_desc" : "";
             ViewBag.DateSortParm = sortBy == "Date" ? "date_desc" : "Date";
@@ -102,6 +104,123 @@ namespace SAP.Controllers
 
 
             return View(surveys1.ToPagedList(id, 4));
+        }
+
+        [Authorize]
+        public ActionResult Statistics(int id_clicked)
+        {
+            var list = new List<Question>();
+            var survey = db.Survey.Where(x => x.Id.Equals(id_clicked)).ToList().FirstOrDefault();
+            if (survey.Survey_type == 1)
+            {
+                var questions = db.OfflineQuestion.Where(x => x.OfflineSurvey.Id.Equals(id_clicked)).ToList();
+                foreach (var item in questions)
+                {
+                    list.Add(new Question()
+                    {
+
+                        question_id = item.id_question,
+                        question_text = item.question_text
+
+                    }
+
+                   );
+
+                }
+
+               
+            }
+            else {
+
+                var questions = db.OnlineQuestion.Where(x => x.OnlineSurvey.Id.Equals(id_clicked)).ToList();
+                foreach (var item in questions)
+                {
+                    list.Add(new Question()
+                    {
+
+                        question_id = item.id_question,
+                        question_text = item.question_text
+
+                    }
+
+                   );
+
+                }
+            }
+         
+         
+         
+            return View(list);
+
+
+        }
+        public ActionResult Analyze(int id_clicked) {
+
+            var list = new List<SurveyStatistics>();
+            var survey = db.OfflineQuestion.Where(x => x.id_question.Equals(id_clicked)).ToList().FirstOrDefault();
+            var question = survey.question_text;
+            if (survey != null)
+            {
+
+                var offlineQuery = (from OffAnswer in db.OfflineAnswer
+                             join OffQuestion in db.OfflineQuestion on OffAnswer.id_question equals OffQuestion.id_question
+
+                             where OffQuestion.id_question.Equals(id_clicked)
+                             group OffAnswer by OffAnswer.answer_text into g
+                             select new
+                             {
+                                 g
+                             }
+                );
+                foreach (var item in offlineQuery)
+                {
+                    var tmp = item.g.Key;
+                    var pom = item.g.ToList().Count();
+
+                    list.Add(new SurveyStatistics()
+                    {
+
+
+                        answerName = tmp,
+                        count = pom,
+                        questionName=question
+
+                    });
+                }
+
+            }
+            else
+            {
+             var onlineQuery = (from OnAnswer in db.OnlineAnswer
+                             join OnQuestion in db.OnlineQuestion on OnAnswer.id_question equals OnQuestion.id_question
+
+                             where OnQuestion.id_question.Equals(id_clicked)
+                             group OnAnswer by OnAnswer.answer_text into g
+                             select new
+                             {
+                                 g
+                             }
+                );
+                foreach (var item in onlineQuery)
+                {
+                    var tmp = item.g.Key;
+                    var pom = item.g.ToList().Count();
+
+                    list.Add(new SurveyStatistics()
+                    {
+
+
+                        answerName = tmp,
+                        count = pom
+
+                    });
+                }
+            }
+
+           
+
+           
+            return View(list);
         }
 
         // GET: Surveys/Details/5
@@ -273,12 +392,31 @@ namespace SAP.Controllers
             }
             if (survey.Survey_type == 1)
             {
+                
                 var questions = db.OfflineQuestion.Where(x => x.id_offline_survey == id).ToList();
                 foreach (var q in questions)
                 {
+                    var values = db.OfflineValues.Where(x => x.OfflineQuestion.id_question.Equals(q.id_question)).ToList();
+                    foreach (var v in values) {
+                        db.OfflineValues.Remove(v);
+                    }
+                    var answers = db.OfflineAnswer.Where(x => x.OfflineQuestion.id_question.Equals(q.id_question)).ToList();
+                    foreach (var a in answers) {
+                        db.OfflineAnswer.Remove(a);
+                    }
+                    
+                    
                     db.OfflineQuestion.Remove(q);
+
                 }
-                db.OfflineSurvey.Remove(db.OfflineSurvey.Where(x => x.Id == id).FirstOrDefault());
+                var papers = db.PaperSurvey.Where(x => x.OfflineSurvey.Id.Equals(id)).ToList();
+                foreach (var p in papers) {
+                    db.PaperSurvey.Remove(p);
+                }
+                //db.OfflineSurvey.Remove(db.OfflineSurvey.Where(x => x.Id == id).FirstOrDefault());
+                var sur = db.OfflineSurvey.Where(x=>x.Id.Equals(id)).ToList().FirstOrDefault();
+                db.OfflineSurvey.Remove(sur);
+
             }
             else if (survey.Survey_type == 2)
             {
@@ -289,8 +427,9 @@ namespace SAP.Controllers
                 }
                 db.OnlineSurvey.Remove(db.OnlineSurvey.Where(x => x.Id == id).FirstOrDefault());
             }
+
             var addToSurvey = db.AddToSurvey.Where(x => x.Id_survey == id).ToList();
-            foreach(var a in addToSurvey)
+            foreach (var a in addToSurvey)
             {
                 db.AddToSurvey.Remove(a);
             }
@@ -327,30 +466,70 @@ namespace SAP.Controllers
 
         public ActionResult Answers(int survey_id)
         {
-
-            var query = (
-                         from offSurvey in db.OfflineSurvey
-                         join papSurvey in db.PaperSurvey on offSurvey.Id equals papSurvey.id_offlinesurvey
-                         join offQuestion in db.OfflineQuestion on offSurvey.Id equals offQuestion.id_offline_survey
-                         join offAnswer in db.OfflineAnswer on offQuestion.id_question equals offAnswer.id_question
-                         where  offAnswer.id_paper.Equals( papSurvey.id) where survey_id.Equals(offSurvey.Id)
-                         select new {
-                            papSurvey.id,
-                            offQuestion.id_question,
-                            offQuestion.question_text,
-                            offAnswer.answer_text
-                        }
-                        );
+            var survey = db.Survey.Where(x => x.Id.Equals(survey_id)).ToList().FirstOrDefault();
             var surveys = new List<QueryAnswers>();
-            foreach (var t in query)
+
+            if (survey.Survey_type==1)
             {
-                surveys.Add(new QueryAnswers()
+                var offlineSurvey = db.OfflineSurvey.Where(x => x.Id.Equals(survey_id)).ToList().FirstOrDefault();
+                var numQuestions = offlineSurvey.OfflineQuestion.Count();
+                var query = (
+                       from offSurvey in db.OfflineSurvey
+                       join papSurvey in db.PaperSurvey on offSurvey.Id equals papSurvey.id_offlinesurvey
+                       join offQuestion in db.OfflineQuestion on offSurvey.Id equals offQuestion.id_offline_survey
+                       join offAnswer in db.OfflineAnswer on offQuestion.id_question equals offAnswer.id_question
+                       where offAnswer.id_paper.Equals(papSurvey.id)
+                       where survey_id.Equals(offSurvey.Id)
+                       select new
+                       {
+                           papSurvey.id,
+                           offQuestion.id_question,
+                           offQuestion.question_text,
+                           offAnswer.answer_text
+                       }
+                      );
+                foreach (var t in query)
                 {
-                    paperId = t.id,
-                    idQuestion = t.id_question,
-                    questionText = t.question_text,
-                    answersText=t.answer_text});
+                    surveys.Add(new QueryAnswers()
+                    {
+                        paperId = numQuestions,
+                        idQuestion = t.id_question,
+                        questionText = t.question_text,
+                        answersText = t.answer_text
+                    });
+                }
             }
+            else
+            {
+                var onlineSurvey = db.OnlineSurvey.Where(x => x.Id.Equals(survey_id)).ToList().FirstOrDefault();
+                var numQuestions = onlineSurvey.OnlineQuestion.Count();
+                var query = (
+                      from onSurvey in db.OnlineSurvey
+                      join onQuestion in db.OnlineQuestion on onSurvey.Id equals onQuestion.id_online_survey
+                      join onAnswer in db.OnlineAnswer on onQuestion.id_question equals onAnswer.id_question
+                      where survey_id.Equals(onSurvey.Id)
+                      select new
+                      {
+                          
+                          onQuestion.id_question,
+                          onQuestion.question_text,
+                          onAnswer.answer_text
+                      }
+                     );
+                foreach (var t in query)
+                {
+                    surveys.Add(new QueryAnswers()
+                    {
+                        paperId = numQuestions,
+                        idQuestion = t.id_question,
+                        questionText = t.question_text,
+                        answersText = t.answer_text
+                    });
+                }
+            }
+          
+           
+            
             return View(surveys);
         }
 
@@ -403,9 +582,21 @@ namespace SAP.Controllers
             }
             db.SaveChanges();
 
-            
-            
             return Json("Ok", JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult SendingLinks(int? id)
+        {
+            if(id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            var survey = db.Survey.Find(id);
+            if(survey == null)
+            {
+                return HttpNotFound();
+            }
+            return View(survey);
         }
     }
 }

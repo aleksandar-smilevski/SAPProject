@@ -1,26 +1,5 @@
-﻿@model SAP.Models.Links
-
-@{
-    ViewBag.Title = "Details";
+﻿@{
+    ViewBag.Title = "Thank You";
 }
 
-<h2>Details</h2>
-
-<div>
-    <h4>Links</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Survey.Name)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Survey.Name)
-        </dd>
-
-    </dl>
-</div>
-<p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.UID }) |
-    @Html.ActionLink("Back to List", "Index")
-</p>
+<h1>Thank you for taking the time to answer the survey!</h1>

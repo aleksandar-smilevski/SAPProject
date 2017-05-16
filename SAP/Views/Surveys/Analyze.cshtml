@@ -1,0 +1,71 @@
+﻿@model IEnumerable<SAP.Models.SurveyStatistics>
+
+<table class="table">
+    <tr>
+
+
+        <th>
+            Answer name
+        </th>
+        <th>
+            count
+        </th>
+
+    </tr>
+
+
+    @foreach (var item in Model)
+            {
+
+
+        <tr>
+
+
+            <td>
+                @Html.DisplayFor(modelItem => item.answerName)
+                
+            </td>
+
+            <td>
+                @Html.DisplayFor(modelItem => item.count)
+
+            </td>
+
+
+        </tr>
+    }
+
+</table>
+
+@{
+
+    int i = 0;
+    string[] answers = new string[Model.Count()];
+
+    foreach (var item in Model)
+    {
+        answers[i] = item.answerName;
+        i++;
+    }
+    i = 0;
+    int[] values = new int[Model.Count()];
+    foreach (var item in Model)
+    {
+        values[i] = item.count;
+        i++;
+    }
+
+    var myChart = new Chart(width: 600, height: 400, theme: ChartTheme.Green)
+        .AddTitle(Model.FirstOrDefault().questionName)
+        .AddSeries(
+        name: Model.FirstOrDefault().questionName,
+        xValue: answers,
+        yValues: values)
+        .Write();
+
+    <a href="/Surveys/Index">BACK</a>
+}
+
+
+
+

@@ -8,14 +8,15 @@
     string search = Request.QueryString["search"] ?? null;
     string sortBy = Request.QueryString["sortBy"] ?? null;
 }
+
 <div ng-app="SapApp" ng-controller="LinkController">
 
     <div class="well-sm" ng-show="isShowing">
         <label>Generating link for {{ surveyName }}</label>
-        <input type="text" class="form-control" ng-model="UID" readonly="readonly"/>
+        <input type="text" class="form-control" ng-model="UID" readonly="readonly" />
     </div>
 
-    <table class="table" >
+    <table class="table">
         <tr>
 
             <th>
@@ -52,7 +53,10 @@
             <tr>
                 <td>
                     @*@Html.DisplayFor(modelItem => item.Name)*@
-                    @Html.ActionLink(item.Name, "Answers", new { survey_id = item.Id }, new { target = "_self" })
+                    @Html.ActionLink(item.Name, "Answers", new { survey_id = item.Id }, new { target = "_self" })  |
+                    @Html.ActionLink("Statistics", "Statistics", new { id_clicked = item.Id }, new { target = "_self" })
+
+
                 </td>
 
                 <td>
@@ -81,7 +85,8 @@
                         }
                         else
                         {
-                            <a href="#" ng-click="getLink(@item.Id)">Get link</a>
+                            //<a href="#" ng-click="getLink(@item.Id)">Get link</a>
+                            @Html.ActionLink("Get Link", "SendingLinks", new { id = item.Id }, new { target = "_self" })
                             //<a href="#" data-toggle="popover" title="Generatin link for @item.Name" data-html="true" data-content="<p>Shareable link</p><input type='text' class='form-control' ng-model='UID' />" ng-click="getLink(@item.Id)">Get link</a>
                         }
                     }

@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="SAPModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="SAPModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="__MigrationHistory">
           <Key>
             <PropertyRef Name="MigrationId" />
@@ -95,7 +95,7 @@
             <PropertyRef Name="id" />
           </Key>
           <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="answer_text" Type="varchar" MaxLength="50" />
+          <Property Name="answer_text" Type="varchar(max)" />
           <Property Name="id_question" Type="int" />
           <Property Name="id_paper" Type="int" Nullable="false" />
         </EntityType>
@@ -129,7 +129,7 @@
             <PropertyRef Name="id" />
           </Key>
           <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="answer_text" Type="varchar" MaxLength="50" />
+          <Property Name="answer_text" Type="varchar(max)" />
           <Property Name="id_question" Type="int" />
         </EntityType>
         <EntityType Name="OnlineQuestion">
@@ -583,8 +583,7 @@
             <End Role="Survey" EntitySet="Survey" />
           </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="SAPModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -683,7 +682,7 @@
             <PropertyRef Name="id" />
           </Key>
           <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="answer_text" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="answer_text" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="id_question" Type="Int32" />
           <Property Name="id_paper" Type="Int32" Nullable="false" />
           <NavigationProperty Name="OfflineQuestion" Relationship="Self.fk_answer" FromRole="OfflineAnswer" ToRole="OfflineQuestion" />
@@ -726,7 +725,7 @@
             <PropertyRef Name="id" />
           </Key>
           <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="answer_text" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="answer_text" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="id_question" Type="Int32" />
           <NavigationProperty Name="OnlineQuestion" Relationship="Self.fk_answer1" FromRole="OnlineAnswer" ToRole="OnlineQuestion" />
         </EntityType>
