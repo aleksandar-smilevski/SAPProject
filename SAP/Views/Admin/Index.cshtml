@@ -4,13 +4,12 @@
     ViewBag.Title = "Admin Page";
 }
 
-            <h1 class="page-header">
-                ADMIN
-                <small>Users</small>
-            </h1>
-            <p>
-                @Html.ActionLink("Create New", "Create")
-            </p>
+            <h4 class="page-header">
+                
+                Users
+                <a href="@Url.Action("Create","Admin")"><i class="glyphicon glyphicon-plus"></i></a>
+            </h4>
+            
             <table class="table table-responsive">
                 <tr>
                     <th>
