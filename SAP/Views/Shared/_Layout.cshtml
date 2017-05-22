@@ -4,10 +4,11 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewBag.Title - My ASP.NET Application</title>
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
-
 </head>
+
 <body>
     <div id="wrapper">
         <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
@@ -108,7 +109,7 @@
                     @{
                         if (Request.IsAuthenticated)
                         {
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user" style="margin:5px"></i>@User.Identity.Name<b class="caret"></b></a>
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user" style="margin:5px"></i><span class="username">@User.Identity.Name</span><b class="caret"></b></a>
                                 <ul class="dropdown-menu">
                                     <li>
                                         <a href="@Url.Action("Index","Manage")"><i class="fa fa-fw fa-gear"></i> Settings</a>
@@ -154,12 +155,24 @@
                                     </li>
                                 </ul>
                             </li>
+                            <li>
+                                <a href="@Url.Action("Index", "Surveys", new { attr = 1 }, null)">Offline Surveys</a>
+                            </li>
+                            <li>
+                                <a href="@Url.Action("Index", "Surveys", new { attr = 2 }, null)">Online Surveys</a>
+                            </li>
                         }
                         else
                         {
                             <li>
-                                <a href="@Url.Action("Index","Surveys")"><i class="fa fa-fw  fa-file-text"></i> Surveys</a>
+                                <a href="@Url.Action("Index","User")"><i class="fa fa-fw  fa-file-text"></i>My Surveys</a>
                             </li>
+                            @*<li>
+                                <a href="@Url.Action("Index", "Surveys", new { attr = 1 }, null)">Offline Surveys</a>
+                            </li>
+                            <li>
+                                <a href="@Url.Action("Index", "Surveys", new { attr = 2 }, null)">Online Surveys</a>
+                            </li>*@
                         }
                     }
                     else
@@ -168,19 +181,10 @@
                             <a href="@Url.Action("Login","Account")"><i class="fa fa-fw  fa-sign-in"></i> Log in</a>
                         </li>
                     }
-                    <li class="divider"></li>
                     <li>
-                        <a href="@Url.Action("Index","Surveys")"><i class="fa fa-fw  fa-file-text"></i> Surveys</a>
-                        <ul>
-                            <li>
-                                @Html.ActionLink("Offline Surveys", "Index", "Surveys", new { attr = 1 }, null)
-                            </li>
-                            <li>
-                                @Html.ActionLink("Online Surveys", "Index", "Surveys", new { attr = 2 }, null)
-                            </li>
-                        </ul>
+                        @*<a href="@Url.Action("Index","Surveys")"><i class="fa fa-fw  fa-file-text"></i> Surveys</a>*@
+                        
                     </li>
-                    <li class="divider"></li>
                     <li class="footer">
                         <p>@DateTime.Now.Year - SAP</p>
                     </li>

@@ -19,6 +19,12 @@ namespace SAP
                 routeTemplate: "api/{controller}/{id}",
                 defaults: new { id = RouteParameter.Optional }
             );
+
+            config.Routes.MapHttpRoute(
+                name: "QuestionApi",
+                routeTemplate: "api/{controller}/{survey_type}/{id}",
+                defaults: new { id = RouteParameter.Optional }
+            );
         }
     }
 }

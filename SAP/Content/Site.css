@@ -1,4 +1,5 @@
 ﻿body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     padding-top: 50px;
     padding-bottom: 20px;
 }
@@ -21,4 +22,74 @@ input,
 select,
 textarea {
     max-width: 280px;
+}
+
+.design-panel{
+    border:0;
+    -webkit-box-shadow: none;
+    box-shadow:none;
+}
+
+.pills-anchor {
+    color:black;
+}
+
+/* when hiding the picture */
+/*.ng-hide-add { 
+    animation:0.2s fadeOut ease; 
+}*/
+
+/* when showing the picture */
+.ng-hide-remove { 
+    animation:0.25s fadeIn ease; 
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+  }
+}
+
+.ng-invalid.ng-dirty {
+    border-color:red;
+}
+.clickable {
+    padding: 5px;
+    border: 1px solid #fff;
+}
+.clickable:hover {
+    border: 0.5px solid #e5e5e5;
+    border-radius: 2px;
+    cursor:pointer;
+}
+
+#dropdown-detail-1 {
+    padding: 10px;
+    -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+    -moz-box-sizing: border-box;    /* Firefox, other Gecko */
+    box-sizing: border-box;    
+}
+.form-width {
+    max-width: 100%;
+}
+body {
+    word-break: break-all;
+}
+
+.w3-green {
+    background-color: #3aa98c !important;
 }

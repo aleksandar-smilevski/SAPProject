@@ -1,0 +1,63 @@
+﻿@model IEnumerable<SAP.Models.InterviewerStatistics>
+
+<div class="panel panel-default" >
+    <div class="panel-heading">
+        User: @ViewBag.userName
+    </div>
+</div>
+@{
+    if (!Model.Any())
+    {
+        <hr />
+        <div class="container-fluid">
+            <div class="alert alert-info">
+                <h4>
+                   Fire this user!
+                </h4>
+            
+            </div>
+        </div>
+        <hr />
+    }
+    else
+    {
+
+        <table class="table">
+            <tr>
+                <th>
+                    Survey Name
+                </th>
+
+
+                <th>
+                    Number of filled surveys
+                </th>
+
+            </tr>
+
+
+            @foreach (var item in Model)
+            {
+
+
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.surveyName)
+
+                    </td>
+
+
+                    <td>
+                        @Html.DisplayFor(modelItem => item.count)
+                    </td>
+
+
+                </tr>
+            }
+
+        </table>
+
+
+    }
+    @Html.ActionLink("Back To List","Index")
+}

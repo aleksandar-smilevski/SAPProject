@@ -10,6 +10,14 @@
     <Property Name="Model" Type="varbinary(max)" Nullable="false" />
     <Property Name="ProductVersion" Type="nvarchar" MaxLength="32" Nullable="false" />
   </EntityType>
+  <EntityType Name="AddToSurvey">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Id_interviewer" Type="nvarchar" MaxLength="128" />
+    <Property Name="Id_survey" Type="int" />
+  </EntityType>
   <EntityType Name="AspNetRoles">
     <Key>
       <PropertyRef Name="Id" />
@@ -65,37 +73,118 @@
   </EntityType>
   <EntityType Name="Category">
     <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Category" Type="varchar" MaxLength="50" />
+  </EntityType>
+  <EntityType Name="Links">
+    <Key>
+      <PropertyRef Name="UID" />
+    </Key>
+    <Property Name="UID" Type="nvarchar" MaxLength="64" Nullable="false" />
+    <Property Name="SurveyID" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="OfflineAnswer">
+    <Key>
       <PropertyRef Name="id" />
     </Key>
     <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-    <Property Name="name" Type="varchar" MaxLength="20" />
+    <Property Name="answer_text" Type="varchar(max)" />
+    <Property Name="id_question" Type="int" />
+    <Property Name="id_paper" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="OfflineQuestion">
+    <Key>
+      <PropertyRef Name="id_question" />
+    </Key>
+    <Property Name="id_question" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="question_text" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="question_desc" Type="varchar" MaxLength="50" />
+    <Property Name="is_required" Type="bit" Nullable="false" />
+    <Property Name="question_type" Type="varchar" MaxLength="20" Nullable="false" />
+    <Property Name="id_offline_survey" Type="int" Nullable="false" />
   </EntityType>
   <EntityType Name="OfflineSurvey">
     <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="OfflineValues">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Value" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="question_id" Type="int" />
+  </EntityType>
+  <EntityType Name="OnlineAnswer">
+    <Key>
       <PropertyRef Name="id" />
     </Key>
     <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-    <Property Name="id_survey" Type="int" />
-    <Property Name="num_questions" Type="int" />
-    <Property Name="is_active" Type="bit" Nullable="false" />
+    <Property Name="answer_text" Type="varchar(max)" />
+    <Property Name="id_question" Type="int" />
+  </EntityType>
+  <EntityType Name="OnlineQuestion">
+    <Key>
+      <PropertyRef Name="id_question" />
+    </Key>
+    <Property Name="id_question" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="question_text" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="question_desc" Type="varchar" MaxLength="50" />
+    <Property Name="is_required" Type="bit" Nullable="false" />
+    <Property Name="question_type" Type="varchar" MaxLength="20" Nullable="false" />
+    <Property Name="id_online_survey" Type="int" Nullable="false" />
   </EntityType>
   <EntityType Name="OnlineSurvey">
     <Key>
-      <PropertyRef Name="id" />
+      <PropertyRef Name="Id" />
     </Key>
-    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-    <Property Name="id_survey" Type="int" />
-    <Property Name="num_questions" Type="int" />
-    <Property Name="is_active" Type="bit" Nullable="false" />
+    <Property Name="Id" Type="int" Nullable="false" />
   </EntityType>
-  <EntityType Name="Survey">
+  <EntityType Name="OnlineValues">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Value" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="question_id" Type="int" />
+  </EntityType>
+  <EntityType Name="PaperSurvey">
     <Key>
       <PropertyRef Name="id" />
     </Key>
     <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-    <Property Name="name" Type="varchar" MaxLength="50" Nullable="false" />
-    <Property Name="category" Type="int" Nullable="false" />
-    <Property Name="date" Type="datetime" />
+    <Property Name="id_offlinesurvey" Type="int" Nullable="false" />
+    <Property Name="id_interviewer" Type="nvarchar" MaxLength="128" Nullable="false" />
+  </EntityType>
+  <EntityType Name="SendsSurvey">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="id_onlinesurvey" Type="int" Nullable="false" />
+    <Property Name="id_interviewer" Type="nvarchar" MaxLength="128" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Survey">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Name" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="Category" Type="int" Nullable="false" />
+    <Property Name="Survey_type" Type="int" Nullable="false" />
+    <Property Name="Date" Type="datetime" Nullable="false" />
+    <Property Name="Is_active" Type="bit" Nullable="false" />
+  </EntityType>
+  <EntityType Name="SurveyType">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Survey_type" Type="varchar" MaxLength="20" Nullable="false" />
   </EntityType>
   <EntityType Name="UserTokens">
     <Key>
@@ -105,27 +194,51 @@
     <Property Name="UserID" Type="uniqueidentifier" Nullable="false" />
     <Property Name="Token" Type="uniqueidentifier" Nullable="false" />
   </EntityType>
-  <Association Name="FK__OfflineSu__id_su__48CFD27E">
-    <End Role="Survey" Type="Self.Survey" Multiplicity="0..1" />
-    <End Role="OfflineSurvey" Type="Self.OfflineSurvey" Multiplicity="*" />
+  <Association Name="FK__AddToSurv__Id_in__0880433F">
+    <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="0..1" />
+    <End Role="AddToSurvey" Type="Self.AddToSurvey" Multiplicity="*" />
     <ReferentialConstraint>
-      <Principal Role="Survey">
-        <PropertyRef Name="id" />
+      <Principal Role="AspNetUsers">
+        <PropertyRef Name="Id" />
       </Principal>
-      <Dependent Role="OfflineSurvey">
-        <PropertyRef Name="id_survey" />
+      <Dependent Role="AddToSurvey">
+        <PropertyRef Name="Id_interviewer" />
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="FK__OnlineSur__id_su__45F365D3">
+  <Association Name="FK__AddToSurv__Id_su__09746778">
     <End Role="Survey" Type="Self.Survey" Multiplicity="0..1" />
-    <End Role="OnlineSurvey" Type="Self.OnlineSurvey" Multiplicity="*" />
+    <End Role="AddToSurvey" Type="Self.AddToSurvey" Multiplicity="*" />
     <ReferentialConstraint>
       <Principal Role="Survey">
-        <PropertyRef Name="id" />
+        <PropertyRef Name="Id" />
       </Principal>
-      <Dependent Role="OnlineSurvey">
-        <PropertyRef Name="id_survey" />
+      <Dependent Role="AddToSurvey">
+        <PropertyRef Name="Id_survey" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_answer">
+    <End Role="OfflineQuestion" Type="Self.OfflineQuestion" Multiplicity="0..1" />
+    <End Role="OfflineAnswer" Type="Self.OfflineAnswer" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="OfflineQuestion">
+        <PropertyRef Name="id_question" />
+      </Principal>
+      <Dependent Role="OfflineAnswer">
+        <PropertyRef Name="id_question" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_answer1">
+    <End Role="OnlineQuestion" Type="Self.OnlineQuestion" Multiplicity="0..1" />
+    <End Role="OnlineAnswer" Type="Self.OnlineAnswer" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="OnlineQuestion">
+        <PropertyRef Name="id_question" />
+      </Principal>
+      <Dependent Role="OnlineAnswer">
+        <PropertyRef Name="id_question" />
       </Dependent>
     </ReferentialConstraint>
   </Association>
@@ -134,10 +247,10 @@
     <End Role="Survey" Type="Self.Survey" Multiplicity="*" />
     <ReferentialConstraint>
       <Principal Role="Category">
-        <PropertyRef Name="id" />
+        <PropertyRef Name="Id" />
       </Principal>
       <Dependent Role="Survey">
-        <PropertyRef Name="category" />
+        <PropertyRef Name="Category" />
       </Dependent>
     </ReferentialConstraint>
   </Association>
@@ -197,25 +310,200 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
+  <Association Name="fk_int1">
+    <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1" />
+    <End Role="SendsSurvey" Type="Self.SendsSurvey" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="AspNetUsers">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="SendsSurvey">
+        <PropertyRef Name="id_interviewer" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_int2">
+    <End Role="OnlineSurvey" Type="Self.OnlineSurvey" Multiplicity="1" />
+    <End Role="SendsSurvey" Type="Self.SendsSurvey" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="OnlineSurvey">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="SendsSurvey">
+        <PropertyRef Name="id_onlinesurvey" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_int4">
+    <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1" />
+    <End Role="PaperSurvey" Type="Self.PaperSurvey" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="AspNetUsers">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="PaperSurvey">
+        <PropertyRef Name="id_interviewer" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_int5">
+    <End Role="OfflineSurvey" Type="Self.OfflineSurvey" Multiplicity="1" />
+    <End Role="PaperSurvey" Type="Self.PaperSurvey" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="OfflineSurvey">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="PaperSurvey">
+        <PropertyRef Name="id_offlinesurvey" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Links_Survey">
+    <End Role="Survey" Type="Self.Survey" Multiplicity="1" />
+    <End Role="Links" Type="Self.Links" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Survey">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Links">
+        <PropertyRef Name="SurveyID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_OfflineQuestion_OfflineSurvey">
+    <End Role="OfflineSurvey" Type="Self.OfflineSurvey" Multiplicity="1" />
+    <End Role="OfflineQuestion" Type="Self.OfflineQuestion" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="OfflineSurvey">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="OfflineQuestion">
+        <PropertyRef Name="id_offline_survey" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_OfflineSurvey_Survey">
+    <End Role="Survey" Type="Self.Survey" Multiplicity="1" />
+    <End Role="OfflineSurvey" Type="Self.OfflineSurvey" Multiplicity="0..1" />
+    <ReferentialConstraint>
+      <Principal Role="Survey">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="OfflineSurvey">
+        <PropertyRef Name="Id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_OfflineValues_OfflineQuestion1">
+    <End Role="OfflineQuestion" Type="Self.OfflineQuestion" Multiplicity="0..1" />
+    <End Role="OfflineValues" Type="Self.OfflineValues" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="OfflineQuestion">
+        <PropertyRef Name="id_question" />
+      </Principal>
+      <Dependent Role="OfflineValues">
+        <PropertyRef Name="question_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_OnlineQuestion_OnlineSurvey">
+    <End Role="OnlineSurvey" Type="Self.OnlineSurvey" Multiplicity="1" />
+    <End Role="OnlineQuestion" Type="Self.OnlineQuestion" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="OnlineSurvey">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="OnlineQuestion">
+        <PropertyRef Name="id_online_survey" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_OnlineSurvey_Survey">
+    <End Role="Survey" Type="Self.Survey" Multiplicity="1" />
+    <End Role="OnlineSurvey" Type="Self.OnlineSurvey" Multiplicity="0..1" />
+    <ReferentialConstraint>
+      <Principal Role="Survey">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="OnlineSurvey">
+        <PropertyRef Name="Id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_OnlineValues_OnlineQuestion">
+    <End Role="OnlineQuestion" Type="Self.OnlineQuestion" Multiplicity="0..1" />
+    <End Role="OnlineValues" Type="Self.OnlineValues" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="OnlineQuestion">
+        <PropertyRef Name="id_question" />
+      </Principal>
+      <Dependent Role="OnlineValues">
+        <PropertyRef Name="question_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_paper">
+    <End Role="PaperSurvey" Type="Self.PaperSurvey" Multiplicity="1" />
+    <End Role="OfflineAnswer" Type="Self.OfflineAnswer" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="PaperSurvey">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="OfflineAnswer">
+        <PropertyRef Name="id_paper" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_type">
+    <End Role="SurveyType" Type="Self.SurveyType" Multiplicity="1" />
+    <End Role="Survey" Type="Self.Survey" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="SurveyType">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Survey">
+        <PropertyRef Name="Survey_type" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
   <EntityContainer Name="SAPModelStoreContainer">
     <EntitySet Name="__MigrationHistory" EntityType="Self.__MigrationHistory" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="AddToSurvey" EntityType="Self.AddToSurvey" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="AspNetRoles" EntityType="Self.AspNetRoles" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="AspNetUserClaims" EntityType="Self.AspNetUserClaims" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="AspNetUserLogins" EntityType="Self.AspNetUserLogins" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="AspNetUserRoles" EntityType="Self.AspNetUserRoles" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="AspNetUsers" EntityType="Self.AspNetUsers" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Category" EntityType="Self.Category" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Links" EntityType="Self.Links" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="OfflineAnswer" EntityType="Self.OfflineAnswer" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="OfflineQuestion" EntityType="Self.OfflineQuestion" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="OfflineSurvey" EntityType="Self.OfflineSurvey" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="OfflineValues" EntityType="Self.OfflineValues" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="OnlineAnswer" EntityType="Self.OnlineAnswer" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="OnlineQuestion" EntityType="Self.OnlineQuestion" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="OnlineSurvey" EntityType="Self.OnlineSurvey" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="OnlineValues" EntityType="Self.OnlineValues" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="PaperSurvey" EntityType="Self.PaperSurvey" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="SendsSurvey" EntityType="Self.SendsSurvey" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Survey" EntityType="Self.Survey" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="SurveyType" EntityType="Self.SurveyType" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="UserTokens" EntityType="Self.UserTokens" Schema="dbo" store:Type="Tables" />
-    <AssociationSet Name="FK__OfflineSu__id_su__48CFD27E" Association="Self.FK__OfflineSu__id_su__48CFD27E">
-      <End Role="Survey" EntitySet="Survey" />
-      <End Role="OfflineSurvey" EntitySet="OfflineSurvey" />
+    <AssociationSet Name="FK__AddToSurv__Id_in__0880433F" Association="Self.FK__AddToSurv__Id_in__0880433F">
+      <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+      <End Role="AddToSurvey" EntitySet="AddToSurvey" />
     </AssociationSet>
-    <AssociationSet Name="FK__OnlineSur__id_su__45F365D3" Association="Self.FK__OnlineSur__id_su__45F365D3">
+    <AssociationSet Name="FK__AddToSurv__Id_su__09746778" Association="Self.FK__AddToSurv__Id_su__09746778">
       <End Role="Survey" EntitySet="Survey" />
-      <End Role="OnlineSurvey" EntitySet="OnlineSurvey" />
+      <End Role="AddToSurvey" EntitySet="AddToSurvey" />
+    </AssociationSet>
+    <AssociationSet Name="fk_answer" Association="Self.fk_answer">
+      <End Role="OfflineQuestion" EntitySet="OfflineQuestion" />
+      <End Role="OfflineAnswer" EntitySet="OfflineAnswer" />
+    </AssociationSet>
+    <AssociationSet Name="fk_answer1" Association="Self.fk_answer1">
+      <End Role="OnlineQuestion" EntitySet="OnlineQuestion" />
+      <End Role="OnlineAnswer" EntitySet="OnlineAnswer" />
     </AssociationSet>
     <AssociationSet Name="fk_category" Association="Self.fk_category">
       <End Role="Category" EntitySet="Category" />
@@ -236,6 +524,58 @@
     <AssociationSet Name="FK_dbo_AspNetUserRoles_dbo_AspNetUsers_UserId" Association="Self.FK_dbo_AspNetUserRoles_dbo_AspNetUsers_UserId">
       <End Role="AspNetUsers" EntitySet="AspNetUsers" />
       <End Role="AspNetUserRoles" EntitySet="AspNetUserRoles" />
+    </AssociationSet>
+    <AssociationSet Name="fk_int1" Association="Self.fk_int1">
+      <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+      <End Role="SendsSurvey" EntitySet="SendsSurvey" />
+    </AssociationSet>
+    <AssociationSet Name="fk_int2" Association="Self.fk_int2">
+      <End Role="OnlineSurvey" EntitySet="OnlineSurvey" />
+      <End Role="SendsSurvey" EntitySet="SendsSurvey" />
+    </AssociationSet>
+    <AssociationSet Name="fk_int4" Association="Self.fk_int4">
+      <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+      <End Role="PaperSurvey" EntitySet="PaperSurvey" />
+    </AssociationSet>
+    <AssociationSet Name="fk_int5" Association="Self.fk_int5">
+      <End Role="OfflineSurvey" EntitySet="OfflineSurvey" />
+      <End Role="PaperSurvey" EntitySet="PaperSurvey" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Links_Survey" Association="Self.FK_Links_Survey">
+      <End Role="Survey" EntitySet="Survey" />
+      <End Role="Links" EntitySet="Links" />
+    </AssociationSet>
+    <AssociationSet Name="FK_OfflineQuestion_OfflineSurvey" Association="Self.FK_OfflineQuestion_OfflineSurvey">
+      <End Role="OfflineSurvey" EntitySet="OfflineSurvey" />
+      <End Role="OfflineQuestion" EntitySet="OfflineQuestion" />
+    </AssociationSet>
+    <AssociationSet Name="FK_OfflineSurvey_Survey" Association="Self.FK_OfflineSurvey_Survey">
+      <End Role="Survey" EntitySet="Survey" />
+      <End Role="OfflineSurvey" EntitySet="OfflineSurvey" />
+    </AssociationSet>
+    <AssociationSet Name="FK_OfflineValues_OfflineQuestion1" Association="Self.FK_OfflineValues_OfflineQuestion1">
+      <End Role="OfflineQuestion" EntitySet="OfflineQuestion" />
+      <End Role="OfflineValues" EntitySet="OfflineValues" />
+    </AssociationSet>
+    <AssociationSet Name="FK_OnlineQuestion_OnlineSurvey" Association="Self.FK_OnlineQuestion_OnlineSurvey">
+      <End Role="OnlineSurvey" EntitySet="OnlineSurvey" />
+      <End Role="OnlineQuestion" EntitySet="OnlineQuestion" />
+    </AssociationSet>
+    <AssociationSet Name="FK_OnlineSurvey_Survey" Association="Self.FK_OnlineSurvey_Survey">
+      <End Role="Survey" EntitySet="Survey" />
+      <End Role="OnlineSurvey" EntitySet="OnlineSurvey" />
+    </AssociationSet>
+    <AssociationSet Name="FK_OnlineValues_OnlineQuestion" Association="Self.FK_OnlineValues_OnlineQuestion">
+      <End Role="OnlineQuestion" EntitySet="OnlineQuestion" />
+      <End Role="OnlineValues" EntitySet="OnlineValues" />
+    </AssociationSet>
+    <AssociationSet Name="fk_paper" Association="Self.fk_paper">
+      <End Role="PaperSurvey" EntitySet="PaperSurvey" />
+      <End Role="OfflineAnswer" EntitySet="OfflineAnswer" />
+    </AssociationSet>
+    <AssociationSet Name="fk_type" Association="Self.fk_type">
+      <End Role="SurveyType" EntitySet="SurveyType" />
+      <End Role="Survey" EntitySet="Survey" />
     </AssociationSet>
   </EntityContainer>
 </Schema>

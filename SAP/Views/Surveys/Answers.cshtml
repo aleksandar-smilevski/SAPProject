@@ -1,0 +1,83 @@
+﻿@model IEnumerable<SAP.Models.QueryAnswers>
+@{var i = 1;
+    var counter = 0;}
+
+@Html.ActionLink("Back To List", "Index")
+@{
+    if (!Model.Any())
+    {
+        <hr />
+        <div class="container-fluid">
+            <div class="alert alert-info">
+                <h4>
+                    No answers for this survey!
+                </h4>
+
+            </div>
+        </div>
+        <hr />
+    }
+    else
+    {
+
+
+        <table class="table">
+            <tr>
+           
+
+                <th>
+                    Question
+                </th>
+                <th>
+                    Answer
+                </th>
+
+            </tr>
+            @{
+                var idItem = Model.First().paperId;
+            }
+                
+            @foreach (var item in Model)
+            {
+
+                if (counter==item.paperId) {
+                    counter = 0;
+                    idItem = item.paperId;
+                      <tr>
+          
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+               
+                        <td><strong>Question</strong></td>
+                        <td><strong>Answer</strong></td>
+                    </tr>
+
+
+                }
+                counter++;
+
+                <tr>
+                   
+
+                    <td>
+                        @Html.DisplayFor(modelItem => item.questionText)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.answersText)
+                    </td>
+
+                </tr>
+               
+
+            }
+
+            
+        </table>
+    
+
+
+    }
+    @Html.ActionLink("Back To List", "Index")
+}

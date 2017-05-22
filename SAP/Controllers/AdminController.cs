@@ -14,7 +14,7 @@ using System.Net.Mail;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using SAP.Attributes;
-
+using Webdiyer.WebControls.Mvc;
 namespace SAP.Controllers
 {
     [AccessDeniedAuthorize(Roles = "Admin")]
@@ -37,9 +37,51 @@ namespace SAP.Controllers
         }
 
         // GET: Admin
-        public ActionResult Index()
+        public ActionResult Index(String search, int id = 1)
         {
-            return View(db.Users.ToList());
+            var users = db.Users.AsQueryable();
+            if (!String.IsNullOrWhiteSpace(search))
+            {
+                users = users.Where(x => x.FirstName.Contains(search) || x.Email.Contains(search) || x.UserName.Contains(search));
+            }
+            var model = users.OrderByDescending(x => x.Id).ToPagedList(id, 4);
+            if (Request.IsAjaxRequest())
+            {
+                return PartialView("_IndexPartial", model);
+            }
+            return View(model);
+        }
+        [Route("{id_clicked}")]
+        public ActionResult Statistics(string id_clicked) {
+
+            var interviewerName = context.AspNetUsers.Where(x => x.Id.Equals(id_clicked)).Select(x => x.Email).FirstOrDefault();
+            var query = (from paperSurvey in context.PaperSurvey
+                         join aspNetUsers in context.AspNetUsers on paperSurvey.id_interviewer equals aspNetUsers.Id
+                         join offSurvey in context.OfflineSurvey on paperSurvey.id_offlinesurvey equals offSurvey.Id
+                         join survey in context.Survey on offSurvey.Id equals survey.Id
+                         where aspNetUsers.Id.Equals(id_clicked)
+                         group offSurvey by offSurvey.Id into g
+                         select new
+                         {
+                             g                        
+                         }
+
+                          );
+            var surveys = new List<InterviewerStatistics>();
+            foreach (var t in query) {
+
+                var tmp = t.g.Key;
+                var name = context.Survey.Where(x => x.Id.Equals(tmp)).ToList().FirstOrDefault().Name;
+              
+                var pom = t.g.ToList().Count();
+                surveys.Add(new InterviewerStatistics()
+                {
+                    surveyName = name,                  
+                    count = pom,                
+                });
+            }
+            ViewBag.userName = interviewerName;
+            return View(surveys);
         }
 
         // GET: Admin/Details/5
@@ -146,7 +188,21 @@ namespace SAP.Controllers
             {
                 return HttpNotFound();
             }
-            return View(applicationUser);
+            var list = db.Roles.OrderBy(r => r.Name).ToList().Select(rr => new SelectListItem { Value = rr.Name.ToString(), Text = rr.Name }).ToList();
+            string userRole = db.Roles.Where(x => x.Users.Any(y => y.UserId == applicationUser.Id)).Select(x => x.Name).FirstOrDefault();
+            ViewBag.UserRole = new SelectList(list,"Value","Text", userRole);
+            var model = new EditUserViewModel
+            {
+                Age = applicationUser.Age,
+                Email = applicationUser.Email,
+                FirstName = applicationUser.FirstName,
+                EmailConfirmed = applicationUser.EmailConfirmed,
+                PhoneNumber = applicationUser.PhoneNumber,
+                UserName = applicationUser.UserName,
+                UserRole = userRole,
+                Id = applicationUser.Id
+            };
+            return View(model);
         }
 
         // POST: Admin/Edit/5
@@ -154,15 +210,43 @@ namespace SAP.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(ApplicationUser applicationUser)
+        public ActionResult Edit(EditUserViewModel user)
         {
             if (ModelState.IsValid)
             {
-                db.Entry(applicationUser).State = EntityState.Modified;
+                var appuser = db.Users.Where(x => x.Id == user.Id).FirstOrDefault();
+                if (appuser == null)
+                {
+                    return HttpNotFound();
+                }
+                appuser.Age = user.Age;
+                appuser.FirstName = user.FirstName;
+                appuser.PhoneNumber = user.PhoneNumber;
+                appuser.UserName = user.UserName;
+
+                db.Entry(appuser).State = System.Data.Entity.EntityState.Modified;
                 db.SaveChanges();
+
+                if (UserManager.IsInRole(user.Id, "Admin"))
+                {
+                    if(user.UserRole != "Admin")
+                    {
+                        UserManager.RemoveFromRole(user.Id, "Admin");
+                        UserManager.AddToRole(user.Id, "Interviewer");
+                    }
+                    
+                }
+                else
+                {
+                    if (user.UserRole != "Interviewer")
+                    {
+                        UserManager.RemoveFromRole(user.Id, "Interviewer");
+                        UserManager.AddToRole(user.Id, "Admin");
+                    }
+                }
                 return RedirectToAction("Index");
             }
-            return View(applicationUser);
+            return View(user);
         }
 
         // GET: Admin/Delete/5
@@ -186,6 +270,12 @@ namespace SAP.Controllers
         public ActionResult DeleteConfirmed(string id)
         {
             ApplicationUser applicationUser = db.Users.Find(id);
+            var addToSurvey = context.AddToSurvey.Where(x => x.Id_interviewer == id).ToList();
+            foreach(var a in addToSurvey)
+            {
+                context.AddToSurvey.Remove(a);
+            }
+            context.SaveChanges();
             db.Users.Remove(applicationUser);
             db.SaveChanges();
             return RedirectToAction("Index");

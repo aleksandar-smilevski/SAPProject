@@ -104,6 +104,10 @@
       <Private>True</Private>
       <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
     </Reference>
+    <Reference Include="Webdiyer.MvcPager, Version=3.0.2015.802, Culture=neutral, PublicKeyToken=f6872c5a09aed72c, processorArchitecture=MSIL">
+      <HintPath>..\packages\Webdiyer.MvcPager.3.0.1.1\lib\Webdiyer.MvcPager.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="WebGrease">
       <Private>True</Private>
       <HintPath>..\packages\WebGrease.1.5.2\lib\WebGrease.dll</HintPath>
@@ -173,6 +177,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="API\QuestionsController.cs" />
+    <Compile Include="API\SurveysController.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\IdentityConfig.cs" />
@@ -182,9 +188,15 @@
     <Compile Include="Attributes\AccessDeniedAuthorizeAttribute.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AdminController.cs" />
+    <Compile Include="Controllers\fController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\SurveysController.cs" />
     <Compile Include="Controllers\UserController.cs" />
+    <Compile Include="DTO\AnswerDTO.cs" />
+    <Compile Include="DTO\FillsDTO.cs" />
+    <Compile Include="DTO\QuestionDTO.cs" />
+    <Compile Include="DTO\RadioDTO.cs" />
+    <Compile Include="DTO\SurveyDTO.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -198,6 +210,11 @@
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\AddToSurvey.cs">
+      <DependentUpon>Data.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Answer.cs" />
+    <Compile Include="Models\AnsweredSurvey.cs" />
     <Compile Include="Models\AspNetRoles.cs">
       <DependentUpon>Data.tt</DependentUpon>
     </Compile>
@@ -210,6 +227,7 @@
     <Compile Include="Models\AspNetUsers.cs">
       <DependentUpon>Data.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\CategoriesController.cs" />
     <Compile Include="Models\Category.cs">
       <DependentUpon>Data.tt</DependentUpon>
     </Compile>
@@ -231,15 +249,43 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Data.edmx</DependentUpon>
     </Compile>
+    <Compile Include="Models\FillOutSurveyQuestionsViewModel.cs" />
     <Compile Include="Models\IdentityModels.cs" />
+    <Compile Include="Models\InterviewerInSurvey.cs" />
+    <Compile Include="Models\InterviewerStatistics.cs" />
+    <Compile Include="Models\InterviewersToSurveys.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
+    <Compile Include="Models\Metadata.cs" />
+    <Compile Include="Models\OfflineAnswer.cs">
+      <DependentUpon>Data.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\OfflineQuestion.cs">
+      <DependentUpon>Data.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\OfflineSurvey.cs">
+      <DependentUpon>Data.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\OnlineAnswer.cs">
+      <DependentUpon>Data.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\OnlineQuestion.cs">
       <DependentUpon>Data.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\OnlineSurvey.cs">
       <DependentUpon>Data.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\PaperSurvey.cs">
+      <DependentUpon>Data.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\PartialClasses.cs" />
+    <Compile Include="Models\QueryAnswers.cs" />
+    <Compile Include="Models\SendsSurvey.cs">
+      <DependentUpon>Data.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\Survey.cs">
+      <DependentUpon>Data.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\SurveyType.cs">
       <DependentUpon>Data.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\UserTokens.cs">
@@ -249,9 +295,11 @@
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="app\app.js" />
     <Content Include="Content\blank-page.html" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\desk-wallpapers-1.jpg" />
     <Content Include="Content\font-awesome.min.css" />
     <Content Include="Content\sb-admin.css" />
     <Content Include="favicon.ico" />
@@ -269,6 +317,13 @@
       <DependentUpon>Data.edmx</DependentUpon>
       <LastGenOutput>Data.cs</LastGenOutput>
     </Content>
+    <Content Include="Scripts\angular-animate.js" />
+    <Content Include="Scripts\angular-animate.min.js" />
+    <Content Include="Scripts\angular-mocks.js" />
+    <Content Include="Scripts\angular-route.js" />
+    <Content Include="Scripts\angular-route.min.js" />
+    <Content Include="Scripts\angular.js" />
+    <Content Include="Scripts\angular.min.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="fonts\fontawesome-webfont.eot" />
@@ -282,10 +337,18 @@
     <Content Include="Models\Data.edmx.diagram">
       <DependentUpon>Data.edmx</DependentUpon>
     </Content>
+    <None Include="Properties\PublishProfiles\Aleksandar.pubxml" />
+    <Content Include="Scripts\angular.min.js.map" />
+    <Content Include="Scripts\angular-animate.min.js.map" />
+    <Content Include="Scripts\angular-route.min.js.map" />
+    <Content Include="Scripts\directive.pagination.min.js" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
+    <Content Include="Scripts\chooseCategory.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
+    <Content Include="Scripts\jquery.unobtrusive-ajax.js" />
+    <Content Include="Scripts\jquery.unobtrusive-ajax.min.js" />
     <Content Include="Scripts\jquery.validate.js" />
     <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
@@ -294,7 +357,9 @@
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
     <Content Include="Scripts\_references.js" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>
@@ -343,16 +408,19 @@
     <Content Include="Views\Surveys\Details.cshtml" />
     <Content Include="Views\Surveys\Edit.cshtml" />
     <Content Include="Views\Surveys\Index.cshtml" />
-    <Content Include="Views\OfflineSurveys\Create.cshtml" />
-    <Content Include="Views\OfflineSurveys\Delete.cshtml" />
-    <Content Include="Views\OfflineSurveys\Details.cshtml" />
-    <Content Include="Views\OfflineSurveys\Edit.cshtml" />
-    <Content Include="Views\OfflineSurveys\Index.cshtml" />
-    <Content Include="Views\OnlineSurveys\Create.cshtml" />
-    <Content Include="Views\OnlineSurveys\Delete.cshtml" />
-    <Content Include="Views\OnlineSurveys\Details.cshtml" />
-    <Content Include="Views\OnlineSurveys\Edit.cshtml" />
-    <Content Include="Views\OnlineSurveys\Index.cshtml" />
+    <Content Include="Views\Surveys\Design.cshtml" />
+    <Content Include="Views\Surveys\AddInterviewers.cshtml" />
+    <Content Include="Views\Surveys\_AddInterviewersPartial.cshtml" />
+    <Content Include="Views\Surveys\FillOut.cshtml" />
+    <Content Include="Views\Surveys\Answers.cshtml" />
+    <Content Include="Views\Admin\Statistics.cshtml" />
+    <Content Include="Views\Admin\_IndexPartial.cshtml" />
+    <Content Include="Views\Surveys\_IndexPartial.cshtml" />
+    <Content Include="Views\Categories\Create.cshtml" />
+    <Content Include="Views\Categories\Delete.cshtml" />
+    <Content Include="Views\Categories\Details.cshtml" />
+    <Content Include="Views\Categories\Edit.cshtml" />
+    <Content Include="Views\Categories\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

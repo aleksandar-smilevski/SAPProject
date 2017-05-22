@@ -13,6 +13,7 @@ namespace SAP.Controllers
     [Authorize]
     public class ManageController : Controller
     {
+        private ApplicationDbContext userDB = new ApplicationDbContext();
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
 
@@ -52,27 +53,52 @@ namespace SAP.Controllers
 
         //
         // GET: /Manage/Index
-        public async Task<ActionResult> Index(ManageMessageId? message)
+        public ActionResult Index(bool? result)
         {
-            ViewBag.StatusMessage =
-                message == ManageMessageId.ChangePasswordSuccess ? "Your password has been changed."
-                : message == ManageMessageId.SetPasswordSuccess ? "Your password has been set."
-                : message == ManageMessageId.SetTwoFactorSuccess ? "Your two-factor authentication provider has been set."
-                : message == ManageMessageId.Error ? "An error has occurred."
-                : message == ManageMessageId.AddPhoneSuccess ? "Your phone number was added."
-                : message == ManageMessageId.RemovePhoneSuccess ? "Your phone number was removed."
-                : "";
-
-            var userId = User.Identity.GetUserId();
-            var model = new IndexViewModel
+            if (!User.Identity.IsAuthenticated)
             {
-                HasPassword = HasPassword(),
-                PhoneNumber = await UserManager.GetPhoneNumberAsync(userId),
-                TwoFactor = await UserManager.GetTwoFactorEnabledAsync(userId),
-                Logins = await UserManager.GetLoginsAsync(userId),
-                BrowserRemembered = await AuthenticationManager.TwoFactorBrowserRememberedAsync(userId)
+                return RedirectToAction("Login", "Account");
+            }
+            if (result != null && result == true)
+            {
+                ViewBag.Updated = "Your profile has been updated";
+            }
+            var userId = User.Identity.GetUserId();
+            var user = userDB.Users.Where(x => x.Id == userId).First();
+            var vm = new ProfileViewModel
+            {
+                Age = user.Age,
+                Email = user.Email,
+                FirstName = user.FirstName,
+                PhoneNumber = user.PhoneNumber,
+                UserName = user.UserName                
             };
-            return View(model);
+            return View(vm);
+        }
+        [HttpPost]
+        public ActionResult Index(ProfileViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                ModelState.AddModelError("", "Invalid input");
+                return View(model);
+            }
+            if (!User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+            var userId = User.Identity.GetUserId();
+            var user = userDB.Users.Where(x => x.Id == userId).First();
+
+            user.Age = model.Age;
+            user.FirstName = model.FirstName;
+            user.PhoneNumber = model.PhoneNumber;
+            user.UserName = model.UserName;
+
+            userDB.Entry(user).State = System.Data.Entity.EntityState.Modified;
+            userDB.SaveChanges();
+
+            return RedirectToAction("Index", new { result=true });
         }
 
         //

@@ -17,19 +17,24 @@ namespace SAP.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Survey()
         {
-            this.OfflineSurvey = new HashSet<OfflineSurvey>();
-            this.OnlineSurvey = new HashSet<OnlineSurvey>();
+            this.AddToSurvey = new HashSet<AddToSurvey>();
+            this.Links = new HashSet<Links>();
         }
     
-        public int id { get; set; }
-        public string name { get; set; }
-        public int category { get; set; }
-        public Nullable<System.DateTime> date { get; set; }
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public int Category { get; set; }
+        public int Survey_type { get; set; }
+        public System.DateTime Date { get; set; }
+        public bool Is_active { get; set; }
     
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<AddToSurvey> AddToSurvey { get; set; }
         public virtual Category Category1 { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<OfflineSurvey> OfflineSurvey { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<OnlineSurvey> OnlineSurvey { get; set; }
+        public virtual ICollection<Links> Links { get; set; }
+        public virtual OfflineSurvey OfflineSurvey { get; set; }
+        public virtual OnlineSurvey OnlineSurvey { get; set; }
+        public virtual SurveyType SurveyType { get; set; }
     }
 }

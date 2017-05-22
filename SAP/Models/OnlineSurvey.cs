@@ -14,11 +14,19 @@ namespace SAP.Models
     
     public partial class OnlineSurvey
     {
-        public int id { get; set; }
-        public Nullable<int> id_survey { get; set; }
-        public Nullable<int> num_questions { get; set; }
-        public bool is_active { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public OnlineSurvey()
+        {
+            this.OnlineQuestion = new HashSet<OnlineQuestion>();
+            this.SendsSurvey = new HashSet<SendsSurvey>();
+        }
     
+        public int Id { get; set; }
+    
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<OnlineQuestion> OnlineQuestion { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<SendsSurvey> SendsSurvey { get; set; }
         public virtual Survey Survey { get; set; }
     }
 }
